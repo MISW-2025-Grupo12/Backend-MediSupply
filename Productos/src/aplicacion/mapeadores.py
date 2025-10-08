@@ -1,4 +1,5 @@
-from aplicacion.dto import ProductoDTO
+from aplicacion.dto import ProductoDTO, CategoriaDTO
+from aplicacion.dto_agregacion import ProductoAgregacionDTO
 from dominio.entidades import Producto
 from dominio.objetos_valor import Nombre, Descripcion, Precio, Stock, FechaVencimiento, Categoria, Proveedor
 from datetime import datetime
@@ -13,8 +14,8 @@ class MapeadorProductoDTOJson:
             stock=int(externo.get('stock', 0)),
             fecha_vencimiento=datetime.fromisoformat(externo.get('fecha_vencimiento', datetime.now().isoformat())),
             categoria=externo.get('categoria', ''),
-            proveedor=externo.get('proveedor', ''),
             categoria_id=externo.get('categoria_id', ''),
+            proveedor_id=externo.get('proveedor_id', ''),
             id=externo.get('id')
         )
     
@@ -28,8 +29,8 @@ class MapeadorProductoDTOJson:
             'stock': dto.stock,
             'fecha_vencimiento': dto.fecha_vencimiento.isoformat(),
             'categoria': dto.categoria,
-            'proveedor': dto.proveedor,
-            'categoria_id': dto.categoria_id
+            'categoria_id': dto.categoria_id,
+            'proveedor_id': dto.proveedor_id
         }
 
 class MapeadorProducto:
@@ -43,8 +44,8 @@ class MapeadorProducto:
             stock=entidad.stock.stock,
             fecha_vencimiento=entidad.fecha_vencimiento.fecha,
             categoria=entidad.categoria.nombre,
-            proveedor=entidad.proveedor.nombre,
-            categoria_id=entidad.categoria_id
+            categoria_id=entidad.categoria_id,
+            proveedor_id=entidad.proveedor_id
         )
     
     def dto_a_entidad(self, dto: ProductoDTO) -> Producto:
@@ -57,7 +58,53 @@ class MapeadorProducto:
             stock=Stock(dto.stock),
             fecha_vencimiento=FechaVencimiento(dto.fecha_vencimiento),
             categoria=Categoria(dto.categoria),
-            proveedor=Proveedor(dto.proveedor, "", ""),
-            categoria_id=dto.categoria_id
+            categoria_id=dto.categoria_id,
+            proveedor_id=dto.proveedor_id
         )
+
+class MapeadorCategoriaDTOJson:
+    def externo_a_dto(self, externo: dict) -> CategoriaDTO:
+        """Convierte JSON externo a CategoriaDTO"""
+        return CategoriaDTO(
+            nombre=externo.get('nombre', ''),
+            descripcion=externo.get('descripcion', ''),
+            id=externo.get('id')
+        )
+    
+    def dto_a_externo(self, dto: CategoriaDTO) -> dict:
+        """Convierte CategoriaDTO a JSON externo"""
+        return {
+            'id': str(dto.id),
+            'nombre': dto.nombre,
+            'descripcion': dto.descripcion
+        }
+
+class MapeadorProductoAgregacionDTOJson:
+    """Mapeador para agregación completa de productos optimizada"""
+    
+    def agregacion_a_externo(self, agregacion: ProductoAgregacionDTO) -> dict:
+        """Convierte ProductoAgregacionDTO a JSON externo con datos completos"""
+        return {
+            'id': str(agregacion.id),
+            'nombre': agregacion.nombre,
+            'descripcion': agregacion.descripcion,
+            'precio': agregacion.precio,
+            'stock': agregacion.stock,
+            'fecha_vencimiento': agregacion.fecha_vencimiento.isoformat(),
+            'categoria': {
+                'id': str(agregacion.categoria_id),
+                'nombre': agregacion.categoria_nombre,
+                'descripcion': agregacion.categoria_descripcion
+            },
+            'proveedor': {
+                'id': agregacion.proveedor_id,
+                'nombre': agregacion.proveedor_nombre,
+                'email': agregacion.proveedor_email,
+                'direccion': agregacion.proveedor_direccion
+            }
+        }
+    
+    def agregaciones_a_externo(self, agregaciones: list[ProductoAgregacionDTO]) -> list[dict]:
+        """Convierte lista de ProductoAgregacionDTO a lista de JSON externo"""
+        return [self.agregacion_a_externo(agregacion) for agregacion in agregaciones]
 

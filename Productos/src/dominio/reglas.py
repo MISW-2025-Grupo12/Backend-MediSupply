@@ -109,3 +109,45 @@ class CategoriaIdNoPuedeSerVacio(ReglaNegocio):
 
     def es_valido(self) -> bool:
         return self.categoria_id is not None and self.categoria_id.strip() != ''
+
+class CategoriaDebeExistir(ReglaNegocio):
+    categoria_id: str
+    repositorio_categoria: any
+    
+    def __init__(self, categoria_id, repositorio_categoria, mensaje='La categoría especificada no existe'):
+        super().__init__(mensaje)
+        self.categoria_id = categoria_id
+        self.repositorio_categoria = repositorio_categoria
+
+    def es_valido(self) -> bool:
+        if not self.categoria_id or self.categoria_id.strip() == '':
+            return False
+        
+        # Verificar que la categoría existe en la base de datos
+        categoria = self.repositorio_categoria.obtener_por_id(self.categoria_id)
+        return categoria is not None
+
+class ProveedorIdNoPuedeSerVacio(ReglaNegocio):
+    proveedor_id: str
+    def __init__(self, proveedor_id, mensaje='El ID del proveedor no puede ser vacío'):
+        super().__init__(mensaje)
+        self.proveedor_id = proveedor_id
+
+    def es_valido(self) -> bool:
+        return self.proveedor_id is not None and self.proveedor_id.strip() != ''
+
+class ProveedorDebeExistir(ReglaNegocio):
+    proveedor_id: str
+    servicio_proveedores: any
+    
+    def __init__(self, proveedor_id, servicio_proveedores, mensaje='El proveedor especificado no existe'):
+        super().__init__(mensaje)
+        self.proveedor_id = proveedor_id
+        self.servicio_proveedores = servicio_proveedores
+
+    def es_valido(self) -> bool:
+        if not self.proveedor_id or self.proveedor_id.strip() == '':
+            return False
+        
+        # Verificar que el proveedor existe en el microservicio de usuarios
+        return self.servicio_proveedores.validar_proveedor_existe(self.proveedor_id)

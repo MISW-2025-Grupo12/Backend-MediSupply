@@ -12,8 +12,8 @@ class ProductoCreado(EventoDominio):
     stock: int = 0
     fecha_vencimiento: datetime = None
     categoria: str = ""
-    proveedor: str = ""
     categoria_id: str = ""
+    proveedor_id: str = ""
     
     def _get_datos_evento(self) -> dict:
         return {
@@ -24,7 +24,7 @@ class ProductoCreado(EventoDominio):
             'stock': self.stock,
             'fecha_vencimiento': self.fecha_vencimiento.isoformat(),
             'categoria': self.categoria,
-            'proveedor': self.proveedor,
-            'categoria_id': self.categoria_id
+            'categoria_id': self.categoria_id,
+            'proveedor_id': self.proveedor_id
         }
 

@@ -21,20 +21,23 @@ def create_app(configuracion=None):
         # Configurar Flask para no redirigir automáticamente URLs sin barra final
         app.url_map.strict_slashes = False
 
-        # Configurar SQLite
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///productos.db'
+        # Configurar base de datos (PostgreSQL en Docker, SQLite en desarrollo)
+        database_uri = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///productos.db')
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         
-        # Inicializar SQLite
+        # Inicializar base de datos
         from config.db import init_db
         init_db(app)
-        logger.info("✅ Base de datos SQLite inicializada")
+        logger.info("✅ Base de datos inicializada")
         
         # Importar Blueprints
         from . import producto
+        from . import categoria
 
         # Registro de Blueprints
         app.register_blueprint(producto.bp)
+        app.register_blueprint(categoria.bp)
 
         @app.route("/spec")
         def spec():
@@ -48,7 +51,12 @@ def create_app(configuracion=None):
             return {
                 "status": "up",
                 "mode": "simplified",
-                "endpoints": ["POST /api/producto/", "GET /api/producto/"]
+                "endpoints": [
+                    "POST /api/productos/", 
+                    "GET /api/productos/",
+                    "POST /api/productos/categorias/",
+                    "GET /api/productos/categorias/"
+                ]
             }
 
         logger.info("✅ Aplicación Flask configurada correctamente")

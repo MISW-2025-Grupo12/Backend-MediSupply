@@ -25,8 +25,8 @@ class Producto(AgregacionRaiz):
     stock: Stock = field(default_factory=lambda: Stock(0))
     fecha_vencimiento: FechaVencimiento = field(default_factory=lambda: FechaVencimiento(datetime.now()))
     categoria: Categoria = field(default_factory=lambda: Categoria(""))
-    proveedor: Proveedor = field(default_factory=lambda: Proveedor("", "", ""))
     categoria_id: str = field(default_factory=lambda: "")
+    proveedor_id: str = field(default_factory=lambda: "")
     
     def __post_init__(self):
         super().__post_init__()
@@ -41,8 +41,8 @@ class Producto(AgregacionRaiz):
             stock=self.stock.stock,
             fecha_vencimiento=self.fecha_vencimiento.fecha,
             categoria=self.categoria.nombre,
-            proveedor=self.proveedor.nombre,
-            categoria_id=self.categoria_id
+            categoria_id=self.categoria_id,
+            proveedor_id=self.proveedor_id
         )
-        print(f"✅ Producto creado: {evento.nombre} (ID: {evento.producto_id})")
+        print(f"Producto creado: {evento.nombre} (ID: {evento.producto_id})")
     

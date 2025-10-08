@@ -6,13 +6,13 @@ from aplicacion.comandos.crear_producto import CrearProducto
 from aplicacion.consultas.obtener_productos import ObtenerProductos
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
-from aplicacion.mapeadores import MapeadorProductoDTOJson
+from aplicacion.mapeadores import MapeadorProductoDTOJson, MapeadorProductoAgregacionDTOJson
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-bp = api.crear_blueprint('producto', '/api/producto')
+bp = api.crear_blueprint('producto', '/api/productos')
 
 # Endpoint para crear producto
 @bp.route('/', methods=['POST'])
@@ -49,30 +49,30 @@ def crear_producto():
                         mimetype='application/json'
                     )
         
-        # Crear comando - las validaciones se harán en el dominio
-        comando = CrearProducto(
-            nombre=producto_dict.get('nombre', ''),
-            descripcion=producto_dict.get('descripcion', ''),
-            precio=float(producto_dict.get('precio', 0)),
-            stock=int(producto_dict.get('stock', 0)),
-            fecha_vencimiento=fecha_vencimiento or datetime.now(),
-            categoria=producto_dict.get('categoria', ''),
-            proveedor=producto_dict.get('proveedor', ''),
-            categoria_id=producto_dict.get('categoria_id', '')
-        )
-        
-        # Ejecutar comando - las reglas de negocio se validan aquí
-        resultado = ejecutar_comando(comando)
-        
-        # Convertir resultado a JSON
-        mapeador = MapeadorProductoDTOJson()
-        producto_json = mapeador.dto_a_externo(resultado)
-        
-        return Response(
-            json.dumps(producto_json), 
-            status=201, 
-            mimetype='application/json'
-        )
+            # Crear comando - las validaciones se harán en el dominio
+            comando = CrearProducto(
+                nombre=producto_dict.get('nombre', ''),
+                descripcion=producto_dict.get('descripcion', ''),
+                precio=float(producto_dict.get('precio', 0)),
+                stock=int(producto_dict.get('stock', 0)),
+                fecha_vencimiento=fecha_vencimiento or datetime.now(),
+                categoria=producto_dict.get('categoria', ''),
+                categoria_id=producto_dict.get('categoria_id', ''),
+                proveedor_id=producto_dict.get('proveedor_id', '')
+            )
+            
+            # Ejecutar comando - las reglas de negocio se validan aquí
+            resultado = ejecutar_comando(comando)
+            
+            # Convertir agregación a JSON
+            mapeador = MapeadorProductoAgregacionDTOJson()
+            producto_json = mapeador.agregacion_a_externo(resultado)
+            
+            return Response(
+                json.dumps(producto_json), 
+                status=201, 
+                mimetype='application/json'
+            )
         
     except ValueError as e:
         # Las reglas de negocio lanzan ValueError
@@ -89,21 +89,19 @@ def crear_producto():
             mimetype='application/json'
         )
 
-# Endpoint para obtener todos los productos
+# Endpoint para obtener todos los productos con agregación completa
 @bp.route('/', methods=['GET'])
 def obtener_productos():
     try:
         # Crear consulta
         consulta = ObtenerProductos()
         
-        # Ejecutar consulta
-        productos = ejecutar_consulta(consulta)
+        # Ejecutar consulta (retorna agregaciones completas)
+        productos_agregacion = ejecutar_consulta(consulta)
         
-        # Convertir productos a JSON
-        mapeador = MapeadorProductoDTOJson()
-        productos_json = []
-        for producto in productos:
-            productos_json.append(mapeador.dto_a_externo(producto))
+        # Convertir agregaciones a JSON
+        mapeador = MapeadorProductoAgregacionDTOJson()
+        productos_json = mapeador.agregaciones_a_externo(productos_agregacion)
         
         return Response(
             json.dumps(productos_json), 
@@ -112,7 +110,7 @@ def obtener_productos():
         )
         
     except Exception as e:
-        logger.error(f"Error obteniendo productos: {e}")
+        logger.error(f"Error obteniendo productos con agregación: {e}")
         return Response(
             json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
             status=500, 

@@ -11,6 +11,12 @@ class ProductoDTO(DTO):
     stock: int
     fecha_vencimiento: datetime
     categoria: str
-    proveedor: str
     categoria_id: str
+    proveedor_id: str
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+@dataclass(frozen=True)
+class CategoriaDTO(DTO):
+    nombre: str
+    descripcion: str
     id: uuid.UUID = field(default_factory=uuid.uuid4)
