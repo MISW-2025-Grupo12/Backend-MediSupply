@@ -8,3 +8,19 @@ class ProveedorDTO(DTO):
     email: str
     direccion: str
     id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+@dataclass(frozen=True)
+class VendedorDTO(DTO):
+    nombre: str
+    email: str
+    telefono: str
+    direccion: str
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+@dataclass(frozen=True)
+class ClienteDTO(DTO):
+    nombre: str
+    email: str
+    telefono: str
+    direccion: str
+    id: uuid.UUID = field(default_factory=uuid.uuid4)

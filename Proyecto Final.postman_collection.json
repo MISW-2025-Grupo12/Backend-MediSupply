@@ -1,98 +1,23 @@
 {
 	"info": {
-		"_postman_id": "126f39c6-d5b7-42f0-a203-1e71ce1c5bbb",
+		"_postman_id": "a9e6d229-08d1-43a8-b175-eef855766dc7",
 		"name": "Proyecto Final",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20553656"
+		"_exporter_id": "30409960",
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/39040590-a9e6d229-08d1-43a8-b175-eef855766dc7?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
-			"name": "Categoria Producto",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"nombre\": \"Medicamentos\",\r\n    \"descripcion\": \"Productos farmacéuticos y medicamentos\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5000/api/productos/categorias",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"productos",
-						"categorias"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Obtener todas las categorias",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5000/api/productos/categorias",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"productos",
-						"categorias"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Crear Producto",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"nombre\": \"Paracetamol\",\r\n    \"descripcion\": \"Analgésico\",\r\n    \"precio\": 25000,\r\n    \"stock\": 100,\r\n    \"fecha_vencimiento\": \"2025-12-31T00:00:00Z\",\r\n    \"categoria\": \"Medicamentos\",\r\n    \"proveedor\": \"Farmacéutica ABC\",\r\n    \"categoria_id\": \"83ebf893-eea5-40bd-bb36-b78fc43c5770\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5000/api/productos",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"productos"
-					]
-				}
-			},
-			"response": [
+			"name": "Clientes",
+			"item": [
 				{
-					"name": "Crear Producto",
-					"originalRequest": {
+					"name": "Crear Cliente",
+					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"nombre\": \"Paracetamol\",\r\n    \"descripcion\": \"Analgésico\",\r\n    \"precio\": 25000,\r\n    \"stock\": 100,\r\n    \"fecha_vencimiento\": \"2025-12-31T00:00:00Z\",\r\n    \"categoria\": \"Medicamentos\",\r\n    \"proveedor\": \"Farmacéutica ABC\",\r\n    \"categoria_id\": \"med-001\"\r\n}",
+							"raw": "{\r\n    \"nombre\": \"Hospital San Ignacio\",\r\n    \"email\": \"contacto@sanignacio.com\",\r\n    \"telefono\": \"3115566778\",\r\n    \"direccion\": \"Cra 11 # 89 - 76\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -100,7 +25,285 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/producto",
+							"raw": "http://localhost:5001/api/clientes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"clientes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener todos los clientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/clientes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"clientes",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Visitas de venta",
+			"item": [
+				{
+					"name": "Crear Visita de Venta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"vendedor_id\": \"f965c696-bbeb-4d00-b80a-c4e518472753\",\r\n    \"cliente_id\": \"4c42c154-69a7-4d88-93c8-5f5ea923cffc\",\r\n    \"fecha_programada\": \"2025-10-09T10:00:00\",\r\n    \"direccion\": \"Cra 11 # 89 - 76\",\r\n    \"telefono\": \"3115566778\",\r\n    \"estado\": \"pendiente\",\r\n    \"descripcion\": \"Visita programada\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5002/api/visitas/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"visitas",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener todas la visitas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5002/api/visitas/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"visitas",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener visitas pendientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5002/api/visitas/?estado=pendiente",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"visitas",
+								""
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "pendiente"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener visitas por vendedor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5002/api/visitas/vendedor/f965c696-bbeb-4d00-b80a-c4e518472753?estado=pendiente",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"visitas",
+								"vendedor",
+								"f965c696-bbeb-4d00-b80a-c4e518472753"
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "pendiente"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vendedores",
+			"item": [
+				{
+					"name": "Crear Vendedor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Juan Pérez\",\r\n    \"email\": \"juan.perez@empresa.com\",\r\n    \"telefono\": \"3001234567\",\r\n    \"direccion\": \"Calle 123 #45-67\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/vendedores/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"vendedores",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener todos los vendedores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/vendedores/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"vendedores",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Proveedores",
+			"item": [
+				{
+					"name": "Crear Proveedor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Bayer Colombia\",\r\n    \"email\": \"contacto@bayer.com.co\",\r\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/proveedores",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Proveedores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/proveedores/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"proveedores",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Productos",
+			"item": [
+				{
+					"name": "Categoria Producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Medicamentos\",\r\n    \"descripcion\": \"Productos farmacéuticos y medicamentos\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/productos/categorias",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -108,10 +311,12 @@
 							"port": "5000",
 							"path": [
 								"api",
-								"producto"
+								"productos",
+								"categorias"
 							]
 						}
 					},
+<<<<<<< HEAD
 					"status": "CREATED",
 					"code": 201,
 					"_postman_previewlanguage": "Text",
@@ -135,12 +340,138 @@
 						{
 							"key": "Connection",
 							"value": "close"
+=======
+					"response": []
+				},
+				{
+					"name": "Obtener todas las categorias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/productos/categorias",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"productos",
+								"categorias"
+							]
+>>>>>>> develop
 						}
-					],
-					"cookie": [],
-					"body": "{\n    \"id\": \"1108d7be-9b49-43ea-a8cb-94e3123e49cf\",\n    \"nombre\": \"Paracetamol\",\n    \"descripcion\": \"Analgésico\",\n    \"precio\": 25000,\n    \"stock\": 100,\n    \"fecha_vencimiento\": \"2025-12-31T00:00:00\",\n    \"categoria\": \"Medicamentos\",\n    \"proveedor\": \"Farmacéutica ABC\",\n    \"categoria_id\": \"med-001\"\n}"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Paracetamol\",\r\n    \"descripcion\": \"Analgésico\",\r\n    \"precio\": 25000,\r\n    \"stock\": 100,\r\n    \"fecha_vencimiento\": \"2025-12-31T00:00:00Z\",\r\n    \"categoria\": \"Medicamentos\",\r\n    \"proveedor\": \"Farmacéutica ABC\",\r\n    \"categoria_id\": \"83ebf893-eea5-40bd-bb36-b78fc43c5770\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/productos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"productos"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Crear Producto",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nombre\": \"Paracetamol\",\r\n    \"descripcion\": \"Analgésico\",\r\n    \"precio\": 25000,\r\n    \"stock\": 100,\r\n    \"fecha_vencimiento\": \"2025-12-31T00:00:00Z\",\r\n    \"categoria\": \"Medicamentos\",\r\n    \"proveedor\": \"Farmacéutica ABC\",\r\n    \"categoria_id\": \"med-001\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/producto",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"producto"
+									]
+								}
+							},
+							"status": "CREATED",
+							"code": 201,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/3.1.3 Python/3.12.2"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 07 Oct 2025 23:28:30 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "276"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"1108d7be-9b49-43ea-a8cb-94e3123e49cf\",\n    \"nombre\": \"Paracetamol\",\n    \"descripcion\": \"Analgésico\",\n    \"precio\": 25000,\n    \"stock\": 100,\n    \"fecha_vencimiento\": \"2025-12-31T00:00:00\",\n    \"categoria\": \"Medicamentos\",\n    \"proveedor\": \"Farmacéutica ABC\",\n    \"categoria_id\": \"med-001\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Obtener Todos los Productos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/productos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"productos"
+							]
+						}
+					},
+					"response": []
 				}
 			]
+<<<<<<< HEAD
 		},
 		{
 			"name": "Obtener Todos los Productos",
@@ -242,6 +573,8 @@
 				}
 			},
 			"response": []
+=======
+>>>>>>> develop
 		}
 	]
 }

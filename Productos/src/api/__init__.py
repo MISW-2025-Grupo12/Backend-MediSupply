@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, jsonify
 from flask_swagger import swagger
+from flask_cors import CORS
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,7 +14,8 @@ logger = logging.getLogger(__name__)
 def create_app(configuracion=None):
     try:
         app = Flask(__name__, instance_relative_config=True)
-        logger.info("🚀 Aplicación Flask creada")
+        CORS(app)
+        logger.info("Aplicación Flask creada")
 
         app.url_map.strict_slashes = False
         database_uri = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///productos.db')
