@@ -162,6 +162,58 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# ===========================================
+# REGLAS ESPECÍFICAS PARA MICROSERVICIOS
+# ===========================================
+
+# Entornos virtuales de microservicios
+Productos/venv/
+Productos/env/
+Productos/ENV/
+Ventas/venv/
+Ventas/env/
+Ventas/ENV/
+Logistica/venv/
+Logistica/env/
+Logistica/ENV/
+Usuarios/venv/
+Usuarios/env/
+Usuarios/ENV/
+
+# Bases de datos SQLite de microservicios
+Productos/*.db
+Productos/*.sqlite
+Productos/*.sqlite3
+Ventas/*.db
+Ventas/*.sqlite
+Ventas/*.sqlite3
+Logistica/*.db
+Logistica/*.sqlite
+Logistica/*.sqlite3
+Usuarios/*.db
+Usuarios/*.sqlite
+Usuarios/*.sqlite3
+
+# Archivos de configuración local de microservicios
+Productos/.env
+Productos/.env.local
+Ventas/.env
+Ventas/.env.local
+Logistica/.env
+Logistica/.env.local
+Usuarios/.env
+Usuarios/.env.local
+
+# Logs de microservicios
+Productos/logs/
+Productos/*.log
+Ventas/logs/
+Ventas/*.log
+Logistica/logs/
+Logistica/*.log
+Usuarios/logs/
+Usuarios/*.log
+
 # pytype static type analyzer
 .pytype/
 
