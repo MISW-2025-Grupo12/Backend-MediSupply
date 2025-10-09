@@ -11,8 +11,8 @@ class ObtenerProveedorPorId(Consulta):
     proveedor_id: str
 
 class ObtenerProveedorPorIdHandler:
-    def __init__(self):
-        self.repositorio = RepositorioProveedorSQLite()
+    def __init__(self, repositorio=None):
+        self.repositorio = repositorio or RepositorioProveedorSQLite()
     
     def handle(self, consulta: ObtenerProveedorPorId) -> ProveedorDTO:
         try:

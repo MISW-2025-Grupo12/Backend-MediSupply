@@ -10,6 +10,14 @@ class MapeadorProveedorDTOJson:
             'email': dto.email,
             'direccion': dto.direccion
         }
+    
+    def externo_a_dto(self, externo: dict) -> ProveedorDTO:
+        return ProveedorDTO(
+            id=externo.get('id'),
+            nombre=externo.get('nombre', ''),
+            email=externo.get('email', ''),
+            direccion=externo.get('direccion', '')
+        )
 
 class MapeadorProveedor:
     def entidad_a_dto(self, entidad: Proveedor) -> ProveedorDTO:

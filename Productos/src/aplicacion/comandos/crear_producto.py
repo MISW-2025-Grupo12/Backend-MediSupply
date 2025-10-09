@@ -32,10 +32,10 @@ class CrearProducto(Comando):
     proveedor_id: str
 
 class CrearProductoHandler:
-    def __init__(self):
-        self.repositorio = RepositorioProductoSQLite()
-        self.repositorio_categoria = RepositorioCategoriaSQLite()
-        self.servicio_proveedores = ServicioProveedores()
+    def __init__(self, repositorio=None, repositorio_categoria=None, servicio_proveedores=None):
+        self.repositorio = repositorio or RepositorioProductoSQLite()
+        self.repositorio_categoria = repositorio_categoria or RepositorioCategoriaSQLite()
+        self.servicio_proveedores = servicio_proveedores or ServicioProveedores()
     
     def handle(self, comando: CrearProducto) -> ProductoAgregacionDTO:
         try:

@@ -15,8 +15,6 @@ class FabricaProducto(Fabrica):
         if isinstance(obj, Entidad):
             return mapeador.entidad_a_dto(obj)
         else:
-            print( "Fabricando producto: ", obj)
-            
             producto: Producto = mapeador.dto_a_entidad(obj)
             
             # Validar todas las reglas de negocio en la fábrica

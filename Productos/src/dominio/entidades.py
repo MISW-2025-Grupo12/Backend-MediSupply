@@ -44,5 +44,5 @@ class Producto(AgregacionRaiz):
             categoria_id=self.categoria_id,
             proveedor_id=self.proveedor_id
         )
-        print(f"Producto creado: {evento.nombre} (ID: {evento.producto_id})")
+        return evento
     

@@ -11,8 +11,8 @@ class ObtenerProveedores(Consulta):
     pass
 
 class ObtenerProveedoresHandler:
-    def __init__(self):
-        self.repositorio = RepositorioProveedorSQLite()
+    def __init__(self, repositorio=None):
+        self.repositorio = repositorio or RepositorioProveedorSQLite()
     
     def handle(self, consulta: ObtenerProveedores) -> list[ProveedorDTO]:
         try:

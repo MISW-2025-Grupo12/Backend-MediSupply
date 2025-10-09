@@ -16,4 +16,4 @@ class Proveedor(AgregacionRaiz):
             email=self.email.email,
             direccion=self.direccion.direccion
         )
-        print(f"Proveedor creado: {evento.nombre} (ID: {evento.proveedor_id})")
+        return evento

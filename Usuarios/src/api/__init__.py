@@ -16,7 +16,6 @@ def create_app(configuracion=None):
         logger.info("Aplicación Flask creada")
         
         app.url_map.strict_slashes = False
-        # Configurar base de datos (PostgreSQL en Docker, SQLite en desarrollo)
         database_uri = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///usuarios.db')
         app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

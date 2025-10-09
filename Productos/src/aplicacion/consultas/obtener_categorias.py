@@ -12,8 +12,8 @@ class ObtenerCategorias(Consulta):
     pass
 
 class ObtenerCategoriasHandler:
-    def __init__(self):
-        self.repositorio = RepositorioCategoriaSQLite()
+    def __init__(self, repositorio=None):
+        self.repositorio = repositorio or RepositorioCategoriaSQLite()
     
     def handle(self, consulta: ObtenerCategorias) -> list[CategoriaDTO]:
         try:

@@ -13,8 +13,8 @@ class CrearCategoria(Comando):
     descripcion: str
 
 class CrearCategoriaHandler:
-    def __init__(self):
-        self.repositorio = RepositorioCategoriaSQLite()
+    def __init__(self, repositorio=None):
+        self.repositorio = repositorio or RepositorioCategoriaSQLite()
     
     def handle(self, comando: CrearCategoria) -> CategoriaDTO:
         try:
