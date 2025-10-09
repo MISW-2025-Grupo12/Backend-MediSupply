@@ -5,6 +5,11 @@ from aplicacion.consultas.obtener_entregas import ObtenerEntregas
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from aplicacion.mapeadores import MapeadorEntregaDTOJson
 
+import random
+from datetime import datetime, timedelta
+from infraestructura.repositorios import RepositorioEntregaSQLite
+from aplicacion.dto import EntregaDTO
+
 import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -13,11 +18,26 @@ logger = logging.getLogger(__name__)
 bp = api.crear_blueprint('entrega', '/api/logistica/entregas')
 
 # Endpoint temporal: Crear entregas
-@bp.route('/', methods=['POST'])
-def crear_entregas():
-    return {
-        "message": "Hello World"
-    }
+@bp.route('/creartemp', methods=['POST'])
+def crear_entregas_temp():
+    """
+    Endpoint temporal: genera 20 entregas aleatorias para pruebas.
+    """
+    try:
+        repo = RepositorioEntregaSQLite()
+        for i in range(20):
+            entrega = EntregaDTO(
+                direccion=f"Calle {random.randint(1, 99)} #{random.randint(1, 99)}-{random.randint(1, 99)}",
+                fecha_entrega=datetime.now() + timedelta(days=random.randint(1, 10)),
+                producto_id=f"producto-{random.randint(1000, 9999)}",
+                cliente_id=f"cliente-{random.randint(1000, 9999)}"
+            )
+            repo.crear(entrega)
+
+        return {"message": "✅ 20 entregas generadas exitosamente"}, 201
+
+    except Exception as e:
+        return {"error": f"❌ Error generando entregas: {str(e)}"}, 500
 
 # Endpoint: Obtener entregas programadas
 @bp.route('/', methods=['GET'])

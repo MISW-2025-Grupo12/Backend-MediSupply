@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "dc64face-2d0e-4d89-bd65-a13f7e3b4e16",
+		"_postman_id": "126f39c6-d5b7-42f0-a203-1e71ce1c5bbb",
 		"name": "Proyecto Final",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-dc64face-2d0e-4d89-bd65-a13f7e3b4e16?action=share&source=collection_link&creator=30409960"
+		"_exporter_id": "20553656"
 	},
 	"item": [
 		{
@@ -115,7 +114,7 @@
 					},
 					"status": "CREATED",
 					"code": 201,
-					"_postman_previewlanguage": null,
+					"_postman_previewlanguage": "Text",
 					"header": [
 						{
 							"key": "Server",
@@ -208,6 +207,37 @@
 						"api",
 						"proveedores",
 						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear entrega",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5002/api/logistica/entregas/creartemp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5002",
+					"path": [
+						"api",
+						"logistica",
+						"entregas",
+						"creartemp"
 					]
 				}
 			},
