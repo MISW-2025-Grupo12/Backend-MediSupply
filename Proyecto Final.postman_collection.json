@@ -316,31 +316,6 @@
 							]
 						}
 					},
-<<<<<<< HEAD
-					"status": "CREATED",
-					"code": 201,
-					"_postman_previewlanguage": "Text",
-					"header": [
-						{
-							"key": "Server",
-							"value": "Werkzeug/3.1.3 Python/3.12.2"
-						},
-						{
-							"key": "Date",
-							"value": "Tue, 07 Oct 2025 23:28:30 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "276"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-=======
 					"response": []
 				},
 				{
@@ -360,7 +335,6 @@
 								"productos",
 								"categorias"
 							]
->>>>>>> develop
 						}
 					},
 					"response": []
@@ -469,112 +443,62 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Logística - Entregas",
+					"item": [
+						{
+						"name": "Crear entrega (temporal)",
+						"request": {
+							"method": "POST",
+							"header": [],
+							"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+								"language": "json"
+								}
+							}
+							},
+							"url": {
+							"raw": "http://localhost:5002/api/entregas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"entregas"
+							]
+							}
+						},
+						"response": []
+						},
+						{
+						"name": "Obtener entregas (CQRS)",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+							"raw": "http://localhost:5002/api/entregas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"entregas"
+							]
+							}
+						},
+						"response": []
+						}
+					]
 				}
 			]
-<<<<<<< HEAD
-		},
-		{
-			"name": "Obtener Todos los Productos",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5000/api/productos",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"productos"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Crear Proveedor",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"nombre\": \"Bayer Colombia\",\r\n    \"email\": \"contacto@bayer.com.co\",\r\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5001/api/proveedores",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"proveedores"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Obtener Proveedores",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5001/api/proveedores/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"proveedores",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Crear entrega",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5002/api/logistica/entregas/creartemp",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5002",
-					"path": [
-						"api",
-						"logistica",
-						"entregas",
-						"creartemp"
-					]
-				}
-			},
-			"response": []
-=======
->>>>>>> develop
 		}
 	]
 }
