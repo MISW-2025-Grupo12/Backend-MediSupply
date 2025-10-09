@@ -64,6 +64,62 @@
 			]
 		},
 		{
+			"name": "Vendedores",
+			"item": [
+				{
+					"name": "Crear Vendedor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Juan Pérez\",\r\n    \"email\": \"juan.perez@empresa.com\",\r\n    \"telefono\": \"3001234567\",\r\n    \"direccion\": \"Calle 123 #45-67\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/vendedores/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"vendedores",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener todos los vendedores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/vendedores/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"vendedores",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Visitas de venta",
 			"item": [
 				{
@@ -73,7 +129,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"vendedor_id\": \"f965c696-bbeb-4d00-b80a-c4e518472753\",\r\n    \"cliente_id\": \"4c42c154-69a7-4d88-93c8-5f5ea923cffc\",\r\n    \"fecha_programada\": \"2025-10-09T10:00:00\",\r\n    \"direccion\": \"Cra 11 # 89 - 76\",\r\n    \"telefono\": \"3115566778\",\r\n    \"estado\": \"pendiente\",\r\n    \"descripcion\": \"Visita programada\"\r\n}",
+							"raw": "{\r\n    \"vendedor_id\": \"51c2d87c-0bbb-4edb-86b3-e20604b5242f\",\r\n    \"cliente_id\": \"3561abc0-f31d-4354-bfd2-3f07dbaff241\",\r\n    \"fecha_programada\": \"2025-12-09T10:00:00\",\r\n    \"direccion\": \"Cra 11 # 89 - 76\",\r\n    \"telefono\": \"3115566778\",\r\n    \"estado\": \"pendiente\",\r\n    \"descripcion\": \"Visita programada\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -167,62 +223,6 @@
 									"key": "estado",
 									"value": "pendiente"
 								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Vendedores",
-			"item": [
-				{
-					"name": "Crear Vendedor",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"nombre\": \"Juan Pérez\",\r\n    \"email\": \"juan.perez@empresa.com\",\r\n    \"telefono\": \"3001234567\",\r\n    \"direccion\": \"Calle 123 #45-67\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5001/api/vendedores/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5001",
-							"path": [
-								"api",
-								"vendedores",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Obtener todos los vendedores",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5001/api/vendedores/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5001",
-							"path": [
-								"api",
-								"vendedores",
-								""
 							]
 						}
 					},
@@ -443,60 +443,55 @@
 						}
 					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "Entregas",
+			"item": [
+				{
+					"name": "Obtener todas las entregas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5003/api/logistica/entregas/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"logistica",
+								"entregas",
+								""
+							]
+						}
+					},
+					"response": []
 				},
 				{
-					"name": "Logística - Entregas",
-					"item": [
-						{
-						"name": "Crear entrega (temporal)",
-						"request": {
-							"method": "POST",
-							"header": [],
-							"body": {
-							"mode": "raw",
-							"raw": "{}",
-							"options": {
-								"raw": {
-								"language": "json"
-								}
-							}
-							},
-							"url": {
-							"raw": "http://localhost:5002/api/entregas",
+					"name": "Crear 20 Entregas",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5003/api/logistica/entregas/creartemp",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "5002",
+							"port": "5003",
 							"path": [
 								"api",
-								"entregas"
+								"logistica",
+								"entregas",
+								"creartemp"
 							]
-							}
-						},
-						"response": []
-						},
-						{
-						"name": "Obtener entregas (CQRS)",
-						"request": {
-							"method": "GET",
-							"header": [],
-							"url": {
-							"raw": "http://localhost:5002/api/entregas",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5002",
-							"path": [
-								"api",
-								"entregas"
-							]
-							}
-						},
-						"response": []
 						}
-					]
+					},
+					"response": []
 				}
 			]
 		}
