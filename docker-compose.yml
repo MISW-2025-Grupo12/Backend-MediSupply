@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  # Base de datos PostgreSQL para Logistica
+  logistica-db:
+    image: postgres:15-alpine
+    container_name: medi-supply-logistica-db
+    environment:
+      POSTGRES_DB: logistica_db
+      POSTGRES_USER: logistica_user
+      POSTGRES_PASSWORD: logistica_pass
+    volumes:
+      - logistica_db_data:/var/lib/postgresql/data
+    networks:
+      - medi-supply-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U logistica_user -d logistica_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Microservicio de Productos
+  logistica:
+    build:
+      context: ./Logistica
+      dockerfile: Dockerfile
+    container_name: medi-supply-logistica
+    ports:
+      - "5002:5002"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - SQLALCHEMY_DATABASE_URI=postgresql://logistica_user:logistica_pass@logistica-db:5432/logistica_db
+      - USUARIOS_SERVICE_URL=http://usuarios:5001
+    networks:
+      - medi-supply-network
+    depends_on:
+      logistica-db:
+        condition: service_healthy
+      usuarios:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# Volúmenes para persistir datos de PostgreSQL
+volumes:
+  logistica_db_data:
+    driver: local
+
+# Red para comunicación entre servicios
+networks:
+  medi-supply-network:
+    driver: bridge
