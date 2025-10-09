@@ -443,6 +443,60 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Logística - Entregas",
+					"item": [
+						{
+						"name": "Crear entrega (temporal)",
+						"request": {
+							"method": "POST",
+							"header": [],
+							"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+								"language": "json"
+								}
+							}
+							},
+							"url": {
+							"raw": "http://localhost:5002/api/entregas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"entregas"
+							]
+							}
+						},
+						"response": []
+						},
+						{
+						"name": "Obtener entregas (CQRS)",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+							"raw": "http://localhost:5002/api/entregas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"entregas"
+							]
+							}
+						},
+						"response": []
+						}
+					]
 				}
 			]
 		}
