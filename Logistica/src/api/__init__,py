@@ -27,18 +27,18 @@ def create_app(configuracion=None):
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
         # Inicializar base de datos
-        try:
-            from config.db import init_db
-            init_db(app)
-            logger.info("✅ Base de datos inicializada correctamente")
-        except ModuleNotFoundError:
-            logger.warning("⚠️ Módulo config.db no encontrado, corriendo en modo sin BD")
+        from config.db import init_db
+        init_db(app)
+        logger.info("✅ Base de datos inicializada")
 
         # Importar Blueprints del servicio
-        from src.api.entregas import api_logistica
+        #from api.entregas import bp as entrega_bp
+        from . import entregas
+
 
         # Registrar Blueprints
-        app.register_blueprint(api_logistica)
+        #app.register_blueprint(entrega_bp)
+        app.register_blueprint(entregas.bp)
 
         # Endpoint de documentación Swagger
         @app.route("/spec")
@@ -69,4 +69,4 @@ def create_app(configuracion=None):
         raise
 
 # Instancia global usada por Flask
-app = create_app
+app = create_app()

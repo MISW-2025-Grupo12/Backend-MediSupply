@@ -1,6 +1,9 @@
 # Imagen base
 FROM python:3.11-slim
 
+# Establecer directorio de trabajo
+WORKDIR /app
+
 # Instalar dependencias del sistema para PostgreSQL
 RUN apt-get update && apt-get install -y \
     gcc \
@@ -8,8 +11,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Establecer directorio de trabajo
-WORKDIR /app
 
 # Copiar dependencias
 COPY requirements.txt .

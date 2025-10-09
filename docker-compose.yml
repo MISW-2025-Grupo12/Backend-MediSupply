@@ -19,7 +19,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # Microservicio de Productos
+  # Microservicio de Logistica
   logistica:
     build:
       context: ./Logistica
@@ -31,13 +31,10 @@ services:
       - FLASK_ENV=production
       - PYTHONPATH=/app
       - SQLALCHEMY_DATABASE_URI=postgresql://logistica_user:logistica_pass@logistica-db:5432/logistica_db
-      - USUARIOS_SERVICE_URL=http://usuarios:5001
     networks:
       - medi-supply-network
     depends_on:
       logistica-db:
-        condition: service_healthy
-      usuarios:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5002/health"]

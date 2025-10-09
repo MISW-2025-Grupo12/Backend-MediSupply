@@ -29,14 +29,16 @@ def obtener_entregas():
     try:
         # Crear la consulta CQRS
         consulta = ObtenerEntregas()
-        
+
         # Ejecutar la consulta (mock por ahora)
         entregas_dto = ejecutar_consulta(consulta)
-        
+
         # Convertir DTO → JSON externo
         mapeador = MapeadorEntregaDTOJson()
-        entregas_json = mapeador.dto_a_externo(entregas_dto)
-        
+        entregas_json = []
+        for entrega in entregas_dto:
+            entregas_json.append(mapeador.dto_a_externo(entrega))
+
         logger.info(f"✅ {len(entregas_json)} entregas programadas consultadas correctamente")
 
         return Response(
