@@ -88,11 +88,58 @@ services:
       retries: 3
       start_period: 40s
 
+  # Base de datos PostgreSQL para Ventas
+  ventas-db:
+    image: postgres:15-alpine
+    container_name: medi-supply-ventas-db
+    environment:
+      POSTGRES_DB: ventas_db
+      POSTGRES_USER: ventas_user
+      POSTGRES_PASSWORD: ventas_pass
+    volumes:
+      - ventas_db_data:/var/lib/postgresql/data
+    networks:
+      - medi-supply-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ventas_user -d ventas_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Microservicio de Ventas
+  ventas:
+    build:
+      context: ./Ventas
+      dockerfile: Dockerfile
+    container_name: medi-supply-ventas
+    ports:
+      - "5002:5002"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - SQLALCHEMY_DATABASE_URI=postgresql://ventas_user:ventas_pass@ventas-db:5432/ventas_db
+      - USUARIOS_SERVICE_URL=http://usuarios:5001
+    networks:
+      - medi-supply-network
+    depends_on:
+      ventas-db:
+        condition: service_healthy
+      usuarios:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
 # Volúmenes para persistir datos de PostgreSQL
 volumes:
   usuarios_db_data:
     driver: local
   productos_db_data:
+    driver: local
+  ventas_db_data:
     driver: local
 
 # Red para comunicación entre servicios

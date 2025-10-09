@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, jsonify
 from flask_swagger import swagger
+from flask_cors import CORS
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,8 +14,8 @@ logger = logging.getLogger(__name__)
 def create_app(configuracion=None):
     try:
         app = Flask(__name__, instance_relative_config=True)
+        CORS(app)
         logger.info("Aplicación Flask creada")
-        
         app.url_map.strict_slashes = False
         database_uri = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///usuarios.db')
         app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
@@ -25,7 +26,11 @@ def create_app(configuracion=None):
         logger.info("Base de datos inicializada")
         
         from . import proveedor
+        from . import vendedor
+        from . import cliente
         app.register_blueprint(proveedor.bp)
+        app.register_blueprint(vendedor.bp)
+        app.register_blueprint(cliente.bp)
         
         @app.route("/health")
         def health():
@@ -33,8 +38,14 @@ def create_app(configuracion=None):
                 "status": "up",
                 "mode": "simplified",
                 "endpoints": [
-                    "POST /api/proveedores/",
-                    "GET /api/proveedores/"
+                    "POST /api/proveedores/", 
+                    "GET /api/proveedores/",
+                    "POST /api/vendedores/", 
+                    "GET /api/vendedores/",
+                    "GET /api/vendedores/<id>",
+                    "POST /api/clientes/", 
+                    "GET /api/clientes/",
+                    "GET /api/clientes/<id>"
                 ]
             }
         
