@@ -12,3 +12,7 @@ class Email(ObjetoValor):
 @dataclass(frozen=True)
 class Direccion(ObjetoValor):
     direccion: str
+
+@dataclass(frozen=True)
+class Telefono(ObjetoValor):
+    telefono: str
