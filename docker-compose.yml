@@ -55,80 +55,80 @@ services:
       timeout: 5s
       retries: 5
 
-# Microservicio de Usuarios (Proveedores)
-usuarios:
-  build:
-    context: ./Usuarios
-    dockerfile: Dockerfile
-  container_name: medi-supply-usuarios
-  ports:
-    - "5001:5001"
-  environment:
-    - FLASK_ENV=production
-    - PYTHONPATH=/app
-    - SQLALCHEMY_DATABASE_URI=postgresql://usuarios_user:usuarios_pass@usuarios-db:5432/usuarios_db
-  networks:
-    - medi-supply-network
-  depends_on:
-    usuarios-db:
-      condition: service_healthy
-  healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
-    interval: 30s
-    timeout: 10s
-    retries: 3
-    start_period: 40s
+  # Microservicio de Usuarios (Proveedores)
+  usuarios:
+    build:
+      context: ./Usuarios
+      dockerfile: Dockerfile
+    container_name: medi-supply-usuarios
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - SQLALCHEMY_DATABASE_URI=postgresql://usuarios_user:usuarios_pass@usuarios-db:5432/usuarios_db
+    networks:
+      - medi-supply-network
+    depends_on:
+      usuarios-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
-# Microservicio de Productos
-productos:
-  build:
-    context: ./Productos
-    dockerfile: Dockerfile
-  container_name: medi-supply-productos
-  ports:
-    - "5000:5000"
-  environment:
-    - FLASK_ENV=production
-    - PYTHONPATH=/app
-    - SQLALCHEMY_DATABASE_URI=postgresql://productos_user:productos_pass@productos-db:5432/productos_db
-    - USUARIOS_SERVICE_URL=http://usuarios:5001
-  networks:
-    - medi-supply-network
-  depends_on:
-    productos-db:
-      condition: service_healthy
-    usuarios:
-      condition: service_healthy
-  healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
-    interval: 30s
-    timeout: 10s
-    retries: 3
-    start_period: 40s
+  # Microservicio de Productos
+  productos:
+    build:
+      context: ./Productos
+      dockerfile: Dockerfile
+    container_name: medi-supply-productos
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - SQLALCHEMY_DATABASE_URI=postgresql://productos_user:productos_pass@productos-db:5432/productos_db
+      - USUARIOS_SERVICE_URL=http://usuarios:5001
+    networks:
+      - medi-supply-network
+    depends_on:
+      productos-db:
+        condition: service_healthy
+      usuarios:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
-# Microservicio de Logistica
-logistica:
-  build:
-    context: ./Logistica
-    dockerfile: Dockerfile
-  container_name: medi-supply-logistica
-  ports:
-    - "5002:5002"
-  environment:
-    - FLASK_ENV=production
-    - PYTHONPATH=/app
-    - SQLALCHEMY_DATABASE_URI=postgresql://logistica_user:logistica_pass@logistica-db:5432/logistica_db
-  networks:
-    - medi-supply-network
-  depends_on:
-    logistica-db:
-      condition: service_healthy
-  healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
-    interval: 30s
-    timeout: 10s
-    retries: 3
-    start_period: 40s
+  # Microservicio de Logistica
+  logistica:
+    build:
+      context: ./Logistica
+      dockerfile: Dockerfile
+    container_name: medi-supply-logistica
+    ports:
+      - "5003:5003"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - SQLALCHEMY_DATABASE_URI=postgresql://logistica_user:logistica_pass@logistica-db:5432/logistica_db
+    networks:
+      - medi-supply-network
+    depends_on:
+      logistica-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # Base de datos PostgreSQL para Ventas
   ventas-db:
@@ -182,7 +182,7 @@ volumes:
   productos_db_data:
     driver: local
   logistica_db_data:
-      driver: local
+    driver: local
   ventas_db_data:
     driver: local
 

@@ -26,8 +26,8 @@ def main():
         # Crear la aplicación Flask
         app = create_app()
 
-        # Obtener puerto de variable de entorno o usar 5000 por defecto
-        port = int(os.getenv('PORT', 5002))
+        # Obtener puerto de variable de entorno o usar 5003 por defecto
+        port = int(os.getenv('PORT', 5003))
         host = os.getenv('HOST', '0.0.0.0')
 
         logger.info(f"Iniciando microservicio de Logistica en {host}:{port}")

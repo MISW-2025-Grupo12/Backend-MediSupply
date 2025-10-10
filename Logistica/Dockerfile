@@ -21,8 +21,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar todo el proyecto
 COPY src/ ./src/
 
-# Exponer puerto del microservicio (5002 para Logística)
-EXPOSE 5002
+# Exponer puerto del microservicio (5003 para Logística)
+EXPOSE 5003
 
 # Variables de entorno
 ENV FLASK_APP=src/main.py
