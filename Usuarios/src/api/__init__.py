@@ -17,7 +17,22 @@ def create_app(configuracion=None):
         CORS(app)
         logger.info("Aplicación Flask creada")
         app.url_map.strict_slashes = False
-        database_uri = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///usuarios.db')
+        
+        # Detectar si estamos en modo de pruebas
+        is_testing = os.getenv('TESTING') == 'True' or 'pytest' in sys.modules
+        
+        if is_testing:
+            # Usar SQLite para pruebas
+            import tempfile
+            db_fd, db_path = tempfile.mkstemp()
+            database_uri = f'sqlite:///{db_path}'
+            app.config['TESTING'] = True
+            logger.info("Modo de pruebas detectado - usando SQLite")
+        else:
+            # Usar PostgreSQL para producción
+            database_uri = os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://usuarios_user:usuarios_pass@usuarios-db:5432/usuarios_db')
+            logger.info("Modo de producción - usando PostgreSQL")
+        
         app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         

@@ -57,12 +57,9 @@ class TestPresentacionAPI:
     
     def test_crear_blueprint_con_nombre_none(self):
         """Test crear_blueprint con nombre None"""
-        # Arrange & Act
-        bp = crear_blueprint(None, "/test")
-        
-        # Assert
-        assert bp is not None
-        assert bp.url_prefix == "/test"
+        # Arrange & Act & Assert
+        with pytest.raises(ValueError, match="'name' may not be empty"):
+            crear_blueprint(None, "/test")
     
     def test_crear_blueprint_con_url_prefix_none(self):
         """Test crear_blueprint con url_prefix None"""
@@ -75,9 +72,6 @@ class TestPresentacionAPI:
     
     def test_crear_blueprint_ambos_parametros_none(self):
         """Test crear_blueprint con ambos parámetros None"""
-        # Arrange & Act
-        bp = crear_blueprint(None, None)
-        
-        # Assert
-        assert bp is not None
-        # Debería usar valores por defecto o manejar None apropiadamente
+        # Arrange & Act & Assert
+        with pytest.raises(ValueError, match="'name' may not be empty"):
+            crear_blueprint(None, None)

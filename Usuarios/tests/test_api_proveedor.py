@@ -1,171 +1,223 @@
 import pytest
-import sys
-import os
 import json
-from unittest.mock import Mock, patch
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-
-from api import create_app
-from aplicacion.dto import ProveedorDTO
-
+import uuid
+from unittest.mock import patch, Mock
+from .test_config import app, client
 
 class TestAPIProveedor:
+    """Test para la API de proveedores usando SQLite"""
     
-    def setup_method(self):
-        """Setup para cada test"""
-        self.app = create_app()
-        self.app.config['TESTING'] = True
-        self.client = self.app.test_client()
-    
-    def test_crear_proveedor_exitoso(self):
-        """Test crear proveedor exitoso via API"""
+    def test_crear_proveedor_exitoso(self, client):
+        """Test crear proveedor exitoso"""
         # Arrange
         proveedor_data = {
-            "nombre": "Farmacia Central",
-            "email": "contacto@farmacia.com",
-            "direccion": "Calle 123 #45-67"
+            'nombre': 'Farmacia Central',
+            'email': 'contacto@farmacia.com',
+            'direccion': 'Calle 123 #45-67'
         }
         
-        with patch('aplicacion.comandos.crear_proveedor.CrearProveedorHandler') as mock_handler_class:
-            mock_handler = Mock()
-            mock_handler_class.return_value = mock_handler
-            
-            # Mock del resultado
-            mock_resultado = ProveedorDTO(
-                id="123e4567-e89b-12d3-a456-426614174000",
-                nombre="Farmacia Central",
-                email="contacto@farmacia.com",
-                direccion="Calle 123 #45-67"
-            )
-            mock_handler.handle.return_value = mock_resultado
+        # Mock del comando
+        with patch('src.aplicacion.comandos.crear_proveedor.ejecutar_comando') as mock_ejecutar:
+            mock_proveedor = Mock()
+            mock_proveedor.id = str(uuid.uuid4())
+            mock_proveedor.nombre = 'Farmacia Central'
+            mock_proveedor.email = 'contacto@farmacia.com'
+            mock_proveedor.direccion = 'Calle 123 #45-67'
+            mock_ejecutar.return_value = mock_proveedor
             
             # Act
-            response = self.client.post('/api/proveedores/', 
-                                      data=json.dumps(proveedor_data),
-                                      content_type='application/json')
+            response = client.post('/api/proveedores', 
+                                 data=json.dumps(proveedor_data),
+                                 content_type='application/json')
             
             # Assert
             assert response.status_code == 201
-            data = json.loads(response.data)
-            assert data['nombre'] == "Farmacia Central"
-            assert data['email'] == "contacto@farmacia.com"
+            assert response.mimetype == 'application/json'
+            
+            response_data = json.loads(response.data.decode())
+            assert response_data['nombre'] == 'Farmacia Central'
+            assert response_data['email'] == 'contacto@farmacia.com'
+            assert response_data['direccion'] == 'Calle 123 #45-67'
     
-    def test_crear_proveedor_datos_invalidos(self):
-        """Test crear proveedor con datos inválidos"""
+    def test_crear_proveedor_sin_json(self, client):
+        """Test crear proveedor sin JSON"""
+        # Act
+        response = client.post('/api/proveedores')
+        
+        # Assert
+        assert response.status_code == 400
+        assert response.mimetype == 'application/json'
+        
+        response_data = json.loads(response.data.decode())
+        assert 'error' in response_data
+        assert 'Se requiere un JSON válido' in response_data['error']
+    
+    def test_crear_proveedor_json_invalido(self, client):
+        """Test crear proveedor con JSON inválido"""
+        # Act
+        response = client.post('/api/proveedores',
+                             data='invalid json',
+                             content_type='application/json')
+        
+        # Assert
+        assert response.status_code == 400
+        response_data = json.loads(response.data.decode())
+        assert 'error' in response_data
+    
+    def test_crear_proveedor_error_validacion(self, client):
+        """Test crear proveedor con error de validación"""
         # Arrange
         proveedor_data = {
-            "nombre": "",  # Nombre vacío
-            "email": "contacto@farmacia.com",
-            "direccion": "Calle 123 #45-67"
+            'nombre': 'Farmacia Central',
+            'email': 'contacto@farmacia.com',
+            'direccion': 'Calle 123 #45-67'
         }
         
-        with patch('aplicacion.comandos.crear_proveedor.CrearProveedorHandler') as mock_handler_class:
-            mock_handler = Mock()
-            mock_handler_class.return_value = mock_handler
-            mock_handler.handle.side_effect = ValueError("El nombre no puede estar vacío")
+        with patch('src.aplicacion.comandos.crear_proveedor.ejecutar_comando') as mock_ejecutar:
+            mock_ejecutar.side_effect = ValueError("Error de validación")
             
             # Act
-            response = self.client.post('/api/proveedores/', 
-                                      data=json.dumps(proveedor_data),
-                                      content_type='application/json')
+            response = client.post('/api/proveedores',
+                                 data=json.dumps(proveedor_data),
+                                 content_type='application/json')
             
             # Assert
             assert response.status_code == 400
-            data = json.loads(response.data)
-            assert 'error' in data
+            response_data = json.loads(response.data.decode())
+            assert 'error' in response_data
+            assert 'Error de validación' in response_data['error']
     
-    def test_obtener_proveedores_exitoso(self):
-        """Test obtener todos los proveedores via API"""
+    def test_crear_proveedor_error_interno(self, client):
+        """Test crear proveedor con error interno"""
         # Arrange
-        with patch('aplicacion.consultas.obtener_proveedores.ObtenerProveedoresHandler') as mock_handler_class:
-            mock_handler = Mock()
-            mock_handler_class.return_value = mock_handler
+        proveedor_data = {
+            'nombre': 'Farmacia Central',
+            'email': 'contacto@farmacia.com',
+            'direccion': 'Calle 123 #45-67'
+        }
+        
+        with patch('src.aplicacion.comandos.crear_proveedor.ejecutar_comando') as mock_ejecutar:
+            mock_ejecutar.side_effect = Exception("Error interno")
             
-            # Mock del resultado
+            # Act
+            response = client.post('/api/proveedores',
+                                 data=json.dumps(proveedor_data),
+                                 content_type='application/json')
+            
+            # Assert
+            assert response.status_code == 500
+            response_data = json.loads(response.data.decode())
+            assert 'error' in response_data
+            assert 'Error interno del servidor' in response_data['error']
+    
+    def test_obtener_proveedores_exitoso(self, client):
+        """Test obtener proveedores exitoso"""
+        # Arrange
+        with patch('src.aplicacion.consultas.obtener_proveedores.ejecutar_consulta') as mock_ejecutar:
             mock_proveedores = [
-                ProveedorDTO(
-                    id="123e4567-e89b-12d3-a456-426614174000",
-                    nombre="Farmacia Central",
-                    email="contacto@farmacia.com",
-                    direccion="Calle 123 #45-67"
-                ),
-                ProveedorDTO(
-                    id="456e7890-e89b-12d3-a456-426614174001",
-                    nombre="Farmacia Norte",
-                    email="norte@farmacia.com",
-                    direccion="Calle 456 #78-90"
-                )
+                Mock(id=str(uuid.uuid4()), nombre='Farmacia Central', 
+                     email='contacto@farmacia.com', direccion='Calle 123 #45-67'),
+                Mock(id=str(uuid.uuid4()), nombre='Farmacia Norte', 
+                     email='norte@farmacia.com', direccion='Avenida 456 #78-90')
             ]
-            mock_handler.handle.return_value = mock_proveedores
+            mock_ejecutar.return_value = mock_proveedores
             
             # Act
-            response = self.client.get('/api/proveedores/')
+            response = client.get('/api/proveedores')
             
             # Assert
             assert response.status_code == 200
-            data = json.loads(response.data)
-            assert len(data) == 2
-            assert data[0]['nombre'] == "Farmacia Central"
-            assert data[1]['nombre'] == "Farmacia Norte"
+            assert response.mimetype == 'application/json'
+            
+            response_data = json.loads(response.data.decode())
+            assert len(response_data) == 2
+            assert response_data[0]['nombre'] == 'Farmacia Central'
+            assert response_data[1]['nombre'] == 'Farmacia Norte'
     
-    def test_obtener_proveedores_vacio(self):
-        """Test obtener proveedores cuando no hay proveedores"""
+    def test_obtener_proveedores_lista_vacia(self, client):
+        """Test obtener proveedores con lista vacía"""
         # Arrange
-        with patch('aplicacion.consultas.obtener_proveedores.ObtenerProveedoresHandler') as mock_handler_class:
-            mock_handler = Mock()
-            mock_handler_class.return_value = mock_handler
-            mock_handler.handle.return_value = []
+        with patch('src.aplicacion.consultas.obtener_proveedores.ejecutar_consulta') as mock_ejecutar:
+            mock_ejecutar.return_value = []
             
             # Act
-            response = self.client.get('/api/proveedores/')
+            response = client.get('/api/proveedores')
             
             # Assert
             assert response.status_code == 200
-            data = json.loads(response.data)
-            assert data == []
+            response_data = json.loads(response.data.decode())
+            assert response_data == []
     
-    def test_obtener_proveedor_por_id_exitoso(self):
-        """Test obtener proveedor por ID via API"""
+    def test_obtener_proveedores_error(self, client):
+        """Test obtener proveedores con error"""
         # Arrange
-        proveedor_id = "123e4567-e89b-12d3-a456-426614174000"
-        
-        with patch('aplicacion.consultas.obtener_proveedor_por_id.ObtenerProveedorPorIdHandler') as mock_handler_class:
-            mock_handler = Mock()
-            mock_handler_class.return_value = mock_handler
-            
-            # Mock del resultado
-            mock_proveedor = ProveedorDTO(
-                id=proveedor_id,
-                nombre="Farmacia Central",
-                email="contacto@farmacia.com",
-                direccion="Calle 123 #45-67"
-            )
-            mock_handler.handle.return_value = mock_proveedor
+        with patch('src.aplicacion.consultas.obtener_proveedores.ejecutar_consulta') as mock_ejecutar:
+            mock_ejecutar.side_effect = Exception("Error de base de datos")
             
             # Act
-            response = self.client.get(f'/api/proveedores/{proveedor_id}')
+            response = client.get('/api/proveedores')
+            
+            # Assert
+            assert response.status_code == 500
+            response_data = json.loads(response.data.decode())
+            assert 'error' in response_data
+            assert 'Error interno del servidor' in response_data['error']
+    
+    def test_obtener_proveedor_por_id_exitoso(self, client):
+        """Test obtener proveedor por ID exitoso"""
+        # Arrange
+        proveedor_id = str(uuid.uuid4())
+        with patch('src.aplicacion.consultas.obtener_proveedor_por_id.ejecutar_consulta') as mock_ejecutar:
+            mock_proveedor = Mock()
+            mock_proveedor.id = proveedor_id
+            mock_proveedor.nombre = 'Farmacia Central'
+            mock_proveedor.email = 'contacto@farmacia.com'
+            mock_proveedor.direccion = 'Calle 123 #45-67'
+            mock_ejecutar.return_value = mock_proveedor
+            
+            # Act
+            response = client.get(f'/api/proveedores/{proveedor_id}')
             
             # Assert
             assert response.status_code == 200
-            data = json.loads(response.data)
-            assert data['id'] == proveedor_id
-            assert data['nombre'] == "Farmacia Central"
+            assert response.mimetype == 'application/json'
+            
+            response_data = json.loads(response.data.decode())
+            assert response_data['id'] == proveedor_id
+            assert response_data['nombre'] == 'Farmacia Central'
+            assert response_data['email'] == 'contacto@farmacia.com'
+            assert response_data['direccion'] == 'Calle 123 #45-67'
     
-    def test_obtener_proveedor_por_id_no_encontrado(self):
-        """Test obtener proveedor por ID cuando no existe"""
+    def test_obtener_proveedor_por_id_no_encontrado(self, client):
+        """Test obtener proveedor por ID no encontrado"""
         # Arrange
-        proveedor_id = "123e4567-e89b-12d3-a456-426614174000"
-        
-        with patch('aplicacion.consultas.obtener_proveedor_por_id.ObtenerProveedorPorIdHandler') as mock_handler_class:
-            mock_handler = Mock()
-            mock_handler_class.return_value = mock_handler
-            mock_handler.handle.return_value = None
+        proveedor_id = str(uuid.uuid4())
+        with patch('src.aplicacion.consultas.obtener_proveedor_por_id.ejecutar_consulta') as mock_ejecutar:
+            mock_ejecutar.return_value = None
             
             # Act
-            response = self.client.get(f'/api/proveedores/{proveedor_id}')
+            response = client.get(f'/api/proveedores/{proveedor_id}')
             
             # Assert
             assert response.status_code == 404
-            data = json.loads(response.data)
-            assert 'error' in data
+            assert response.mimetype == 'application/json'
+            
+            response_data = json.loads(response.data.decode())
+            assert 'error' in response_data
+            assert 'Proveedor no encontrado' in response_data['error']
+    
+    def test_obtener_proveedor_por_id_error(self, client):
+        """Test obtener proveedor por ID con error"""
+        # Arrange
+        proveedor_id = str(uuid.uuid4())
+        with patch('src.aplicacion.consultas.obtener_proveedor_por_id.ejecutar_consulta') as mock_ejecutar:
+            mock_ejecutar.side_effect = Exception("Error de base de datos")
+            
+            # Act
+            response = client.get(f'/api/proveedores/{proveedor_id}')
+            
+            # Assert
+            assert response.status_code == 500
+            response_data = json.loads(response.data.decode())
+            assert 'error' in response_data
+            assert 'Error interno del servidor' in response_data['error']

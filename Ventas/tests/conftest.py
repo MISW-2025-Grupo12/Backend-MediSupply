@@ -1,45 +1,31 @@
 import pytest
 import os
+import sys
 import tempfile
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
-# Configurar SQLite para pruebas
+# Configurar el path para importar los módulos
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+from src.api import create_app
+
 @pytest.fixture(scope='session')
 def app():
-    """Crear aplicación Flask para pruebas con SQLite"""
-    app = Flask(__name__)
+    """Crear aplicación Flask para pruebas"""
+    # Configurar variable de entorno para modo de pruebas
+    os.environ['TESTING'] = 'True'
     
-    # Usar SQLite en memoria para pruebas
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['TESTING'] = True
+    # Crear aplicación
+    app = create_app()
     
-    # Importar y configurar la base de datos
-    from src.config.db import db
-    db.init_app(app)
-    
-    # Crear tablas
-    with app.app_context():
-        db.create_all()
-    
-    return app
+    yield app
 
 @pytest.fixture(scope='function')
 def client(app):
-    """Cliente de prueba"""
+    """Cliente de prueba Flask"""
     return app.test_client()
 
 @pytest.fixture(scope='function')
-def db_session(app):
-    """Sesión de base de datos para pruebas"""
-    from src.config.db import db
-    
+def app_context(app):
+    """Contexto de aplicación Flask para pruebas"""
     with app.app_context():
-        # Limpiar base de datos antes de cada prueba
-        db.drop_all()
-        db.create_all()
-        yield db
-        # Limpiar después de cada prueba
-        db.session.rollback()
-        db.drop_all()
+        yield app

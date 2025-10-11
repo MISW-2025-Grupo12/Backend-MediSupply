@@ -130,3 +130,20 @@ class RepositorioInventarioSQLite:
             ))
 
         return inventarios_dto
+
+    def eliminar(self, producto_id: str) -> bool:
+        """Eliminar todos los lotes de inventario de un producto específico."""
+        try:
+            inventarios_model = InventarioModel.query.filter_by(producto_id=producto_id).all()
+            
+            if not inventarios_model:
+                return False
+            
+            for inventario_model in inventarios_model:
+                db.session.delete(inventario_model)
+            
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            return False

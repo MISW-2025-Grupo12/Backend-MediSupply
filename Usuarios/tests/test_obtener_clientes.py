@@ -100,6 +100,7 @@ class TestObtenerClientes:
             handler = ObtenerClientesHandler()
             
             # Act & Assert
+            consulta = ObtenerClientes()
             with pytest.raises(Exception, match="Error de base de datos"):
                 handler.handle(consulta)
     

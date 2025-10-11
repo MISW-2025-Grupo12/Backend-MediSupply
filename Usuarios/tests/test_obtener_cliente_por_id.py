@@ -95,6 +95,7 @@ class TestObtenerClientePorId:
             handler = ObtenerClientePorIdHandler()
             
             # Act & Assert
+            consulta = ObtenerClientePorId(cliente_id=cliente_id)
             with pytest.raises(Exception, match="Error de base de datos"):
                 handler.handle(consulta)
     
