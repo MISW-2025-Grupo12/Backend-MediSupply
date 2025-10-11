@@ -6,7 +6,7 @@ from flask import Flask
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from aplicacion.consultas.obtener_categoria_por_id import ObtenerCategoriaPorIdHandler
+from aplicacion.consultas.obtener_categoria_por_id import ObtenerCategoriaPorIdHandler, ObtenerCategoriaPorId
 from aplicacion.dto import CategoriaDTO
 
 
@@ -49,7 +49,8 @@ class TestObtenerCategoriaPorId:
             handler = ObtenerCategoriaPorIdHandler()
             
             # Act
-            resultado = handler.handle(categoria_id)
+            consulta = ObtenerCategoriaPorId(categoria_id=categoria_id)
+            resultado = handler.handle(consulta)
             
             # Assert
             assert resultado is not None
@@ -71,7 +72,8 @@ class TestObtenerCategoriaPorId:
             handler = ObtenerCategoriaPorIdHandler()
             
             # Act
-            resultado = handler.handle(categoria_id)
+            consulta = ObtenerCategoriaPorId(categoria_id=categoria_id)
+            resultado = handler.handle(consulta)
             
             # Assert
             assert resultado is None
@@ -90,5 +92,6 @@ class TestObtenerCategoriaPorId:
             handler = ObtenerCategoriaPorIdHandler()
             
             # Act & Assert
+            consulta = ObtenerCategoriaPorId(categoria_id=categoria_id)
             with pytest.raises(Exception, match="Error de base de datos"):
-                handler.handle(categoria_id)
+                handler.handle(consulta)

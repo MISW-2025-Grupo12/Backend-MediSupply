@@ -13,7 +13,9 @@ class TestInventario:
         self.fecha_vencimiento = datetime.now() + timedelta(days=30)
 
     def test_crear_inventario_basico(self):
-        inventario = Inventario()
+        inventario = Inventario(
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
+        )
         assert inventario.id is not None
         assert isinstance(inventario.producto_id, ProductoID)
         assert isinstance(inventario.cantidad_disponible, Cantidad)
@@ -37,7 +39,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(10)
+            cantidad_reservada=Cantidad(10),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.reservar_cantidad(20)
@@ -50,7 +53,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(10)
+            cantidad_reservada=Cantidad(10),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.reservar_cantidad(0)
@@ -63,7 +67,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(10)
+            cantidad_reservada=Cantidad(10),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.reservar_cantidad(-5)
@@ -90,7 +95,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(50),
-            cantidad_reservada=Cantidad(0)
+            cantidad_reservada=Cantidad(0),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.reservar_cantidad(50)
@@ -103,7 +109,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(30)
+            cantidad_reservada=Cantidad(30),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.descontar_cantidad(15)
@@ -116,7 +123,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(30)
+            cantidad_reservada=Cantidad(30),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.descontar_cantidad(0)
@@ -129,7 +137,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(30)
+            cantidad_reservada=Cantidad(30),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.descontar_cantidad(-5)
@@ -142,7 +151,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(10)
+            cantidad_reservada=Cantidad(10),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.descontar_cantidad(20)
@@ -155,7 +165,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(25)
+            cantidad_reservada=Cantidad(25),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.descontar_cantidad(25)
@@ -168,7 +179,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(0)
+            cantidad_reservada=Cantidad(0),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         # Reservar 30 unidades
@@ -187,7 +199,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(50),
-            cantidad_reservada=Cantidad(0)
+            cantidad_reservada=Cantidad(0),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.reservar_cantidad(50)
@@ -200,7 +213,8 @@ class TestInventario:
         inventario = Inventario(
             producto_id=ProductoID("prod-123"),
             cantidad_disponible=Cantidad(100),
-            cantidad_reservada=Cantidad(40)
+            cantidad_reservada=Cantidad(40),
+            fecha_vencimiento=FechaVencimiento(self.fecha_vencimiento)
         )
         
         resultado = inventario.descontar_cantidad(40)

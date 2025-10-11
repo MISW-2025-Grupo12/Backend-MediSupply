@@ -49,11 +49,14 @@ class TestManejadorPedidoConfirmado:
         mock_ejecutar_comando.assert_called_once()
 
     @patch('aplicacion.eventos.consumidor_pedido_confirmado.logger')
-    def test_manejar_evento_con_excepcion(self, mock_logger):
+    @patch('aplicacion.eventos.consumidor_pedido_confirmado.ejecutar_comando')
+    def test_manejar_evento_con_excepcion(self, mock_ejecutar_comando, mock_logger):
         mock_evento = Mock()
         mock_evento.pedido_id = 'pedido-123'
         mock_evento.items = []
-        mock_evento.side_effect = Exception("Error en evento")
+        
+        # Simular excepción en ejecutar_comando
+        mock_ejecutar_comando.side_effect = Exception("Error en comando")
         
         self.manejador.manejar(mock_evento)
         

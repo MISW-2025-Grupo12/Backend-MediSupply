@@ -62,13 +62,20 @@ class TestEventos:
         
         # Assert
         assert isinstance(dict_result, dict)
-        assert dict_result['producto_id'] == str(producto_id)
-        assert dict_result['nombre'] == "Paracetamol"
-        assert dict_result['descripcion'] == "Analgésico"
-        assert dict_result['precio'] == 25000.0
-        assert dict_result['categoria'] == "Medicamentos"
-        assert 'categoria_id' in dict_result
-        assert 'proveedor_id' in dict_result
+        assert 'id' in dict_result
+        assert 'fecha_evento' in dict_result
+        assert 'version' in dict_result
+        assert 'tipo_evento' in dict_result
+        assert 'datos' in dict_result
+        
+        datos = dict_result['datos']
+        assert datos['producto_id'] == str(producto_id)
+        assert datos['nombre'] == "Paracetamol"
+        assert datos['descripcion'] == "Analgésico"
+        assert datos['precio'] == 25000.0
+        assert datos['categoria'] == "Medicamentos"
+        assert 'categoria_id' in datos
+        assert 'proveedor_id' in datos
     
     def test_inventario_asignado_creacion_exitosa(self):
         """Test creación de evento InventarioAsignado exitosa"""
@@ -104,9 +111,16 @@ class TestEventos:
         
         # Assert
         assert isinstance(dict_result, dict)
-        assert dict_result['producto_id'] == str(producto_id)
-        assert dict_result['stock'] == 100
-        assert dict_result['fecha_vencimiento'] == "2024-12-31"
+        assert 'id' in dict_result
+        assert 'fecha_evento' in dict_result
+        assert 'version' in dict_result
+        assert 'tipo_evento' in dict_result
+        assert 'datos' in dict_result
+        
+        datos = dict_result['datos']
+        assert datos['producto_id'] == str(producto_id)
+        assert datos['stock'] == 100
+        assert datos['fecha_vencimiento'] == "2024-12-31"
     
     def test_producto_creado_valores_por_defecto(self):
         """Test ProductoCreado con valores por defecto"""
@@ -122,8 +136,12 @@ class TestEventos:
         )
         
         # Assert
-        assert evento.stock == 0
-        assert evento.fecha_vencimiento == ""
+        assert evento.precio == 0.0
+        assert evento.nombre == "Test"
+        assert evento.descripcion == "Test"
+        assert evento.categoria == "Test"
+        assert evento.categoria_id == "test"
+        assert evento.proveedor_id == "test"
     
     def test_inventario_asignado_valores_por_defecto(self):
         """Test InventarioAsignado con valores por defecto"""

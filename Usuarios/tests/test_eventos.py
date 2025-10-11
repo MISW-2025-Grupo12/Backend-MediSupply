@@ -3,10 +3,17 @@ import sys
 import os
 import uuid
 from datetime import datetime
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from dominio.eventos import ClienteCreado, VendedorCreado, ProveedorCreado
+from seedwork.dominio.eventos import (
+    EventoDominio, 
+    ManejadorEvento, 
+    PublicadorEventos, 
+    DespachadorEventos
+)
 
 
 class TestEventos:
@@ -181,3 +188,216 @@ class TestEventos:
         assert cliente_evento.nombre == "Test"
         assert vendedor_evento.nombre == "Test"
         assert proveedor_evento.nombre == "Test"
+
+
+class EventoTest(EventoDominio):
+    """Evento de prueba para testing"""
+    
+    def __init__(self, datos_test="test"):
+        super().__init__()
+        self.datos_test = datos_test
+    
+    def _get_datos_evento(self) -> dict:
+        return {
+            'datos_test': self.datos_test,
+            'timestamp': datetime.now().isoformat()
+        }
+
+
+class ManejadorTest(ManejadorEvento):
+    """Manejador de prueba para testing"""
+    
+    def __init__(self):
+        self.eventos_manejados = []
+    
+    def manejar(self, evento: EventoDominio):
+        self.eventos_manejados.append(evento)
+
+
+class PublicadorTest(PublicadorEventos):
+    """Publicador de prueba para testing"""
+    
+    def __init__(self):
+        self.eventos_publicados = []
+    
+    def publicar(self, evento: EventoDominio):
+        self.eventos_publicados.append(evento)
+
+
+class TestEventoDominio:
+    """Test para EventoDominio"""
+    
+    def test_evento_dominio_creacion(self):
+        """Test creación de evento de dominio"""
+        # Arrange & Act
+        evento = EventoTest("datos de prueba")
+        
+        # Assert
+        assert isinstance(evento.id, uuid.UUID)
+        assert isinstance(evento.fecha_evento, datetime)
+        assert evento.version == 1
+        assert evento.datos_test == "datos de prueba"
+    
+    def test_evento_dominio_to_dict(self):
+        """Test conversión a diccionario"""
+        # Arrange
+        evento = EventoTest("datos de prueba")
+        
+        # Act
+        resultado = evento.to_dict()
+        
+        # Assert
+        assert isinstance(resultado, dict)
+        assert 'id' in resultado
+        assert 'fecha_evento' in resultado
+        assert 'version' in resultado
+        assert 'tipo_evento' in resultado
+        assert 'datos' in resultado
+        assert resultado['tipo_evento'] == 'EventoTest'
+        assert resultado['version'] == 1
+        assert resultado['datos']['datos_test'] == "datos de prueba"
+    
+    def test_evento_dominio_abstracto(self):
+        """Test que EventoDominio es abstracto"""
+        # Arrange & Act & Assert
+        with pytest.raises(TypeError):
+            EventoDominio()
+
+
+class TestManejadorEvento:
+    """Test para ManejadorEvento"""
+    
+    def test_manejador_evento_abstracto(self):
+        """Test que ManejadorEvento es abstracto"""
+        # Arrange & Act & Assert
+        with pytest.raises(TypeError):
+            ManejadorEvento()
+    
+    def test_manejador_evento_implementacion(self):
+        """Test implementación de ManejadorEvento"""
+        # Arrange
+        manejador = ManejadorTest()
+        evento = EventoTest("test")
+        
+        # Act
+        manejador.manejar(evento)
+        
+        # Assert
+        assert len(manejador.eventos_manejados) == 1
+        assert manejador.eventos_manejados[0] == evento
+
+
+class TestPublicadorEventos:
+    """Test para PublicadorEventos"""
+    
+    def test_publicador_eventos_abstracto(self):
+        """Test que PublicadorEventos es abstracto"""
+        # Arrange & Act & Assert
+        with pytest.raises(TypeError):
+            PublicadorEventos()
+    
+    def test_publicador_eventos_implementacion(self):
+        """Test implementación de PublicadorEventos"""
+        # Arrange
+        publicador = PublicadorTest()
+        evento = EventoTest("test")
+        
+        # Act
+        publicador.publicar(evento)
+        
+        # Assert
+        assert len(publicador.eventos_publicados) == 1
+        assert publicador.eventos_publicados[0] == evento
+
+
+class TestDespachadorEventos:
+    """Test para DespachadorEventos"""
+    
+    def test_despachador_eventos_creacion(self):
+        """Test creación de despachador de eventos"""
+        # Arrange & Act
+        despachador = DespachadorEventos()
+        
+        # Assert
+        assert isinstance(despachador._manejadores, dict)
+        assert len(despachador._manejadores) == 0
+    
+    def test_registrar_manejador(self):
+        """Test registro de manejador"""
+        # Arrange
+        despachador = DespachadorEventos()
+        manejador = ManejadorTest()
+        tipo_evento = "EventoTest"
+        
+        # Act
+        despachador.registrar_manejador(tipo_evento, manejador)
+        
+        # Assert
+        assert tipo_evento in despachador._manejadores
+        assert manejador in despachador._manejadores[tipo_evento]
+    
+    def test_registrar_multiples_manejadores(self):
+        """Test registro de múltiples manejadores para el mismo tipo"""
+        # Arrange
+        despachador = DespachadorEventos()
+        manejador1 = ManejadorTest()
+        manejador2 = ManejadorTest()
+        tipo_evento = "EventoTest"
+        
+        # Act
+        despachador.registrar_manejador(tipo_evento, manejador1)
+        despachador.registrar_manejador(tipo_evento, manejador2)
+        
+        # Assert
+        assert len(despachador._manejadores[tipo_evento]) == 2
+        assert manejador1 in despachador._manejadores[tipo_evento]
+        assert manejador2 in despachador._manejadores[tipo_evento]
+    
+    def test_publicar_evento_sin_manejadores(self):
+        """Test publicación de evento sin manejadores registrados"""
+        # Arrange
+        despachador = DespachadorEventos()
+        evento = EventoTest("test")
+        
+        # Act & Assert - No debe lanzar excepción
+        despachador.publicar_evento(evento)
+    
+    def test_publicar_evento_con_manejadores(self):
+        """Test publicación de evento con manejadores registrados"""
+        # Arrange
+        despachador = DespachadorEventos()
+        manejador1 = ManejadorTest()
+        manejador2 = ManejadorTest()
+        evento = EventoTest("test")
+        
+        despachador.registrar_manejador("EventoTest", manejador1)
+        despachador.registrar_manejador("EventoTest", manejador2)
+        
+        # Act
+        despachador.publicar_evento(evento)
+        
+        # Assert
+        assert len(manejador1.eventos_manejados) == 1
+        assert len(manejador2.eventos_manejados) == 1
+        assert manejador1.eventos_manejados[0] == evento
+        assert manejador2.eventos_manejados[0] == evento
+    
+    def test_publicar_evento_con_manejador_que_falla(self):
+        """Test publicación de evento cuando un manejador falla"""
+        # Arrange
+        despachador = DespachadorEventos()
+        manejador1 = ManejadorTest()
+        manejador2 = Mock()
+        manejador2.manejar.side_effect = Exception("Error en manejador")
+        evento = EventoTest("test")
+        
+        despachador.registrar_manejador("EventoTest", manejador1)
+        despachador.registrar_manejador("EventoTest", manejador2)
+        
+        # Act & Assert - Debe lanzar excepción cuando un manejador falla
+        with pytest.raises(Exception, match="Error en manejador"):
+            despachador.publicar_evento(evento)
+        
+        # Assert - El primer manejador sí fue ejecutado antes de que fallara el segundo
+        assert len(manejador1.eventos_manejados) == 1
+        assert manejador1.eventos_manejados[0] == evento

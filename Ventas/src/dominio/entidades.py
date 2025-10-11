@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 from seedwork.dominio.entidades import Entidad, AgregacionRaiz
 from .objetos_valor import EstadoVisita, FechaProgramada, Direccion, Telefono, Descripcion, FechaRealizada, HoraRealizada, Novedades, PedidoGenerado, EstadoPedido, Cantidad, Precio
@@ -9,7 +9,7 @@ from .eventos import VisitaCreada, PedidoCreado, PedidoConfirmado, ItemAgregado,
 class Visita(AgregacionRaiz):
     vendedor_id: str = field(default_factory=lambda: "")
     cliente_id: str = field(default_factory=lambda: "")
-    fecha_programada: FechaProgramada = field(default_factory=lambda: FechaProgramada(datetime.now()))
+    fecha_programada: FechaProgramada = field(default_factory=lambda: FechaProgramada(datetime.now().replace(microsecond=0) + timedelta(days=1)))
     direccion: Direccion = field(default_factory=lambda: Direccion(""))
     telefono: Telefono = field(default_factory=lambda: Telefono(""))
     estado: EstadoVisita = field(default_factory=lambda: EstadoVisita("pendiente"))
