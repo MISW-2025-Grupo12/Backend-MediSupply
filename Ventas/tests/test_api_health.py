@@ -12,6 +12,7 @@ class TestAPIHealth:
     
     def setup_method(self):
         self.app = create_app()
+        self.app.config['TESTING'] = True
         self.client = self.app.test_client()
     
     def test_health_endpoint(self):

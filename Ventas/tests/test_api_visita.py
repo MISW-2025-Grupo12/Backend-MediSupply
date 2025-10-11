@@ -9,20 +9,16 @@ from flask import Flask
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from api.visita import bp
+from api import create_app
 from aplicacion.dto_agregacion import VisitaAgregacionDTO
 from aplicacion.dto import VisitaDTO
-from config.db import db
 
 
 class TestAPIVisita:
     
     def setup_method(self):
-        self.app = Flask(__name__)
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-        self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        self.app.register_blueprint(bp)
-        db.init_app(self.app)
+        self.app = create_app()
+        self.app.config['TESTING'] = True
         self.client = self.app.test_client()
         self.fecha_futura = datetime.now() + timedelta(days=1)
     
@@ -76,7 +72,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.post('/api/visitas/', 
                                      data=json.dumps(data),
                                      content_type='application/json')
@@ -88,7 +83,6 @@ class TestAPIVisita:
     
     def test_crear_visita_json_invalido(self):
         with self.app.app_context():
-            db.create_all()
             response = self.client.post('/api/visitas/', 
                                      data="json_invalido",
                                      content_type='application/json')
@@ -109,7 +103,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.post('/api/visitas/', 
                                      data=json.dumps(data),
                                      content_type='application/json')
@@ -133,7 +126,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.post('/api/visitas/', 
                                      data=json.dumps(data),
                                      content_type='application/json')
@@ -182,7 +174,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.get('/api/visitas/')
         
         assert response.status_code == 200
@@ -195,7 +186,6 @@ class TestAPIVisita:
         mock_ejecutar_consulta.return_value = []
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.get('/api/visitas/?estado=pendiente')
         
         assert response.status_code == 200
@@ -242,7 +232,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.get('/api/visitas/vendedor/vendedor123')
         
         assert response.status_code == 200
@@ -255,7 +244,6 @@ class TestAPIVisita:
         mock_ejecutar_consulta.return_value = []
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.get('/api/visitas/vendedor/vendedor123?estado=pendiente')
         
         assert response.status_code == 200
@@ -265,7 +253,6 @@ class TestAPIVisita:
     def test_obtener_visitas_error_servidor(self):
         # Esta prueba verifica que el endpoint responde correctamente
         with self.app.app_context():
-            db.create_all()
             response = self.client.get('/api/visitas/')
         
         # Como no hay datos, debería retornar 200 con lista vacía
@@ -304,7 +291,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
                                      data=json.dumps(data),
                                      content_type='application/json')
@@ -316,7 +302,6 @@ class TestAPIVisita:
 
     def test_registrar_visita_json_invalido(self):
         with self.app.app_context():
-            db.create_all()
             response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
                                      data="json_invalido",
                                      content_type='application/json')
@@ -335,7 +320,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
                                      data=json.dumps(data),
                                      content_type='application/json')
@@ -355,7 +339,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
                                      data=json.dumps(data),
                                      content_type='application/json')
@@ -378,7 +361,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
                                      data=json.dumps(data),
                                      content_type='application/json')
@@ -401,7 +383,6 @@ class TestAPIVisita:
         }
         
         with self.app.app_context():
-            db.create_all()
             response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
                                      data=json.dumps(data),
                                      content_type='application/json')
