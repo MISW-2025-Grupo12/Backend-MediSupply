@@ -5,7 +5,8 @@ import os
 db = SQLAlchemy()
 
 def init_db(app: Flask):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ventas.db'
+    database_uri = os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://postgres:postgres@ventas-db:5432/ventas')
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
     

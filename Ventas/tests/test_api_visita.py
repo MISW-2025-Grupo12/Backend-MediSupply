@@ -3,7 +3,7 @@ import sys
 import os
 import json
 from unittest.mock import Mock, patch
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 import uuid
 from flask import Flask
 
@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from api.visita import bp
 from aplicacion.dto_agregacion import VisitaAgregacionDTO
+from aplicacion.dto import VisitaDTO
 from config.db import db
 
 
@@ -271,3 +272,140 @@ class TestAPIVisita:
         assert response.status_code == 200
         response_data = json.loads(response.data)
         assert isinstance(response_data, list)
+
+    @patch('aplicacion.comandos.registrar_visita.RegistrarVisitaHandler.handle')
+    def test_registrar_visita_exitoso(self, mock_handle):
+        from datetime import date, timedelta
+        fecha_pasada = date.today() - timedelta(days=1)
+        
+        visita_dto = VisitaDTO(
+            id=uuid.uuid4(),
+            vendedor_id="vendedor123",
+            cliente_id="cliente456",
+            fecha_programada=datetime.now(),
+            direccion="Calle 123",
+            telefono="3001234567",
+            estado="completada",
+            descripcion="Visita completada",
+            fecha_realizada=fecha_pasada,
+            hora_realizada=time(14, 30, 0),
+            novedades="Cliente solicita más información",
+            pedido_generado=True
+        )
+        
+        mock_handle.return_value = visita_dto
+        
+        data = {
+            "fecha_realizada": fecha_pasada.isoformat(),
+            "hora_realizada": "14:30:00",
+            "cliente_id": "cliente456",
+            "novedades": "Cliente solicita más información",
+            "pedido_generado": True
+        }
+        
+        with self.app.app_context():
+            db.create_all()
+            response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
+                                     data=json.dumps(data),
+                                     content_type='application/json')
+        
+        assert response.status_code == 200
+        response_data = json.loads(response.data)
+        assert response_data['message'] == 'Visita registrada exitosamente'
+        assert response_data['estado'] == 'completada'
+
+    def test_registrar_visita_json_invalido(self):
+        with self.app.app_context():
+            db.create_all()
+            response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
+                                     data="json_invalido",
+                                     content_type='application/json')
+        
+        assert response.status_code == 500
+        response_data = json.loads(response.data)
+        assert 'error' in response_data
+
+    def test_registrar_visita_campos_obligatorios_faltantes(self):
+        from datetime import date, timedelta
+        fecha_pasada = (date.today() - timedelta(days=1)).isoformat()
+        
+        data = {
+            "fecha_realizada": fecha_pasada
+            # Faltan hora_realizada y cliente_id
+        }
+        
+        with self.app.app_context():
+            db.create_all()
+            response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
+                                     data=json.dumps(data),
+                                     content_type='application/json')
+        
+        assert response.status_code == 400
+        response_data = json.loads(response.data)
+        assert 'error' in response_data
+
+    @patch('seedwork.aplicacion.comandos.ejecutar_comando')
+    def test_registrar_visita_formato_fecha_invalido(self, mock_ejecutar_comando):
+        mock_ejecutar_comando.side_effect = ValueError("Formato de fecha inválido. Use formato YYYY-MM-DD")
+        
+        data = {
+            "fecha_realizada": "15/10/2025",
+            "hora_realizada": "14:30:00",
+            "cliente_id": "cliente456"
+        }
+        
+        with self.app.app_context():
+            db.create_all()
+            response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
+                                     data=json.dumps(data),
+                                     content_type='application/json')
+        
+        assert response.status_code == 400
+        response_data = json.loads(response.data)
+        assert 'Formato de fecha inválido' in response_data['error']
+
+    @patch('seedwork.aplicacion.comandos.ejecutar_comando')
+    def test_registrar_visita_formato_hora_invalido(self, mock_ejecutar_comando):
+        mock_ejecutar_comando.side_effect = ValueError("Formato de hora inválido. Use formato HH:MM:SS o HH:MM")
+        
+        from datetime import date, timedelta
+        fecha_pasada = (date.today() - timedelta(days=1)).isoformat()
+        
+        data = {
+            "fecha_realizada": fecha_pasada,
+            "hora_realizada": "2:30 PM",
+            "cliente_id": "cliente456"
+        }
+        
+        with self.app.app_context():
+            db.create_all()
+            response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
+                                     data=json.dumps(data),
+                                     content_type='application/json')
+        
+        assert response.status_code == 400
+        response_data = json.loads(response.data)
+        assert 'Formato de hora inválido' in response_data['error']
+
+    @patch('aplicacion.comandos.registrar_visita.RegistrarVisitaHandler.handle')
+    def test_registrar_visita_error_servidor(self, mock_handle):
+        mock_handle.side_effect = Exception("Error interno")
+        
+        from datetime import date, timedelta
+        fecha_pasada = (date.today() - timedelta(days=1)).isoformat()
+        
+        data = {
+            "fecha_realizada": fecha_pasada,
+            "hora_realizada": "14:30:00",
+            "cliente_id": "cliente456"
+        }
+        
+        with self.app.app_context():
+            db.create_all()
+            response = self.client.put('/api/visitas/123e4567-e89b-12d3-a456-426614174000',
+                                     data=json.dumps(data),
+                                     content_type='application/json')
+        
+        assert response.status_code == 500
+        response_data = json.loads(response.data)
+        assert 'Error interno del servidor' in response_data['error']
