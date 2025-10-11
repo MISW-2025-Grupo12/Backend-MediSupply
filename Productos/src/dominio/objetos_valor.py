@@ -14,9 +14,6 @@ class Descripcion(ObjetoValor):
 class Precio(ObjetoValor):
     precio: float
 
-@dataclass(frozen=True)
-class Stock(ObjetoValor):
-    stock: int
 
 @dataclass(frozen=True)
 class Categoria(ObjetoValor):
@@ -24,11 +21,15 @@ class Categoria(ObjetoValor):
 
 
 @dataclass(frozen=True)
-class Proveedor(ObjetoValor):
-    nombre: str
-    contacto: str
-    direccion: str
+class Stock(ObjetoValor):
+    stock: int
 
 @dataclass(frozen=True)
 class FechaVencimiento(ObjetoValor):
     fecha: datetime
+
+@dataclass(frozen=True)
+class Proveedor(ObjetoValor):
+    nombre: str
+    contacto: str
+    direccion: str

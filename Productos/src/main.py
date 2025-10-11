@@ -11,6 +11,14 @@ import logging
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from api import create_app
+# Configurar sistema de eventos
+from seedwork.infraestructura.pubsub import PublicadorPubSub
+from seedwork.dominio.eventos import despachador_eventos
+
+# Registrar publicador PubSub
+publicador_pubsub = PublicadorPubSub()
+despachador_eventos.registrar_publicador(publicador_pubsub)
+print("✅ PublicadorPubSub registrado en Productos")
 
 # Configurar logging
 logging.basicConfig(

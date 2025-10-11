@@ -8,8 +8,6 @@ class ProductoDTO(DTO):
     nombre: str
     descripcion: str
     precio: float
-    stock: int
-    fecha_vencimiento: datetime
     categoria: str
     categoria_id: str
     proveedor_id: str

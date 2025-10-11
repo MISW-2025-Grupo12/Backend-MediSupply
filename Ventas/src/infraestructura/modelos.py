@@ -37,3 +37,51 @@ class VisitaModel(db.Model):
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
+
+class PedidoModel(db.Model):
+    __tablename__ = 'pedidos'
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    vendedor_id = db.Column(db.String(36), nullable=False)
+    cliente_id = db.Column(db.String(36), nullable=False)
+    estado = db.Column(db.String(20), nullable=False, default='borrador')
+    total = db.Column(db.Float, nullable=False, default=0.0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'vendedor_id': self.vendedor_id,
+            'cliente_id': self.cliente_id,
+            'estado': self.estado,
+            'total': self.total,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+
+class ItemPedidoModel(db.Model):
+    __tablename__ = 'items_pedido'
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    pedido_id = db.Column(db.String(36), db.ForeignKey('pedidos.id'), nullable=False)
+    producto_id = db.Column(db.String(36), nullable=False)
+    nombre_producto = db.Column(db.String(255), nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False)
+    precio_unitario = db.Column(db.Float, nullable=False)
+    subtotal = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'pedido_id': self.pedido_id,
+            'producto_id': self.producto_id,
+            'nombre_producto': self.nombre_producto,
+            'cantidad': self.cantidad,
+            'precio_unitario': self.precio_unitario,
+            'subtotal': self.subtotal,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }

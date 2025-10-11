@@ -11,8 +11,6 @@ class ProductoAgregacionDTO(DTO):
     nombre: str
     descripcion: str
     precio: float
-    stock: int
-    fecha_vencimiento: datetime
     
     # Datos de categoría (obtenidos durante validación)
     categoria_id: str

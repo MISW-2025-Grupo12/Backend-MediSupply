@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from seedwork.dominio.entidades import Entidad, AgregacionRaiz
-from .objetos_valor import Nombre, Descripcion, Precio, Stock, Categoria, Proveedor, FechaVencimiento
+from .objetos_valor import Nombre, Descripcion, Precio, Categoria, Proveedor
 from .eventos import ProductoCreado
 
 @dataclass
@@ -22,8 +22,6 @@ class Producto(AgregacionRaiz):
     nombre: Nombre = field(default_factory=lambda: Nombre(""))
     descripcion: Descripcion = field(default_factory=lambda: Descripcion(""))
     precio: Precio = field(default_factory=lambda: Precio(0.0))
-    stock: Stock = field(default_factory=lambda: Stock(0))
-    fecha_vencimiento: FechaVencimiento = field(default_factory=lambda: FechaVencimiento(datetime.now()))
     categoria: Categoria = field(default_factory=lambda: Categoria(""))
     categoria_id: str = field(default_factory=lambda: "")
     proveedor_id: str = field(default_factory=lambda: "")
@@ -38,8 +36,6 @@ class Producto(AgregacionRaiz):
             nombre=self.nombre.nombre,
             descripcion=self.descripcion.descripcion,
             precio=self.precio.precio,
-            stock=self.stock.stock,
-            fecha_vencimiento=self.fecha_vencimiento.fecha,
             categoria=self.categoria.nombre,
             categoria_id=self.categoria_id,
             proveedor_id=self.proveedor_id

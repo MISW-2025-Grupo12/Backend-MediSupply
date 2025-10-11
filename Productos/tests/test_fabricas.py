@@ -73,8 +73,6 @@ class TestFabricaProducto:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=datetime.now() + timedelta(days=30),
             categoria="Medicamentos",
             categoria_id="123e4567-e89b-12d3-a456-426614174000",
             proveedor_id="456e7890-e89b-12d3-a456-426614174001"
@@ -101,8 +99,6 @@ class TestFabricaProducto:
             nombre="",  # Nombre vacío
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=datetime.now() + timedelta(days=30),
             categoria="Medicamentos",
             categoria_id="123e4567-e89b-12d3-a456-426614174000",
             proveedor_id="456e7890-e89b-12d3-a456-426614174001"
@@ -124,8 +120,6 @@ class TestFabricaProducto:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=-1000.0,  # Precio negativo
-            stock=100,
-            fecha_vencimiento=datetime.now() + timedelta(days=30),
             categoria="Medicamentos",
             categoria_id="123e4567-e89b-12d3-a456-426614174000",
             proveedor_id="456e7890-e89b-12d3-a456-426614174001"

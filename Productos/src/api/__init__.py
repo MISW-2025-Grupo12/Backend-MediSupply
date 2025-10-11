@@ -46,6 +46,7 @@ def create_app(configuracion=None):
                 "endpoints": [
                     "POST /api/productos/", 
                     "GET /api/productos/",
+                    "GET /api/productos/<id>",
                     "POST /api/productos/categorias/",
                     "GET /api/productos/categorias/"
                 ]

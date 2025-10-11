@@ -5,7 +5,7 @@ from seedwork.dominio.repositorios import Mapeador
 from .entidades import Producto
 from .reglas import (
     NombreProductoNoPuedeSerVacio, DescripcionProductoNoPuedeSerVacio, PrecioProductoNoPuedeSerVacio,
-    PrecioProductoNoPuedeSerMenorACero, PrecioProductoDebeSerNumerico,     StockProductoDebeSerPositivo, FechaVencimientoDebeSerFutura,
+    PrecioProductoNoPuedeSerMenorACero, PrecioProductoDebeSerNumerico,
     CategoriaProductoNoPuedeSerVacia, ProveedorProductoNoPuedeSerVacio, CategoriaIdNoPuedeSerVacio
 )
 
@@ -23,8 +23,6 @@ class FabricaProducto(Fabrica):
             self.validar_regla(PrecioProductoNoPuedeSerVacio(producto.precio))
             self.validar_regla(PrecioProductoNoPuedeSerMenorACero(producto.precio))
             self.validar_regla(PrecioProductoDebeSerNumerico(producto.precio))
-            self.validar_regla(StockProductoDebeSerPositivo(producto.stock))
-            self.validar_regla(FechaVencimientoDebeSerFutura(producto.fecha_vencimiento))
             self.validar_regla(CategoriaProductoNoPuedeSerVacia(producto.categoria))
             self.validar_regla(ProveedorProductoNoPuedeSerVacio(producto.proveedor))
             self.validar_regla(CategoriaIdNoPuedeSerVacio(producto.categoria_id))

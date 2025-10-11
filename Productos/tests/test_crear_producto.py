@@ -31,8 +31,6 @@ class TestCrearProducto:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=self.fecha_futura,
             categoria="Medicamentos",
             categoria_id=self.categoria_id,
             proveedor_id=self.proveedor_id
@@ -59,8 +57,6 @@ class TestCrearProducto:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=self.fecha_futura,
             categoria="Medicamentos",
             categoria_id=self.categoria_id,
             proveedor_id=self.proveedor_id
@@ -100,8 +96,6 @@ class TestCrearProducto:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=self.fecha_futura,
             categoria="Medicamentos",
             categoria_id=self.categoria_id,
             proveedor_id=self.proveedor_id
@@ -124,8 +118,6 @@ class TestCrearProducto:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=self.fecha_futura,
             categoria="Medicamentos",
             categoria_id=self.categoria_id,
             proveedor_id=self.proveedor_id
@@ -162,8 +154,6 @@ class TestCrearProducto:
             nombre="",  # Nombre vacío
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=self.fecha_futura,
             categoria="Medicamentos",
             categoria_id=self.categoria_id,
             proveedor_id=self.proveedor_id
@@ -180,8 +170,6 @@ class TestCrearProducto:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=-1000.0,  # Precio negativo
-            stock=100,
-            fecha_vencimiento=self.fecha_futura,
             categoria="Medicamentos",
             categoria_id=self.categoria_id,
             proveedor_id=self.proveedor_id
@@ -199,8 +187,6 @@ class TestCrearProducto:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=fecha_pasada, 
             categoria="Medicamentos",
             categoria_id=self.categoria_id,
             proveedor_id=self.proveedor_id

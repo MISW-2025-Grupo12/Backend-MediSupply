@@ -10,3 +10,10 @@ class EntregaDTO(DTO):
     producto_id: str
     cliente_id: str
     id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+@dataclass(frozen=True)
+class InventarioDTO(DTO):
+    producto_id: str
+    cantidad_disponible: int
+    cantidad_reservada: int
+    fecha_vencimiento: datetime

@@ -27,8 +27,6 @@ class TestMapeadores:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=datetime(2025, 12, 31),
             categoria="Medicamentos",
             categoria_id=str(categoria_id),
             proveedor_id=proveedor_id
@@ -44,7 +42,6 @@ class TestMapeadores:
         assert json_result['nombre'] == "Paracetamol"
         assert json_result['descripcion'] == "Analgésico"
         assert json_result['precio'] == 25000.0
-        assert json_result['stock'] == 100
         assert json_result['categoria'] == "Medicamentos"
         assert json_result['categoria_id'] == str(categoria_id)
         assert json_result['proveedor_id'] == proveedor_id
@@ -61,8 +58,6 @@ class TestMapeadores:
             'nombre': "Paracetamol",
             'descripcion': "Analgésico",
             'precio': 25000.0,
-            'stock': 100,
-            'fecha_vencimiento': "2025-12-31",
             'categoria': "Medicamentos",
             'categoria_id': categoria_id,
             'proveedor_id': proveedor_id
@@ -78,7 +73,6 @@ class TestMapeadores:
         assert producto_dto.nombre == "Paracetamol"
         assert producto_dto.descripcion == "Analgésico"
         assert producto_dto.precio == 25000.0
-        assert producto_dto.stock == 100
         assert producto_dto.categoria == "Medicamentos"
         assert producto_dto.categoria_id == categoria_id
         assert producto_dto.proveedor_id == proveedor_id
@@ -139,8 +133,6 @@ class TestMapeadores:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=datetime(2025, 12, 31),
             categoria_id=str(categoria_id),
             proveedor_id=proveedor_id,
             categoria_nombre="Medicamentos",

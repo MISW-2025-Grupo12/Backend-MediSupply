@@ -28,8 +28,6 @@ class TestEntidades:
             nombre=nombre,
             descripcion=descripcion,
             precio=precio,
-            stock=stock,
-            fecha_vencimiento=fecha_vencimiento,
             categoria=categoria,
             categoria_id=categoria_id,
             proveedor_id=proveedor_id
@@ -39,8 +37,6 @@ class TestEntidades:
         assert producto.nombre == nombre
         assert producto.descripcion == descripcion
         assert producto.precio == precio
-        assert producto.stock == stock
-        assert producto.fecha_vencimiento == fecha_vencimiento
         assert producto.categoria == categoria
         assert producto.categoria_id == categoria_id
         assert producto.proveedor_id == proveedor_id
@@ -62,8 +58,6 @@ class TestEntidades:
             nombre=nombre,
             descripcion=descripcion,
             precio=precio,
-            stock=stock,
-            fecha_vencimiento=fecha_vencimiento,
             categoria=categoria,
             categoria_id=categoria_id,
             proveedor_id=proveedor_id
@@ -78,7 +72,6 @@ class TestEntidades:
         assert evento.nombre == "Paracetamol"
         assert evento.descripcion == "Analgésico"
         assert evento.precio == 25000.0
-        assert evento.stock == 100
         assert evento.categoria == "Medicamentos"
         assert evento.categoria_id == categoria_id
     
