@@ -45,9 +45,8 @@ class TestIntegration:
     def test_proveedor_workflow(self):
         """Prueba de integración: flujo completo de proveedores"""
         # Mock de los comandos y consultas para simular el flujo real
-        with patch('src.aplicacion.comandos.crear_proveedor.ejecutar_comando') as mock_crear, \
-             patch('src.aplicacion.consultas.obtener_proveedores.ejecutar_consulta') as mock_obtener, \
-             patch('src.aplicacion.consultas.obtener_proveedor_por_id.ejecutar_consulta') as mock_obtener_id:
+        with patch('api.proveedor.ejecutar_comando') as mock_crear, \
+             patch('api.proveedor.ejecutar_consulta') as mock_consulta:
             
             # Configurar mocks
             proveedor_id = str(uuid.uuid4())
@@ -58,8 +57,8 @@ class TestIntegration:
             mock_proveedor.direccion = 'Calle 123 #45-67'
             
             mock_crear.return_value = mock_proveedor
-            mock_obtener.return_value = [mock_proveedor]
-            mock_obtener_id.return_value = mock_proveedor
+            # Configurar side_effect para devolver lista para obtener_todos y objeto para obtener_por_id
+            mock_consulta.side_effect = [[mock_proveedor], mock_proveedor]
             
             # 1. Crear proveedor
             proveedor_data = {
@@ -88,9 +87,8 @@ class TestIntegration:
     
     def test_cliente_workflow(self):
         """Prueba de integración: flujo completo de clientes"""
-        with patch('src.aplicacion.comandos.crear_cliente.ejecutar_comando') as mock_crear, \
-             patch('src.aplicacion.consultas.obtener_clientes.ejecutar_consulta') as mock_obtener, \
-             patch('src.aplicacion.consultas.obtener_cliente_por_id.ejecutar_consulta') as mock_obtener_id:
+        with patch('api.cliente.ejecutar_comando') as mock_crear, \
+             patch('api.cliente.ejecutar_consulta') as mock_consulta:
             
             cliente_id = str(uuid.uuid4())
             mock_cliente = Mock()
@@ -101,8 +99,8 @@ class TestIntegration:
             mock_cliente.direccion = 'Calle 123 #45-67'
             
             mock_crear.return_value = mock_cliente
-            mock_obtener.return_value = [mock_cliente]
-            mock_obtener_id.return_value = mock_cliente
+            # Configurar side_effect para devolver lista para obtener_todos y objeto para obtener_por_id
+            mock_consulta.side_effect = [[mock_cliente], mock_cliente]
             
             # 1. Crear cliente
             cliente_data = {
@@ -132,9 +130,8 @@ class TestIntegration:
     
     def test_vendedor_workflow(self):
         """Prueba de integración: flujo completo de vendedores"""
-        with patch('src.aplicacion.comandos.crear_vendedor.ejecutar_comando') as mock_crear, \
-             patch('src.aplicacion.consultas.obtener_vendedores.ejecutar_consulta') as mock_obtener, \
-             patch('src.aplicacion.consultas.obtener_vendedor_por_id.ejecutar_consulta') as mock_obtener_id:
+        with patch('api.vendedor.ejecutar_comando') as mock_crear, \
+             patch('api.vendedor.ejecutar_consulta') as mock_consulta:
             
             vendedor_id = str(uuid.uuid4())
             mock_vendedor = Mock()
@@ -142,18 +139,18 @@ class TestIntegration:
             mock_vendedor.nombre = 'Carlos López'
             mock_vendedor.email = 'carlos@empresa.com'
             mock_vendedor.telefono = '1234567890'
-            mock_vendedor.zona = 'Norte'
+            mock_vendedor.direccion = 'Calle 123 #45-67'
             
             mock_crear.return_value = mock_vendedor
-            mock_obtener.return_value = [mock_vendedor]
-            mock_obtener_id.return_value = mock_vendedor
+            # Configurar side_effect para devolver lista para obtener_todos y objeto para obtener_por_id
+            mock_consulta.side_effect = [[mock_vendedor], mock_vendedor]
             
             # 1. Crear vendedor
             vendedor_data = {
                 'nombre': 'Carlos López',
                 'email': 'carlos@empresa.com',
                 'telefono': '1234567890',
-                'zona': 'Norte'
+                'direccion': 'Calle 123 #45-67'
             }
             
             response = self.client.post('/api/vendedores', 
@@ -177,7 +174,7 @@ class TestIntegration:
     def test_error_scenarios(self):
         """Prueba de integración: escenarios de error"""
         # Test 404 - Proveedor no encontrado
-        with patch('src.aplicacion.consultas.obtener_proveedor_por_id.ejecutar_consulta') as mock_obtener:
+        with patch('api.proveedor.ejecutar_consulta') as mock_obtener:
             mock_obtener.return_value = None
             
             response = self.client.get(f'/api/proveedores/{str(uuid.uuid4())}')
@@ -186,7 +183,7 @@ class TestIntegration:
             assert 'error' in response_data
         
         # Test 500 - Error interno
-        with patch('src.aplicacion.comandos.crear_proveedor.ejecutar_comando') as mock_crear:
+        with patch('api.proveedor.ejecutar_comando') as mock_crear:
             mock_crear.side_effect = Exception("Error de base de datos")
             
             proveedor_data = {
@@ -214,6 +211,6 @@ class TestIntegration:
         
         # Verificar que las tablas se crearon
         with self.app.app_context():
-            from src.config.db import db
+            from config.db import db
             # Verificar que la base de datos está inicializada
             assert db.engine is not None
