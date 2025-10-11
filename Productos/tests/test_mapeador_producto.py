@@ -26,8 +26,6 @@ class TestMapeadorProducto:
             nombre=Nombre("Paracetamol"),
             descripcion=Descripcion("Analgésico"),
             precio=Precio(25000.0),
-            stock=Stock(100),
-            fecha_vencimiento=FechaVencimiento(datetime.now() + timedelta(days=30)),
             categoria=Categoria("Medicamentos"),
             categoria_id=categoria_id,
             proveedor_id=proveedor_id
@@ -43,7 +41,6 @@ class TestMapeadorProducto:
         assert producto_dto.nombre == "Paracetamol"
         assert producto_dto.descripcion == "Analgésico"
         assert producto_dto.precio == 25000.0
-        assert producto_dto.stock == 100
         assert producto_dto.categoria == "Medicamentos"
         assert producto_dto.categoria_id == categoria_id
         assert producto_dto.proveedor_id == proveedor_id
@@ -60,8 +57,6 @@ class TestMapeadorProducto:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=datetime.now() + timedelta(days=30),
             categoria="Medicamentos",
             categoria_id=categoria_id,
             proveedor_id=proveedor_id
@@ -77,7 +72,6 @@ class TestMapeadorProducto:
         assert producto_entidad.nombre.nombre == "Paracetamol"
         assert producto_entidad.descripcion.descripcion == "Analgésico"
         assert producto_entidad.precio.precio == 25000.0
-        assert producto_entidad.stock.stock == 100
         assert producto_entidad.categoria.nombre == "Medicamentos"
         assert producto_entidad.categoria_id == categoria_id
         assert producto_entidad.proveedor_id == proveedor_id

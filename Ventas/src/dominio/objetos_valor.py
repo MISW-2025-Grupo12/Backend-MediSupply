@@ -49,3 +49,27 @@ class Novedades(ObjetoValor):
 @dataclass(frozen=True)
 class PedidoGenerado(ObjetoValor):
     pedido_generado: bool
+
+@dataclass(frozen=True)
+class EstadoPedido(ObjetoValor):
+    estado: str
+    
+    def __post_init__(self):
+        if self.estado not in ['borrador', 'confirmado', 'cancelado']:
+            raise ValueError("Estado debe ser 'borrador', 'confirmado' o 'cancelado'")
+
+@dataclass(frozen=True)
+class Cantidad(ObjetoValor):
+    valor: int
+    
+    def __post_init__(self):
+        if self.valor < 0:
+            raise ValueError("La cantidad no puede ser negativa")
+
+@dataclass(frozen=True)
+class Precio(ObjetoValor):
+    valor: float
+    
+    def __post_init__(self):
+        if self.valor < 0:
+            raise ValueError("El precio no puede ser negativo")

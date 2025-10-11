@@ -3,7 +3,7 @@ import sys
 import os
 import json
 from datetime import datetime, timedelta
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
@@ -11,12 +11,20 @@ from aplicacion.dto import EntregaDTO
 
 class TestAPIEntregas:
     def setup_method(self):
-        from api.entregas import bp
-        from flask import Flask
-        self.app = Flask(__name__)
-        self.app.register_blueprint(bp)
-        self.app.config['TESTING'] = True
-        self.client = self.app.test_client()
+        # Mock de la base de datos para evitar conexión a PostgreSQL
+        with patch('config.db.init_db') as mock_init_db, \
+             patch('api.entregas.ejecutar_consulta') as mock_ejecutar_consulta:
+            
+            from flask import Flask
+            from api.entregas import bp
+            
+            self.app = Flask(__name__)
+            self.app.register_blueprint(bp)
+            self.app.config['TESTING'] = True
+            self.client = self.app.test_client()
+            
+            # Mock de la función de consulta
+            self.mock_ejecutar_consulta = mock_ejecutar_consulta
 
     @patch('api.entregas.ejecutar_consulta')
     def test_obtener_entregas_exitoso(self, mock_ejecutar_consulta):

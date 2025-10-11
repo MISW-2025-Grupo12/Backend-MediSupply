@@ -4,10 +4,13 @@ import os
 import json
 from unittest.mock import Mock, patch
 from datetime import datetime, timedelta
+from flask import Flask
 
+# Agregar el directorio de utilidades de prueba al path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.dirname(__file__))
 
-from api import create_app
+from test_utils import BaseTestHelper
 from aplicacion.dto import ProductoDTO, CategoriaDTO
 from aplicacion.dto_agregacion import ProductoAgregacionDTO
 
@@ -16,8 +19,24 @@ class TestAPIProducto:
     
     def setup_method(self):
         """Setup para cada test"""
-        self.app = create_app()
+        # Crear aplicación Flask para pruebas con SQLite
+        self.app = Flask(__name__)
+        
+        # Usar SQLite en memoria para pruebas
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         self.app.config['TESTING'] = True
+        
+        # Importar y configurar la base de datos
+        from config.db import db
+        self.db = db
+        self.db.init_app(self.app)
+        
+        # Crear tablas
+        with self.app.app_context():
+            self.db.create_all()
+        
+        # Crear cliente de prueba
         self.client = self.app.test_client()
     
     def test_crear_producto_exitoso(self):
@@ -27,8 +46,6 @@ class TestAPIProducto:
             "nombre": "Paracetamol",
             "descripcion": "Analgésico",
             "precio": 25000.0,
-            "stock": 100,
-            "fecha_vencimiento": (datetime.now() + timedelta(days=30)).isoformat(),
             "categoria": "Medicamentos",
             "categoria_id": "123e4567-e89b-12d3-a456-426614174000",
             "proveedor_id": "456e7890-e89b-12d3-a456-426614174001"
@@ -44,8 +61,6 @@ class TestAPIProducto:
                 nombre="Paracetamol",
                 descripcion="Analgésico",
                 precio=25000.0,
-                stock=100,
-                fecha_vencimiento=datetime.now() + timedelta(days=30),
                 categoria_id="123e4567-e89b-12d3-a456-426614174000",
                 categoria_nombre="Medicamentos",
                 categoria_descripcion="Medicamentos generales",
@@ -73,8 +88,6 @@ class TestAPIProducto:
             "nombre": "",  # Nombre vacío
             "descripcion": "Analgésico",
             "precio": -1000.0,  # Precio negativo
-            "stock": 100,
-            "fecha_vencimiento": (datetime.now() - timedelta(days=1)).isoformat(),  # Fecha pasada
             "categoria": "Medicamentos",
             "categoria_id": "123e4567-e89b-12d3-a456-426614174000",
             "proveedor_id": "456e7890-e89b-12d3-a456-426614174001"
@@ -109,8 +122,6 @@ class TestAPIProducto:
                     nombre="Paracetamol",
                     descripcion="Analgésico",
                     precio=25000.0,
-                    stock=100,
-                    fecha_vencimiento=datetime.now() + timedelta(days=30),
                     categoria_id="123e4567-e89b-12d3-a456-426614174000",
                     categoria_nombre="Medicamentos",
                     categoria_descripcion="Medicamentos generales",

@@ -12,15 +12,13 @@ from dominio.reglas import (
     PrecioProductoNoPuedeSerVacio,
     PrecioProductoNoPuedeSerMenorACero,
     PrecioProductoDebeSerNumerico,
-    StockProductoDebeSerPositivo,
-    FechaVencimientoDebeSerFutura,
     CategoriaProductoNoPuedeSerVacia,
     CategoriaIdNoPuedeSerVacio,
     CategoriaDebeExistir,
     ProveedorIdNoPuedeSerVacio,
     ProveedorDebeExistir
 )
-from dominio.objetos_valor import Nombre, Descripcion, Precio, Stock, FechaVencimiento, Categoria
+from dominio.objetos_valor import Nombre, Descripcion, Precio, Categoria
 
 
 class TestReglasNegocio:
@@ -94,48 +92,6 @@ class TestReglasNegocio:
         
         assert regla.es_valido() is True
     
-    def test_stock_producto_debe_ser_positivo_valido(self):
-        """Test regla stock positivo válido"""
-        stock = Stock(100)
-        regla = StockProductoDebeSerPositivo(stock)
-        
-        assert regla.es_valido() is True
-    
-    def test_stock_producto_debe_ser_positivo_cero(self):
-        """Test regla stock cero válido"""
-        stock = Stock(0)
-        regla = StockProductoDebeSerPositivo(stock)
-        
-        assert regla.es_valido() is True
-    
-    def test_stock_producto_debe_ser_positivo_negativo(self):
-        """Test regla stock negativo inválido"""
-        stock = Stock(-10)
-        regla = StockProductoDebeSerPositivo(stock)
-        
-        assert regla.es_valido() is False
-    
-    def test_fecha_vencimiento_debe_ser_futura_valida(self):
-        """Test regla fecha vencimiento futura válida"""
-        fecha_futura = datetime.now() + timedelta(days=30)
-        fecha_vencimiento = FechaVencimiento(fecha_futura)
-        regla = FechaVencimientoDebeSerFutura(fecha_vencimiento)
-        
-        assert regla.es_valido() is True
-    
-    def test_fecha_vencimiento_debe_ser_futura_pasada(self):
-        """Test regla fecha vencimiento pasada inválida"""
-        fecha_pasada = datetime.now() - timedelta(days=1)
-        fecha_vencimiento = FechaVencimiento(fecha_pasada)
-        regla = FechaVencimientoDebeSerFutura(fecha_vencimiento)
-        
-        assert regla.es_valido() is False
-    
-    def test_fecha_vencimiento_debe_ser_futura_none(self):
-        """Test regla fecha vencimiento None inválida"""
-        regla = FechaVencimientoDebeSerFutura(None)
-        
-        assert regla.es_valido() is False
     
     def test_categoria_producto_no_puede_ser_vacia_valida(self):
         """Test regla categoría válida"""

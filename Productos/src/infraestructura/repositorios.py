@@ -12,8 +12,6 @@ class RepositorioProductoSQLite:
             nombre=producto_dto.nombre,
             descripcion=producto_dto.descripcion,
             precio=producto_dto.precio,
-            stock=producto_dto.stock,
-            fecha_vencimiento=producto_dto.fecha_vencimiento,
             categoria=producto_dto.categoria,
             categoria_id=producto_dto.categoria_id,
             proveedor_id=producto_dto.proveedor_id
@@ -35,8 +33,6 @@ class RepositorioProductoSQLite:
             nombre=producto_model.nombre,
             descripcion=producto_model.descripcion,
             precio=producto_model.precio,
-            stock=producto_model.stock,
-            fecha_vencimiento=producto_model.fecha_vencimiento,
             categoria=producto_model.categoria,
             categoria_id=producto_model.categoria_id,
             proveedor_id=producto_model.proveedor_id
@@ -53,8 +49,6 @@ class RepositorioProductoSQLite:
                 nombre=producto_model.nombre,
                 descripcion=producto_model.descripcion,
                 precio=producto_model.precio,
-                stock=producto_model.stock,
-                fecha_vencimiento=producto_model.fecha_vencimiento,
                 categoria=producto_model.categoria,
                 categoria_id=producto_model.categoria_id,
                 proveedor_id=producto_model.proveedor_id

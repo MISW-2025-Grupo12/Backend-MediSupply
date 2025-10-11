@@ -35,8 +35,6 @@ class TestRepositorios:
             nombre="Paracetamol",
             descripcion="Analgésico",
             precio=25000.0,
-            stock=100,
-            fecha_vencimiento=fecha_futura,
             categoria="Medicamentos",
             categoria_id=str(uuid.uuid4()),
             proveedor_id=str(uuid.uuid4())
@@ -49,7 +47,6 @@ class TestRepositorios:
         
         assert resultado.nombre == "Paracetamol"
         assert resultado.precio == 25000.0
-        assert resultado.stock == 100
     
     def test_obtener_producto_por_id(self):
         """Test obtener producto por ID"""
@@ -61,8 +58,6 @@ class TestRepositorios:
             nombre="Ibuprofeno",
             descripcion="Antiinflamatorio",
             precio=15000.0,
-            stock=50,
-            fecha_vencimiento=fecha_futura,
             categoria="Medicamentos",
             categoria_id=str(uuid.uuid4()),
             proveedor_id=str(uuid.uuid4())
@@ -101,8 +96,6 @@ class TestRepositorios:
                 nombre="Paracetamol",
                 descripcion="Analgésico",
                 precio=25000.0,
-                stock=100,
-                fecha_vencimiento=fecha_futura,
                 categoria="Medicamentos",
                 categoria_id=str(uuid.uuid4()),
                 proveedor_id=str(uuid.uuid4())
@@ -112,8 +105,6 @@ class TestRepositorios:
                 nombre="Ibuprofeno",
                 descripcion="Antiinflamatorio",
                 precio=15000.0,
-                stock=50,
-                fecha_vencimiento=fecha_futura,
                 categoria="Medicamentos",
                 categoria_id=str(uuid.uuid4()),
                 proveedor_id=str(uuid.uuid4())

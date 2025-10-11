@@ -27,7 +27,9 @@ def create_app(configuracion=None):
         logger.info("✅ Base de datos inicializada")
         
         from . import visita
+        from . import pedidos
         app.register_blueprint(visita.bp)
+        app.register_blueprint(pedidos.bp)
 
         @app.route("/spec")
         def spec():
@@ -45,7 +47,14 @@ def create_app(configuracion=None):
                     "POST /api/visitas/", 
                     "GET /api/visitas/?estado=pendiente",
                     "GET /api/visitas/vendedor/<vendedor_id>?estado=pendiente",
-                    "PUT /api/visitas/<visita_id>"
+                    "PUT /api/visitas/<visita_id>",
+                    "POST /api/pedidos/",
+                    "GET /api/pedidos/<pedido_id>",
+                    "POST /api/pedidos/<pedido_id>/items",
+                    "PUT /api/pedidos/<pedido_id>/items/<item_id>",
+                    "DELETE /api/pedidos/<pedido_id>/items/<item_id>",
+                    "POST /api/pedidos/<pedido_id>/confirmar",
+                    "GET /api/pedidos/productos/buscar"
                 ]
             }
 

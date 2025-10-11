@@ -81,7 +81,7 @@ class ConsumidorPubSub:
             logger.warning("No se puede crear suscripciones: cliente no inicializado")
             return
         
-        # Topics que este servicio necesita escuchar
+        # Topics de escucha
         topics_a_escuchar = [
             'pedidos-creados'
         ]

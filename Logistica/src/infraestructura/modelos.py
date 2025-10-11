@@ -23,3 +23,25 @@ class EntregaModel(db.Model):
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
+
+class InventarioModel(db.Model):
+    __tablename__ = 'inventario'
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    producto_id = db.Column(db.String(36), nullable=False)
+    cantidad_disponible = db.Column(db.Integer, nullable=False, default=0)
+    cantidad_reservada = db.Column(db.Integer, nullable=False, default=0)
+    fecha_vencimiento = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'producto_id': self.producto_id,
+            'cantidad_disponible': self.cantidad_disponible,
+            'cantidad_reservada': self.cantidad_reservada,
+            'fecha_vencimiento': self.fecha_vencimiento.isoformat(),
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }

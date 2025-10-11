@@ -1,5 +1,5 @@
 from seedwork.dominio.reglas import ReglaNegocio
-from .objetos_valor import Nombre, Descripcion, Precio, Stock, FechaVencimiento, Categoria, Proveedor
+from .objetos_valor import Nombre, Descripcion, Precio, Categoria, Proveedor
 from datetime import datetime
 
 
@@ -53,35 +53,7 @@ class PrecioProductoDebeSerNumerico(ReglaNegocio):
 
 
 
-class StockProductoDebeSerPositivo(ReglaNegocio):
-    stock: Stock
-    def __init__(self, stock, mensaje='El stock del producto debe ser mayor a cero'):
-        super().__init__(mensaje)
-        self.stock = stock
 
-    def es_valido(self) -> bool:
-        return self.stock is not None and self.stock.stock >= 0
-
-class FechaVencimientoDebeSerFutura(ReglaNegocio):
-    fecha_vencimiento: FechaVencimiento
-    def __init__(self, fecha_vencimiento, mensaje='La fecha de vencimiento debe ser futura'):
-        super().__init__(mensaje)
-        self.fecha_vencimiento = fecha_vencimiento
-
-    def es_valido(self) -> bool:
-        if self.fecha_vencimiento is None:
-            return False
-        
-        fecha_vencimiento = self.fecha_vencimiento.fecha
-        fecha_actual = datetime.now()
-        
-        # Normalizar ambas fechas para evitar problemas de zona horaria
-        if fecha_vencimiento.tzinfo is not None:
-            fecha_vencimiento = fecha_vencimiento.replace(tzinfo=None)
-        if fecha_actual.tzinfo is not None:
-            fecha_actual = fecha_actual.replace(tzinfo=None)
-            
-        return fecha_vencimiento > fecha_actual
 
 class CategoriaProductoNoPuedeSerVacia(ReglaNegocio):
     categoria: Categoria
@@ -151,3 +123,21 @@ class ProveedorDebeExistir(ReglaNegocio):
         
         # Verificar que el proveedor existe en el microservicio de usuarios
         return self.servicio_proveedores.validar_proveedor_existe(self.proveedor_id)
+
+class StockProductoDebeSerPositivo(ReglaNegocio):
+    stock: int
+    def __init__(self, stock, mensaje='El stock del producto debe ser positivo'):
+        super().__init__(mensaje)
+        self.stock = stock
+
+    def es_valido(self) -> bool:
+        return self.stock is not None and self.stock > 0
+
+class FechaVencimientoDebeSerFutura(ReglaNegocio):
+    fecha_vencimiento: datetime
+    def __init__(self, fecha_vencimiento, mensaje='La fecha de vencimiento debe ser futura'):
+        super().__init__(mensaje)
+        self.fecha_vencimiento = fecha_vencimiento
+
+    def es_valido(self) -> bool:
+        return self.fecha_vencimiento is not None and self.fecha_vencimiento > datetime.now()

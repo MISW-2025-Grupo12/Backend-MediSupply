@@ -69,27 +69,30 @@ class DespachadorEventos:
         """Registra un publicador de eventos"""
         self._publicadores.append(publicador)
     
-    def publicar_evento(self, evento: EventoDominio):
+    def publicar_evento(self, evento: EventoDominio, publicar_externamente: bool = True):
         """Publica un evento y lo distribuye a los manejadores"""
-        print(f"📡 Despachador: Recibido evento {evento.__class__.__name__} con ID: {evento.id}")
-        print(f"📋 Despachador: Datos del evento: {evento.to_dict()}")
+        print(f"Despachador: Recibido evento {evento.__class__.__name__} con ID: {evento.id}")
+        print(f"Despachador: Datos del evento: {evento.to_dict()}")
         
-        # Publicar a sistemas externos
-        print(f"🔄 Despachador: Publicando a {len(self._publicadores)} publicadores externos")
-        for publicador in self._publicadores:
-            print(f"📤 Despachador: Enviando a publicador: {publicador.__class__.__name__}")
-            publicador.publicar(evento)
+        # Publicar a sistemas externos solo si se solicita
+        if publicar_externamente:
+            print(f"Despachador: Publicando a {len(self._publicadores)} publicadores externos")
+            for publicador in self._publicadores:
+                print(f"Despachador: Enviando a publicador: {publicador.__class__.__name__}")
+                publicador.publicar(evento)
+        else:
+            print(f"Despachador: Saltando publicación externa (evento de fuente externa)")
         
         # Distribuir a manejadores locales
         tipo_evento = evento.__class__.__name__
-        print(f"🏠 Despachador: Buscando manejadores locales para {tipo_evento}")
+        print(f"Despachador: Buscando manejadores locales para {tipo_evento}")
         if tipo_evento in self._manejadores:
-            print(f"✅ Despachador: Encontrados {len(self._manejadores[tipo_evento])} manejadores")
+            print(f"Despachador: Encontrados {len(self._manejadores[tipo_evento])} manejadores")
             for manejador in self._manejadores[tipo_evento]:
-                print(f"🎯 Despachador: Ejecutando manejador: {manejador.__class__.__name__}")
+                print(f"Despachador: Ejecutando manejador: {manejador.__class__.__name__}")
                 manejador.manejar(evento)
         else:
-            print(f"⚠️ Despachador: No hay manejadores registrados para {tipo_evento}")
+            print(f"Despachador: No hay manejadores registrados para {tipo_evento}")
 
 
 # Instancia global del despachador

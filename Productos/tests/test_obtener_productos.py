@@ -38,8 +38,6 @@ class TestObtenerProductos:
                 nombre="Paracetamol",
                 descripcion="Analgésico",
                 precio=25000.0,
-                stock=100,
-                fecha_vencimiento="2025-12-31",
                 categoria="Medicamentos",
                 categoria_id=self.categoria_id,
                 proveedor_id=self.proveedor_id
@@ -126,8 +124,6 @@ class TestObtenerProductos:
                 nombre="Paracetamol",
                 descripcion="Analgésico",
                 precio=25000.0,
-                stock=100,
-                fecha_vencimiento="2025-12-31",
                 categoria="Medicamentos",
                 categoria_id=self.categoria_id,
                 proveedor_id=self.proveedor_id
@@ -162,8 +158,6 @@ class TestObtenerProductos:
                 nombre="Paracetamol",
                 descripcion="Analgésico",
                 precio=25000.0,
-                stock=100,
-                fecha_vencimiento="2025-12-31",
                 categoria="Medicamentos",
                 categoria_id=self.categoria_id,
                 proveedor_id=self.proveedor_id

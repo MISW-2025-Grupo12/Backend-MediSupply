@@ -25,15 +25,9 @@ class Entidad:
     def siguiente_id(cls) -> uuid.UUID:
         return uuid.uuid4()
 
-    @property
-    def id(self):
+    def obtener_id(self) -> uuid.UUID:
+        """Método para obtener el ID de manera confiable"""
         return self._id
-
-    @id.setter
-    def id(self, id: uuid.UUID) -> None:
-        if not IdEntidadEsInmutable(self).es_valido():
-            raise IdDebeSerInmutableExcepcion()
-        self._id = id
         
 
 @dataclass

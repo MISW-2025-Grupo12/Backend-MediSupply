@@ -8,11 +8,11 @@ from aplicacion.dto import ProductoDTO
 from aplicacion.dto_agregacion import ProductoAgregacionDTO
 from dominio.fabricas import FabricaProducto
 from dominio.entidades import Producto
-from dominio.objetos_valor import Nombre, Descripcion, Precio, Stock, FechaVencimiento, Categoria, Proveedor
+from dominio.objetos_valor import Nombre, Descripcion, Precio, Categoria, Proveedor
 from dominio.reglas import (
     NombreProductoNoPuedeSerVacio, DescripcionProductoNoPuedeSerVacio, PrecioProductoNoPuedeSerVacio,
-    PrecioProductoNoPuedeSerMenorACero, PrecioProductoDebeSerNumerico, StockProductoDebeSerPositivo,
-    FechaVencimientoDebeSerFutura, CategoriaProductoNoPuedeSerVacia, CategoriaIdNoPuedeSerVacio, 
+    PrecioProductoNoPuedeSerMenorACero, PrecioProductoDebeSerNumerico,
+    CategoriaProductoNoPuedeSerVacia, CategoriaIdNoPuedeSerVacio, 
     CategoriaDebeExistir, ProveedorIdNoPuedeSerVacio, ProveedorDebeExistir
 )
 from infraestructura.repositorios import RepositorioProductoSQLite, RepositorioCategoriaSQLite
@@ -25,8 +25,6 @@ class CrearProducto(Comando):
     nombre: str
     descripcion: str
     precio: float
-    stock: int
-    fecha_vencimiento: datetime
     categoria: str
     categoria_id: str
     proveedor_id: str
@@ -54,8 +52,6 @@ class CrearProductoHandler:
                 nombre=comando.nombre,
                 descripcion=comando.descripcion,
                 precio=comando.precio,
-                stock=comando.stock,
-                fecha_vencimiento=comando.fecha_vencimiento,
                 categoria=comando.categoria,
                 categoria_id=comando.categoria_id,
                 proveedor_id=comando.proveedor_id
@@ -66,8 +62,6 @@ class CrearProductoHandler:
                 nombre=Nombre(comando.nombre),
                 descripcion=Descripcion(comando.descripcion),
                 precio=Precio(comando.precio),
-                stock=Stock(comando.stock),
-                fecha_vencimiento=FechaVencimiento(comando.fecha_vencimiento),
                 categoria=Categoria(comando.categoria),
                 categoria_id=comando.categoria_id,
                 proveedor_id=comando.proveedor_id
@@ -82,8 +76,6 @@ class CrearProductoHandler:
             fabrica.validar_regla(PrecioProductoNoPuedeSerVacio(producto_temp.precio))
             fabrica.validar_regla(PrecioProductoNoPuedeSerMenorACero(producto_temp.precio))
             fabrica.validar_regla(PrecioProductoDebeSerNumerico(producto_temp.precio))
-            fabrica.validar_regla(StockProductoDebeSerPositivo(producto_temp.stock))
-            fabrica.validar_regla(FechaVencimientoDebeSerFutura(producto_temp.fecha_vencimiento))
             fabrica.validar_regla(CategoriaProductoNoPuedeSerVacia(producto_temp.categoria))
             fabrica.validar_regla(CategoriaIdNoPuedeSerVacio(producto_temp.categoria_id))
             fabrica.validar_regla(ProveedorIdNoPuedeSerVacio(producto_temp.proveedor_id))
@@ -100,8 +92,6 @@ class CrearProductoHandler:
                 nombre=producto_guardado.nombre,
                 descripcion=producto_guardado.descripcion,
                 precio=producto_guardado.precio,
-                stock=producto_guardado.stock,
-                fecha_vencimiento=producto_guardado.fecha_vencimiento,
                 categoria_id=categoria.id,
                 categoria_nombre=categoria.nombre,
                 categoria_descripcion=categoria.descripcion,

@@ -1,7 +1,7 @@
 from aplicacion.dto import ProductoDTO, CategoriaDTO
 from aplicacion.dto_agregacion import ProductoAgregacionDTO
 from dominio.entidades import Producto
-from dominio.objetos_valor import Nombre, Descripcion, Precio, Stock, FechaVencimiento, Categoria, Proveedor
+from dominio.objetos_valor import Nombre, Descripcion, Precio, Categoria, Proveedor
 from datetime import datetime
 
 class MapeadorProductoDTOJson:
@@ -11,8 +11,6 @@ class MapeadorProductoDTOJson:
             nombre=externo.get('nombre', ''),
             descripcion=externo.get('descripcion', ''),
             precio=float(externo.get('precio', 0)),
-            stock=int(externo.get('stock', 0)),
-            fecha_vencimiento=datetime.fromisoformat(externo.get('fecha_vencimiento', datetime.now().isoformat())),
             categoria=externo.get('categoria', ''),
             categoria_id=externo.get('categoria_id', ''),
             proveedor_id=externo.get('proveedor_id', ''),
@@ -26,8 +24,6 @@ class MapeadorProductoDTOJson:
             'nombre': dto.nombre,
             'descripcion': dto.descripcion,
             'precio': dto.precio,
-            'stock': dto.stock,
-            'fecha_vencimiento': dto.fecha_vencimiento.isoformat(),
             'categoria': dto.categoria,
             'categoria_id': dto.categoria_id,
             'proveedor_id': dto.proveedor_id
@@ -41,8 +37,6 @@ class MapeadorProducto:
             nombre=entidad.nombre.nombre,
             descripcion=entidad.descripcion.descripcion,
             precio=entidad.precio.precio,
-            stock=entidad.stock.stock,
-            fecha_vencimiento=entidad.fecha_vencimiento.fecha,
             categoria=entidad.categoria.nombre,
             categoria_id=entidad.categoria_id,
             proveedor_id=entidad.proveedor_id
@@ -55,8 +49,6 @@ class MapeadorProducto:
             nombre=Nombre(dto.nombre),
             descripcion=Descripcion(dto.descripcion),
             precio=Precio(dto.precio),
-            stock=Stock(dto.stock),
-            fecha_vencimiento=FechaVencimiento(dto.fecha_vencimiento),
             categoria=Categoria(dto.categoria),
             categoria_id=dto.categoria_id,
             proveedor_id=dto.proveedor_id
@@ -89,8 +81,6 @@ class MapeadorProductoAgregacionDTOJson:
             'nombre': agregacion.nombre,
             'descripcion': agregacion.descripcion,
             'precio': agregacion.precio,
-            'stock': agregacion.stock,
-            'fecha_vencimiento': agregacion.fecha_vencimiento.isoformat(),
             'categoria': {
                 'id': str(agregacion.categoria_id),
                 'nombre': agregacion.categoria_nombre,

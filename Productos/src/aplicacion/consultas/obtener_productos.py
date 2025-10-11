@@ -46,8 +46,6 @@ class ObtenerProductosHandler:
                         nombre=producto.nombre,
                         descripcion=producto.descripcion,
                         precio=producto.precio,
-                        stock=producto.stock,
-                        fecha_vencimiento=producto.fecha_vencimiento,
                         categoria_id=categoria.id,
                         categoria_nombre=categoria.nombre,
                         categoria_descripcion=categoria.descripcion,

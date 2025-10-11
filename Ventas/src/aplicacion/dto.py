@@ -17,3 +17,21 @@ class VisitaDTO(DTO):
     novedades: str = None
     pedido_generado: bool = None
     id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+@dataclass(frozen=True)
+class ItemPedidoDTO(DTO):
+    producto_id: str
+    nombre_producto: str
+    cantidad: int
+    precio_unitario: float
+    subtotal: float
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+@dataclass(frozen=True)
+class PedidoDTO(DTO):
+    vendedor_id: str
+    cliente_id: str
+    estado: str
+    total: float
+    items: list = field(default_factory=list)
+    id: uuid.UUID = field(default_factory=uuid.uuid4)

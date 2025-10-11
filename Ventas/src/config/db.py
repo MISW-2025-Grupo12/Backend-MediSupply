@@ -5,8 +5,14 @@ import os
 db = SQLAlchemy()
 
 def init_db(app: Flask):
-    # Configurar SQLite para desarrollo local
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ventas.db'
+    # Configurar PostgreSQL
+    db_host = os.getenv('DB_HOST', 'ventas-db')
+    db_port = os.getenv('DB_PORT', '5432')
+    db_name = os.getenv('DB_NAME', 'ventas_db')
+    db_user = os.getenv('DB_USER', 'ventas_user')
+    db_password = os.getenv('DB_PASSWORD', 'ventas_pass')
+    
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
     
