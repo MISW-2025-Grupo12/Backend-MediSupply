@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 from flask import request, Response, Blueprint
 from aplicacion.comandos.crear_visita import CrearVisita
+from aplicacion.comandos.registrar_visita import RegistrarVisita
 from aplicacion.consultas.obtener_visitas import ObtenerVisitas
 from aplicacion.consultas.obtener_visitas_por_vendedor import ObtenerVisitasPorVendedor
 from seedwork.aplicacion.comandos import ejecutar_comando
@@ -124,6 +125,63 @@ def obtener_visitas_por_vendedor(vendedor_id):
         
     except Exception as e:
         logger.error(f"Error obteniendo visitas por vendedor: {e}")
+        return Response(
+            json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
+            status=500, 
+            mimetype='application/json'
+        )
+
+@bp.route('/<visita_id>', methods=['PUT'])
+def registrar_visita(visita_id):
+    try:
+        visita_dict = request.json
+        
+        if not visita_dict:
+            return Response(
+                json.dumps({'error': 'Se requiere un JSON válido'}), 
+                status=400, 
+                mimetype='application/json'
+            )
+        
+        # Validar campos obligatorios
+        campos_obligatorios = ['fecha_realizada', 'hora_realizada', 'cliente_id']
+        for campo in campos_obligatorios:
+            if campo not in visita_dict or not visita_dict[campo]:
+                return Response(
+                    json.dumps({'error': f'El campo {campo} es obligatorio'}), 
+                    status=400, 
+                    mimetype='application/json'
+                )
+        
+        comando = RegistrarVisita(
+            visita_id=visita_id,
+            fecha_realizada=visita_dict.get('fecha_realizada'),
+            hora_realizada=visita_dict.get('hora_realizada'),
+            cliente_id=visita_dict.get('cliente_id'),
+            novedades=visita_dict.get('novedades'),
+            pedido_generado=visita_dict.get('pedido_generado', False)
+        )
+        
+        resultado = ejecutar_comando(comando)
+        
+        return Response(
+            json.dumps({
+                'message': 'Visita registrada exitosamente',
+                'visita_id': str(resultado.id),
+                'estado': resultado.estado
+            }), 
+            status=200, 
+            mimetype='application/json'
+        )
+        
+    except ValueError as e:
+        return Response(
+            json.dumps({'error': str(e)}), 
+            status=400, 
+            mimetype='application/json'
+        )
+    except Exception as e:
+        logger.error(f"Error registrando visita: {e}")
         return Response(
             json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
             status=500, 

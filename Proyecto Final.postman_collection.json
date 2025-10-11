@@ -227,6 +227,36 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Actualizar Visita",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fecha_realizada\": \"2025-01-10\",\r\n    \"hora_realizada\": \"14:30:00\",\r\n    \"cliente_id\": \"34692e59-f74d-4f4c-a929-6241013694e8\",\r\n    \"novedades\": \"Cliente muy satisfecho con la presentación. Solicita seguimiento en 2 semanas.\",\r\n    \"pedido_generado\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5002/api/visitas/{visita_id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"visitas",
+								"{visita_id}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

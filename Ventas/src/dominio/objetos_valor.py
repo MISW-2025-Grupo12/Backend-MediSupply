@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, date, time
 from seedwork.dominio.objetos_valor import ObjetoValor
 
 @dataclass(frozen=True)
@@ -29,3 +29,23 @@ class Telefono(ObjetoValor):
 @dataclass(frozen=True)
 class Descripcion(ObjetoValor):
     descripcion: str
+
+@dataclass(frozen=True)
+class FechaRealizada(ObjetoValor):
+    fecha: date
+
+@dataclass(frozen=True)
+class HoraRealizada(ObjetoValor):
+    hora: time
+
+@dataclass(frozen=True)
+class Novedades(ObjetoValor):
+    novedades: str
+    
+    def __post_init__(self):
+        if self.novedades and len(self.novedades) > 500:
+            raise ValueError("Las novedades no pueden exceder 500 caracteres")
+
+@dataclass(frozen=True)
+class PedidoGenerado(ObjetoValor):
+    pedido_generado: bool

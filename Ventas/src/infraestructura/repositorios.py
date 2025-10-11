@@ -36,7 +36,11 @@ class RepositorioVisitaSQLite:
             direccion=visita_model.direccion,
             telefono=visita_model.telefono,
             estado=visita_model.estado,
-            descripcion=visita_model.descripcion
+            descripcion=visita_model.descripcion,
+            fecha_realizada=visita_model.fecha_realizada,
+            hora_realizada=visita_model.hora_realizada,
+            novedades=visita_model.novedades,
+            pedido_generado=visita_model.pedido_generado
         )
     
     def obtener_todos(self) -> list[VisitaDTO]:
@@ -53,7 +57,34 @@ class RepositorioVisitaSQLite:
                 direccion=visita_model.direccion,
                 telefono=visita_model.telefono,
                 estado=visita_model.estado,
-                descripcion=visita_model.descripcion
+                descripcion=visita_model.descripcion,
+                fecha_realizada=visita_model.fecha_realizada,
+                hora_realizada=visita_model.hora_realizada,
+                novedades=visita_model.novedades,
+                pedido_generado=visita_model.pedido_generado
             ))
         
         return visitas_dto
+    
+    def actualizar(self, visita_dto: VisitaDTO) -> VisitaDTO:
+        """Actualizar una visita existente"""
+        visita_model = VisitaModel.query.get(str(visita_dto.id))
+        if not visita_model:
+            return None
+        
+        # Actualizar campos
+        visita_model.vendedor_id = visita_dto.vendedor_id
+        visita_model.cliente_id = visita_dto.cliente_id
+        visita_model.fecha_programada = visita_dto.fecha_programada
+        visita_model.direccion = visita_dto.direccion
+        visita_model.telefono = visita_dto.telefono
+        visita_model.estado = visita_dto.estado
+        visita_model.descripcion = visita_dto.descripcion
+        visita_model.fecha_realizada = visita_dto.fecha_realizada
+        visita_model.hora_realizada = visita_dto.hora_realizada
+        visita_model.novedades = visita_dto.novedades
+        visita_model.pedido_generado = visita_dto.pedido_generado
+        
+        db.session.commit()
+        
+        return visita_dto

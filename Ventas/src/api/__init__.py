@@ -44,7 +44,8 @@ def create_app(configuracion=None):
                 "endpoints": [
                     "POST /api/visitas/", 
                     "GET /api/visitas/?estado=pendiente",
-                    "GET /api/visitas/vendedor/<vendedor_id>?estado=pendiente"
+                    "GET /api/visitas/vendedor/<vendedor_id>?estado=pendiente",
+                    "PUT /api/visitas/<visita_id>"
                 ]
             }
 

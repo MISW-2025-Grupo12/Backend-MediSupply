@@ -1,6 +1,6 @@
 from config.db import db
 import uuid
-from datetime import datetime
+from datetime import datetime, date, time
 
 class VisitaModel(db.Model):
     __tablename__ = 'visitas'
@@ -13,6 +13,10 @@ class VisitaModel(db.Model):
     telefono = db.Column(db.String(20), nullable=False)
     estado = db.Column(db.String(20), nullable=False, default='pendiente')
     descripcion = db.Column(db.Text, nullable=True)
+    fecha_realizada = db.Column(db.Date, nullable=True)
+    hora_realizada = db.Column(db.Time, nullable=True)
+    novedades = db.Column(db.Text, nullable=True)
+    pedido_generado = db.Column(db.Boolean, nullable=True, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -26,6 +30,10 @@ class VisitaModel(db.Model):
             'telefono': self.telefono,
             'estado': self.estado,
             'descripcion': self.descripcion,
+            'fecha_realizada': self.fecha_realizada.isoformat() if self.fecha_realizada else None,
+            'hora_realizada': self.hora_realizada.isoformat() if self.hora_realizada else None,
+            'novedades': self.novedades,
+            'pedido_generado': self.pedido_generado,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
