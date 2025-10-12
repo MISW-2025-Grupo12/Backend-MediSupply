@@ -1,0 +1,1270 @@
+{
+	"info": {
+		"_postman_id": "c45dbc36-1891-4d41-9db0-1369f781f227",
+		"name": "MediSupply - Colección",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30409960",
+		"_collection_link": "https://drones-8622.postman.co/workspace/6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-c45dbc36-1891-4d41-9db0-1369f781f227?action=share&source=collection_link&creator=30409960"
+	},
+	"item": [
+		{
+			"name": "🔐 Usuarios (Puerto 5001)",
+			"item": [
+				{
+					"name": "Proveedores",
+					"item": [
+						{
+							"name": "Crear Proveedor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/proveedores/",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"proveedores",
+										""
+									]
+								},
+								"description": "Crea un nuevo proveedor en el sistema"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todos los Proveedores",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/proveedores/",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"proveedores",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todos los proveedores registrados"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Proveedor por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/proveedores/{{proveedor_id}}",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"proveedores",
+										"{{proveedor_id}}"
+									]
+								},
+								"description": "Obtiene los detalles de un proveedor específico por su ID"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Vendedores",
+					"item": [
+						{
+							"name": "Crear Vendedor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/vendedores/",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"vendedores",
+										""
+									]
+								},
+								"description": "Crea un nuevo vendedor en el sistema"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todos los Vendedores",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/vendedores/",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"vendedores",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todos los vendedores registrados"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Vendedor por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/vendedores/{{vendedor_id}}",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"vendedores",
+										"{{vendedor_id}}"
+									]
+								},
+								"description": "Obtiene los detalles de un vendedor específico por su ID"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Clientes",
+					"item": [
+						{
+							"name": "Crear Cliente",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/clientes/",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"clientes",
+										""
+									]
+								},
+								"description": "Crea un nuevo cliente en el sistema"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todos los Clientes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/clientes/",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"clientes",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todos los clientes registrados"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Cliente por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/clientes/{{cliente_id}}",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"clientes",
+										"{{cliente_id}}"
+									]
+								},
+								"description": "Obtiene los detalles de un cliente específico por su ID"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health Check",
+					"item": [
+						{
+							"name": "Health Check - Usuarios",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_usuarios}}/health",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"health"
+									]
+								},
+								"description": "Verifica el estado del microservicio de Usuarios"
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "Microservicio de gestión de usuarios: proveedores, vendedores y clientes"
+		},
+		{
+			"name": "📦 Productos (Puerto 5000)",
+			"item": [
+				{
+					"name": "Productos",
+					"item": [
+						{
+							"name": "Crear Producto",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Paracetamol\",\n    \"descripcion\": \"Analgésico y antipirético\",\n    \"precio\": 25000,\n    \"categoria\": \"Medicamentos\",\n    \"categoria_id\": \"{{categoria_id}}\",\n    \"proveedor_id\": \"{{proveedor_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										""
+									]
+								},
+								"description": "Crea un nuevo producto en el catálogo"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear Producto con Inventario",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Ibuprofeno\",\n    \"descripcion\": \"Antiinflamatorio no esteroideo\",\n    \"precio\": 18000,\n    \"stock\": 50,\n    \"fecha_vencimiento\": \"2025-12-31T00:00:00Z\",\n    \"categoria\": \"Medicamentos\",\n    \"categoria_id\": \"{{categoria_id}}\",\n    \"proveedor_id\": \"{{proveedor_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/con-inventario",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										"con-inventario"
+									]
+								},
+								"description": "Crea un producto con información de inventario incluida"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todos los Productos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todos los productos del catálogo"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Producto por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/{{producto_id}}",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										"{{producto_id}}"
+									]
+								},
+								"description": "Obtiene los detalles de un producto específico por su ID"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Categorías",
+					"item": [
+						{
+							"name": "Crear Categoría",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Medicamentos\",\n    \"descripcion\": \"Productos farmacéuticos y medicamentos\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/categorias/",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										"categorias",
+										""
+									]
+								},
+								"description": "Crea una nueva categoría de productos"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todas las Categorías",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/categorias/",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										"categorias",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todas las categorías de productos"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Categoría por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/categorias/{{categoria_id}}",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										"categorias",
+										"{{categoria_id}}"
+									]
+								},
+								"description": "Obtiene los detalles de una categoría específica por su ID"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health Check",
+					"item": [
+						{
+							"name": "Health Check - Productos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_productos}}/health",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"health"
+									]
+								},
+								"description": "Verifica el estado del microservicio de Productos"
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "Microservicio de gestión de productos y categorías"
+		},
+		{
+			"name": "🛒 Ventas (Puerto 5002)",
+			"item": [
+				{
+					"name": "Visitas",
+					"item": [
+						{
+							"name": "Crear Visita de Venta",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2025-12-09T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										""
+									]
+								},
+								"description": "Crea una nueva visita de venta programada"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todas las Visitas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todas las visitas"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Visitas Pendientes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/?estado=pendiente",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										""
+									],
+									"query": [
+										{
+											"key": "estado",
+											"value": "pendiente",
+											"description": "Filtrar por estado de la visita"
+										}
+									]
+								},
+								"description": "Obtiene solo las visitas en estado pendiente"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Visitas por Vendedor",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?estado=pendiente",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										"vendedor",
+										"{{vendedor_id}}"
+									],
+									"query": [
+										{
+											"key": "estado",
+											"value": "pendiente",
+											"description": "Filtrar por estado (opcional)"
+										}
+									]
+								},
+								"description": "Obtiene las visitas asignadas a un vendedor específico"
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar Visita (Registrar Realizada)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fecha_realizada\": \"2025-01-10\",\n    \"hora_realizada\": \"14:30:00\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"novedades\": \"Cliente muy satisfecho con la presentación. Solicita seguimiento en 2 semanas.\",\n    \"pedido_generado\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/{{visita_id}}",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										"{{visita_id}}"
+									]
+								},
+								"description": "Registra una visita como realizada con sus detalles"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Pedidos",
+					"item": [
+						{
+							"name": "Crear Pedido",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										""
+									]
+								},
+								"description": "Crea un nuevo pedido en estado borrador"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Pedido por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"{{pedido_id}}"
+									]
+								},
+								"description": "Obtiene los detalles de un pedido específico con sus items"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todos los Pedidos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todos los pedidos"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Pedidos por Vendedor",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/?vendedor_id={{vendedor_id}}",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										""
+									],
+									"query": [
+										{
+											"key": "vendedor_id",
+											"value": "{{vendedor_id}}",
+											"description": "ID del vendedor"
+										}
+									]
+								},
+								"description": "Obtiene los pedidos de un vendedor específico"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Pedidos por Estado",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/?estado=confirmado",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										""
+									],
+									"query": [
+										{
+											"key": "estado",
+											"value": "confirmado",
+											"description": "Estado del pedido (borrador, confirmado, etc.)"
+										}
+									]
+								},
+								"description": "Obtiene los pedidos filtrados por estado"
+							},
+							"response": []
+						},
+						{
+							"name": "Agregar Item al Pedido",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"producto_id\": \"{{producto_id}}\",\n    \"cantidad\": 3\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}/items",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"{{pedido_id}}",
+										"items"
+									]
+								},
+								"description": "Agrega un producto al pedido con la cantidad especificada"
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar Item del Pedido",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cantidad\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}/items/{{item_id}}",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"{{pedido_id}}",
+										"items",
+										"{{item_id}}"
+									]
+								},
+								"description": "Actualiza la cantidad de un item específico en el pedido"
+							},
+							"response": []
+						},
+						{
+							"name": "Quitar Item del Pedido",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}/items/{{item_id}}",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"{{pedido_id}}",
+										"items",
+										"{{item_id}}"
+									]
+								},
+								"description": "Elimina un item específico del pedido"
+							},
+							"response": []
+						},
+						{
+							"name": "Confirmar Pedido",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}/confirmar",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"{{pedido_id}}",
+										"confirmar"
+									]
+								},
+								"description": "Confirma un pedido y lo envía a logística para procesamiento"
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Productos para Pedidos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/productos/buscar?q=paracetamol",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"productos",
+										"buscar"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "paracetamol",
+											"description": "Término de búsqueda"
+										}
+									]
+								},
+								"description": "Busca productos disponibles para agregar a pedidos"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health Check",
+					"item": [
+						{
+							"name": "Health Check - Ventas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/health",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"health"
+									]
+								},
+								"description": "Verifica el estado del microservicio de Ventas"
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "Microservicio de gestión de visitas y pedidos"
+		},
+		{
+			"name": "🚚 Logística (Puerto 5003)",
+			"item": [
+				{
+					"name": "Entregas",
+					"item": [
+						{
+							"name": "Obtener Todas las Entregas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/logistica/entregas/",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"logistica",
+										"entregas",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todas las entregas programadas"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Entregas por Rango de Fechas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/logistica/entregas?fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"logistica",
+										"entregas"
+									],
+									"query": [
+										{
+											"key": "fecha_inicio",
+											"value": "2025-10-13",
+											"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2025-10-17",
+											"description": "Fecha de fin del rango (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Obtiene las entregas programadas en un rango de fechas específico"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear 20 Entregas (Desarrollo)",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/logistica/entregas/creartemp",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"logistica",
+										"entregas",
+										"creartemp"
+									]
+								},
+								"description": "Endpoint temporal para crear 20 entregas de prueba (solo para desarrollo)"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Inventario",
+					"item": [
+						{
+							"name": "Obtener Todo el Inventario",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/inventario/",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"inventario",
+										""
+									]
+								},
+								"description": "Obtiene todo el inventario agrupado por producto"
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Productos con Inventario",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/inventario/buscar?q=paracetamol&limite=50",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"inventario",
+										"buscar"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "paracetamol",
+											"description": "Término de búsqueda"
+										},
+										{
+											"key": "limite",
+											"value": "50",
+											"description": "Número máximo de resultados (opcional, default: 50)"
+										}
+									]
+								},
+								"description": "Busca productos que tengan inventario disponible"
+							},
+							"response": []
+						},
+						{
+							"name": "Reservar Inventario",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"items\": [\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 5\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_logistica}}/api/inventario/reservar",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"inventario",
+										"reservar"
+									]
+								},
+								"description": "Reserva inventario para un pedido específico"
+							},
+							"response": []
+						},
+						{
+							"name": "Descontar Inventario",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"items\": [\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 5\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_logistica}}/api/inventario/descontar",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"inventario",
+										"descontar"
+									]
+								},
+								"description": "Descuenta inventario reservado (usado por eventos del sistema)"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Inventario de Producto",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/inventario/producto/{{producto_id}}",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"inventario",
+										"producto",
+										"{{producto_id}}"
+									]
+								},
+								"description": "Obtiene el inventario detallado de un producto específico"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health Check",
+					"item": [
+						{
+							"name": "Health Check - Logística",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/health",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"health"
+									]
+								},
+								"description": "Verifica el estado del microservicio de Logística"
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "Microservicio de gestión de inventario y entregas"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url_usuarios",
+			"value": "http://localhost:5001",
+			"type": "string"
+		},
+		{
+			"key": "base_url_productos",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "base_url_ventas",
+			"value": "http://localhost:5002",
+			"type": "string"
+		},
+		{
+			"key": "base_url_logistica",
+			"value": "http://localhost:5003",
+			"type": "string"
+		},
+		{
+			"key": "proveedor_id",
+			"value": "f965c696-bbeb-4d00-b80a-c4e518472753",
+			"type": "string"
+		},
+		{
+			"key": "vendedor_id",
+			"value": "f965c696-bbeb-4d00-b80a-c4e518472753",
+			"type": "string"
+		},
+		{
+			"key": "cliente_id",
+			"value": "3561abc0-f31d-4354-bfd2-3f07dbaff241",
+			"type": "string"
+		},
+		{
+			"key": "producto_id",
+			"value": "8c5ac5bf-a51a-483f-8200-5c468f84b797",
+			"type": "string"
+		},
+		{
+			"key": "categoria_id",
+			"value": "83ebf893-eea5-40bd-bb36-b78fc43c5770",
+			"type": "string"
+		},
+		{
+			"key": "pedido_id",
+			"value": "pedido-uuid-ejemplo",
+			"type": "string"
+		},
+		{
+			"key": "visita_id",
+			"value": "visita-uuid-ejemplo",
+			"type": "string"
+		},
+		{
+			"key": "item_id",
+			"value": "item-uuid-ejemplo",
+			"type": "string"
+		}
+	]
+}
