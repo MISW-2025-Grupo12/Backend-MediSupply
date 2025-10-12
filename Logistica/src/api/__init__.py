@@ -96,6 +96,23 @@ def create_app(configuracion=None):
         from aplicacion.eventos.consumidor_pedido_confirmado import manejador
 
         # Endpoint de verificación de estado
+        @app.route("/")
+        def root():
+            return {
+                "status": "up",
+                "service": "logistica",
+                "endpoints": [
+                    "GET /entregas-programadas",
+                    "GET /api/inventario",
+                    "GET /api/inventario/buscar",
+                    "POST /api/inventario/reservar",
+                    "POST /api/inventario/descontar",
+                    "GET /api/inventario/producto/<id>",
+                    "GET /spec",
+                    "GET /health"
+                ]
+            }, 200
+
         @app.route("/health")
         def health():
             return {

@@ -53,6 +53,27 @@ def create_app(configuracion=None):
             swag['info']['title'] = "Ventas API"
             return jsonify(swag)
 
+        @app.route("/")
+        def root():
+            return {
+                "status": "up",
+                "mode": "simplified",
+                "service": "ventas",
+                "endpoints": [
+                    "POST /api/visitas/", 
+                    "GET /api/visitas/?estado=pendiente",
+                    "GET /api/visitas/vendedor/<vendedor_id>?estado=pendiente",
+                    "PUT /api/visitas/<visita_id>",
+                    "POST /api/pedidos/",
+                    "GET /api/pedidos/<pedido_id>",
+                    "POST /api/pedidos/<pedido_id>/items",
+                    "PUT /api/pedidos/<pedido_id>/items/<item_id>",
+                    "DELETE /api/pedidos/<pedido_id>/items/<item_id>",
+                    "POST /api/pedidos/<pedido_id>/confirmar",
+                    "GET /api/pedidos/productos/buscar"
+                ]
+            }
+
         @app.route("/health")
         def health():
             return {

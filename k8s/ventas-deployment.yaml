@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ventas-deployment
+  namespace: medisupply
+  labels:
+    app: ventas
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ventas
+  template:
+    metadata:
+      labels:
+        app: ventas
+    spec:
+      containers:
+      - name: ventas
+        image: gcr.io/desarrolloswcloud/ventas:latest
+        ports:
+        - containerPort: 5002
+        env:
+        - name: FLASK_APP
+          value: "src/main.py"
+        - name: FLASK_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: FLASK_ENV
+        - name: PYTHONPATH
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: PYTHONPATH
+        - name: DB_HOST
+          value: "10.74.0.8"  # IP privada de ventas-db
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_PORT
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: VENTAS_DB_NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: ventas-user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: ventas-password
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)"
+        - name: PRODUCTOS_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: PRODUCTOS_SERVICE_URL
+        - name: LOGISTICA_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: LOGISTICA_SERVICE_URL
+        - name: GCP_PROJECT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: GCP_PROJECT_ID
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ventas-service
+  namespace: medisupply
+  labels:
+    app: ventas
+spec:
+  selector:
+    app: ventas
+  ports:
+  - port: 5002
+    targetPort: 5002
+  type: ClusterIP

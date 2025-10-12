@@ -38,6 +38,21 @@ def create_app(configuracion=None):
             swag['info']['title'] = "Productos API"
             return jsonify(swag)
 
+        @app.route("/")
+        def root():
+            return {
+                "status": "productos-cicd-test",
+                "mode": "simplified",
+                "service": "productos",
+                "endpoints": [
+                    "POST /api/productos/", 
+                    "GET /api/productos/",
+                    "GET /api/productos/<id>",
+                    "POST /api/productos/categorias/",
+                    "GET /api/productos/categorias/"
+                ]
+            }
+
         @app.route("/health")
         def health():
             return {
