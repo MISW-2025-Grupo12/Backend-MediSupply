@@ -67,7 +67,16 @@ jobs:
         echo "✅ Pruebas de Productos pasaron correctamente!"
 
     - name: Configure Docker to use gcloud as a credential helper
-      run: gcloud auth configure-docker
+      run: |
+        gcloud auth configure-docker gcr.io
+        gcloud auth configure-docker us-docker.pkg.dev
+
+    - name: Verify Docker authentication
+      run: |
+        echo "Verificando autenticación de Docker..."
+        gcloud auth list
+        docker pull hello-world
+        echo "✅ Docker autenticado correctamente"
 
     - name: Build and push Productos image
       run: |
@@ -104,7 +113,16 @@ jobs:
         echo "✅ Pruebas de Usuarios pasaron correctamente!"
 
     - name: Configure Docker to use gcloud as a credential helper
-      run: gcloud auth configure-docker
+      run: |
+        gcloud auth configure-docker gcr.io
+        gcloud auth configure-docker us-docker.pkg.dev
+
+    - name: Verify Docker authentication
+      run: |
+        echo "Verificando autenticación de Docker..."
+        gcloud auth list
+        docker pull hello-world
+        echo "✅ Docker autenticado correctamente"
 
     - name: Build and push Usuarios image
       run: |
@@ -141,7 +159,16 @@ jobs:
         echo "✅ Pruebas de Ventas pasaron correctamente!"
 
     - name: Configure Docker to use gcloud as a credential helper
-      run: gcloud auth configure-docker
+      run: |
+        gcloud auth configure-docker gcr.io
+        gcloud auth configure-docker us-docker.pkg.dev
+
+    - name: Verify Docker authentication
+      run: |
+        echo "Verificando autenticación de Docker..."
+        gcloud auth list
+        docker pull hello-world
+        echo "✅ Docker autenticado correctamente"
 
     - name: Build and push Ventas image
       run: |
@@ -178,7 +205,16 @@ jobs:
         echo "✅ Pruebas de Logística pasaron correctamente!"
 
     - name: Configure Docker to use gcloud as a credential helper
-      run: gcloud auth configure-docker
+      run: |
+        gcloud auth configure-docker gcr.io
+        gcloud auth configure-docker us-docker.pkg.dev
+
+    - name: Verify Docker authentication
+      run: |
+        echo "Verificando autenticación de Docker..."
+        gcloud auth list
+        docker pull hello-world
+        echo "✅ Docker autenticado correctamente"
 
     - name: Build and push Logistica image
       run: |
