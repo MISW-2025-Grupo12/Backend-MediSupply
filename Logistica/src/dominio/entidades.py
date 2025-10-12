@@ -20,8 +20,10 @@ class Entrega(AgregacionRaiz):
             entrega_id=self.id,
             direccion=self.direccion.valor,
             fecha_entrega=self.fecha_entrega.valor,
-            producto_id=self.producto_id.valor,
-            cliente_id=self.cliente_id.valor
+            pedido={  # ✅ reemplazo de producto_id y cliente_id
+                "producto_id": self.producto_id.valor,
+                "cliente_id": self.cliente_id.valor
+            }
         )
         print(f"Entrega creada: {evento.entrega_id} → {evento.direccion}")
 
