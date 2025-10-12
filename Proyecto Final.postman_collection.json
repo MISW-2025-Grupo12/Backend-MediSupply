@@ -980,7 +980,38 @@
 						}
 					},
 					"response": []
-				}
+				},
+				{
+					"name": "Obtener entregas por rango de fechas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+						"raw": "http://localhost:5003/api/logistica/entregas?fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+						"protocol": "http",
+						"host": [
+							"localhost"
+						],
+						"port": "5003",
+						"path": [
+							"api",
+							"logistica",
+							"entregas"
+						],
+						"query": [
+							{
+							"key": "fecha_inicio",
+							"value": "2025-10-13"
+							},
+							{
+							"key": "fecha_fin",
+							"value": "2025-10-17"
+							}
+						]
+						}
+					},
+					"response": []
+					}
 			]
 		}
 	]

@@ -3,18 +3,18 @@ from infraestructura.modelos import EntregaModel, InventarioModel
 from aplicacion.dto import EntregaDTO, InventarioDTO
 from datetime import datetime
 import uuid
+import json
 
 class RepositorioEntregaSQLite:
     """Repositorio para acceder a las entregas programadas (SQLite)."""
 
     def crear(self, entrega_dto: EntregaDTO) -> EntregaDTO:
-        """Crear una nueva entrega en SQLite."""
+        """Crear una nueva entrega en SQLite con el pedido almacenado como JSON."""
         entrega_model = EntregaModel(
             id=str(entrega_dto.id),
             direccion=entrega_dto.direccion,
             fecha_entrega=entrega_dto.fecha_entrega,
-            producto_id=entrega_dto.producto_id,
-            cliente_id=entrega_dto.cliente_id
+            pedido=json.dumps(entrega_dto.pedido or {})  # ✅ guardamos JSON
         )
 
         db.session.add(entrega_model)
@@ -22,17 +22,50 @@ class RepositorioEntregaSQLite:
         return entrega_dto
 
     def obtener_todos(self) -> list[EntregaDTO]:
-        """Obtener todas las entregas programadas."""
         entregas_model = EntregaModel.query.all()
         entregas_dto = []
 
         for entrega_model in entregas_model:
+            pedido_data = None
+            if entrega_model.pedido:
+                try:
+                    pedido_data = json.loads(entrega_model.pedido)
+                except Exception:
+                    pedido_data = None
+
             entregas_dto.append(EntregaDTO(
                 id=uuid.UUID(entrega_model.id),
                 direccion=entrega_model.direccion,
                 fecha_entrega=entrega_model.fecha_entrega,
-                producto_id=entrega_model.producto_id,
-                cliente_id=entrega_model.cliente_id
+                pedido=pedido_data
+            ))
+
+        return entregas_dto
+
+    def obtener_por_rango(self, fecha_inicio: datetime, fecha_fin: datetime) -> list[EntregaDTO]:
+        """Obtener entregas filtradas por rango de fechas (incluye pedido JSON)."""
+
+        # Si las fechas son iguales → ampliar el rango de 00:00 a 23:59:59
+        if fecha_inicio.date() == fecha_fin.date():
+            fecha_fin = datetime.combine(fecha_fin.date(), datetime.max.time())
+
+        entregas_model = EntregaModel.query.filter(
+            EntregaModel.fecha_entrega >= fecha_inicio,
+            EntregaModel.fecha_entrega <= fecha_fin
+        ).all()
+
+        entregas_dto = []
+        for entrega_model in entregas_model:
+            try:
+                pedido_data = json.loads(entrega_model.pedido) if entrega_model.pedido else None
+            except Exception:
+                pedido_data = None
+
+            entregas_dto.append(EntregaDTO(
+                id=uuid.UUID(entrega_model.id),
+                direccion=entrega_model.direccion,
+                fecha_entrega=entrega_model.fecha_entrega,
+                pedido=pedido_data
             ))
 
         return entregas_dto

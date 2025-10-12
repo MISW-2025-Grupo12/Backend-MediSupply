@@ -9,57 +9,48 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 from dominio.eventos import EntregaCreada, InventarioReservado, InventarioDescontado
 
 class TestEntregaCreada:
+
     def test_crear_evento_entrega_creada(self):
         evento = EntregaCreada(
             entrega_id="entrega-123",
             direccion="Calle 123 #45-67",
             fecha_entrega=datetime.now() + timedelta(days=1),
-            producto_id="prod-456",
-            cliente_id="cliente-789"
+            pedido={"cliente": "Mock", "productos": []} 
         )
-        
         assert evento.entrega_id == "entrega-123"
         assert evento.direccion == "Calle 123 #45-67"
-        assert evento.producto_id == "prod-456"
-        assert evento.cliente_id == "cliente-789"
         assert isinstance(evento.fecha_entrega, datetime)
+        assert isinstance(evento.pedido, dict)
 
     def test_evento_entrega_creada_inmutable(self):
         evento = EntregaCreada(
             entrega_id="entrega-123",
             direccion="Calle 123 #45-67",
             fecha_entrega=datetime.now() + timedelta(days=1),
-            producto_id="prod-456",
-            cliente_id="cliente-789"
+            pedido={"cliente": "Mock"} 
         )
-        
-
         assert evento.entrega_id == "entrega-123"
         assert evento.direccion == "Calle 123 #45-67"
 
     def test_evento_entrega_creada_igualdad(self):
         fecha = datetime.now() + timedelta(days=1)
+        pedido_mock = {"cliente": "Mock", "productos": []} 
         evento1 = EntregaCreada(
             entrega_id="entrega-123",
             direccion="Calle 123",
             fecha_entrega=fecha,
-            producto_id="prod-456",
-            cliente_id="cliente-789"
+            pedido=pedido_mock
         )
         evento2 = EntregaCreada(
             entrega_id="entrega-123",
             direccion="Calle 123",
             fecha_entrega=fecha,
-            producto_id="prod-456",
-            cliente_id="cliente-789"
+            pedido=pedido_mock
         )
-        
-
         assert evento1.entrega_id == evento2.entrega_id
         assert evento1.direccion == evento2.direccion
         assert evento1.fecha_entrega == evento2.fecha_entrega
-        assert evento1.producto_id == evento2.producto_id
-        assert evento1.cliente_id == evento2.cliente_id
+        assert evento1.pedido == evento2.pedido
 
 class TestInventarioReservado:
     def test_crear_evento_inventario_reservado(self):

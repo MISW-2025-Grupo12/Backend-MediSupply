@@ -65,7 +65,7 @@ class TestInventarioModel:
             cantidad_reservada=10,
             fecha_vencimiento=fecha_pasada
         )
-        
+
         assert inventario.fecha_vencimiento == fecha_pasada
 
     def test_inventario_model_con_fecha_futura(self):
@@ -76,7 +76,7 @@ class TestInventarioModel:
             cantidad_reservada=10,
             fecha_vencimiento=fecha_futura
         )
-        
+
         assert inventario.fecha_vencimiento == fecha_futura
 
 class TestEntregaModel:
@@ -86,57 +86,50 @@ class TestEntregaModel:
         assert hasattr(entrega, 'id')
         assert hasattr(entrega, 'direccion')
         assert hasattr(entrega, 'fecha_entrega')
-        assert hasattr(entrega, 'producto_id')
-        assert hasattr(entrega, 'cliente_id')
+        assert hasattr(entrega, 'pedido')
 
     def test_entrega_model_con_datos(self):
         entrega = EntregaModel(
-            direccion='Calle 123 #45-67',
-            fecha_entrega=datetime.now() + timedelta(days=1),
-            producto_id='prod-123',
-            cliente_id='cliente-456'
+            id="uuid-test",
+            direccion="Calle Falsa 123",
+            fecha_entrega=datetime.now(),
+            pedido='{}'
         )
-        
-        assert entrega.direccion == 'Calle 123 #45-67'
+
+        assert entrega.direccion == 'Calle Falsa 123'
         assert isinstance(entrega.fecha_entrega, datetime)
-        assert entrega.producto_id == 'prod-123'
-        assert entrega.cliente_id == 'cliente-456'
+        assert entrega.pedido == '{}'
 
     def test_entrega_model_con_datos_none(self):
         entrega = EntregaModel(
             direccion=None,
             fecha_entrega=None,
-            producto_id=None,
-            cliente_id=None
+            pedido=None
         )
-        
+
         assert entrega.direccion is None
         assert entrega.fecha_entrega is None
-        assert entrega.producto_id is None
-        assert entrega.cliente_id is None
+        assert entrega.pedido is None
 
     def test_entrega_model_con_datos_vacios(self):
         entrega = EntregaModel(
             direccion='',
             fecha_entrega=datetime.now(),
-            producto_id='',
-            cliente_id=''
+            pedido=''
         )
-        
+
         assert entrega.direccion == ''
         assert isinstance(entrega.fecha_entrega, datetime)
-        assert entrega.producto_id == ''
-        assert entrega.cliente_id == ''
+        assert entrega.pedido == ''
 
     def test_entrega_model_con_fecha_pasada(self):
         fecha_pasada = datetime.now() - timedelta(days=1)
         entrega = EntregaModel(
             direccion='Calle 123',
             fecha_entrega=fecha_pasada,
-            producto_id='prod-123',
-            cliente_id='cliente-456'
+            pedido='{}'
         )
-        
+
         assert entrega.fecha_entrega == fecha_pasada
 
     def test_entrega_model_con_fecha_futura(self):
@@ -144,20 +137,18 @@ class TestEntregaModel:
         entrega = EntregaModel(
             direccion='Calle 123',
             fecha_entrega=fecha_futura,
-            producto_id='prod-123',
-            cliente_id='cliente-456'
+            pedido='{}'
         )
-        
+
         assert entrega.fecha_entrega == fecha_futura
 
     def test_entrega_model_con_caracteres_especiales(self):
         entrega = EntregaModel(
             direccion='Calle #123-45 & Av. Siempre Viva',
             fecha_entrega=datetime.now() + timedelta(days=1),
-            producto_id='prod-ñáéíóú',
-            cliente_id='cli-üöä'
+            pedido='{"producto": "prod-ñáéíóú", "cliente": "cli-üöä"}'
         )
         
         assert entrega.direccion == 'Calle #123-45 & Av. Siempre Viva'
-        assert entrega.producto_id == 'prod-ñáéíóú'
-        assert entrega.cliente_id == 'cli-üöä'
+        assert isinstance(entrega.fecha_entrega, datetime)
+        assert isinstance(entrega.pedido, str)
