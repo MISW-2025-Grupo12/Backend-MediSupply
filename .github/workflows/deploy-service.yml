@@ -14,6 +14,23 @@ env:
   REGISTRY: gcr.io
 
 jobs:
+  authenticate:
+    runs-on: ubuntu-latest
+    outputs:
+      credentials: ${{ steps.auth.outputs.credentials }}
+    steps:
+    - name: Authenticate to Google Cloud
+      id: auth
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
@@ -46,7 +63,7 @@ jobs:
             - '.github/**'
 
   deploy-productos:
-    needs: detect-changes
+    needs: [authenticate, detect-changes]
     if: ${{ needs.detect-changes.outputs.productos == 'true' }}
     runs-on: ubuntu-latest
     steps:
@@ -66,16 +83,8 @@ jobs:
         python -m pytest tests/ -v --tb=short
         echo "✅ Pruebas de Productos pasaron correctamente!"
 
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-
     - name: Configure Docker to use gcloud as a credential helper
       run: gcloud auth configure-docker
-
-    - name: Get GKE credentials
-      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
 
     - name: Build and push Productos image
       run: |
@@ -91,7 +100,7 @@ jobs:
         kubectl rollout status deployment/productos-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
 
   deploy-usuarios:
-    needs: detect-changes
+    needs: [authenticate, detect-changes]
     if: ${{ needs.detect-changes.outputs.usuarios == 'true' }}
     runs-on: ubuntu-latest
     steps:
@@ -111,16 +120,8 @@ jobs:
         python -m pytest tests/ -v --tb=short
         echo "✅ Pruebas de Usuarios pasaron correctamente!"
 
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-
     - name: Configure Docker to use gcloud as a credential helper
       run: gcloud auth configure-docker
-
-    - name: Get GKE credentials
-      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
 
     - name: Build and push Usuarios image
       run: |
@@ -136,7 +137,7 @@ jobs:
         kubectl rollout status deployment/usuarios-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
 
   deploy-ventas:
-    needs: detect-changes
+    needs: [authenticate, detect-changes]
     if: ${{ needs.detect-changes.outputs.ventas == 'true' }}
     runs-on: ubuntu-latest
     steps:
@@ -156,16 +157,8 @@ jobs:
         python -m pytest tests/ -v --tb=short
         echo "✅ Pruebas de Ventas pasaron correctamente!"
 
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-
     - name: Configure Docker to use gcloud as a credential helper
       run: gcloud auth configure-docker
-
-    - name: Get GKE credentials
-      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
 
     - name: Build and push Ventas image
       run: |
@@ -181,7 +174,7 @@ jobs:
         kubectl rollout status deployment/ventas-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
 
   deploy-logistica:
-    needs: detect-changes
+    needs: [authenticate, detect-changes]
     if: ${{ needs.detect-changes.outputs.logistica == 'true' }}
     runs-on: ubuntu-latest
     steps:
@@ -201,16 +194,8 @@ jobs:
         python -m pytest tests/ -v --tb=short
         echo "✅ Pruebas de Logística pasaron correctamente!"
 
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-
     - name: Configure Docker to use gcloud as a credential helper
       run: gcloud auth configure-docker
-
-    - name: Get GKE credentials
-      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
 
     - name: Build and push Logistica image
       run: |
@@ -226,20 +211,12 @@ jobs:
         kubectl rollout status deployment/logistica-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
 
   deploy-config:
-    needs: detect-changes
+    needs: [authenticate, detect-changes]
     if: ${{ needs.detect-changes.outputs.config == 'true' }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-
-    - name: Get GKE credentials
-      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
 
     - name: Deploy configuration
       run: |
@@ -251,20 +228,12 @@ jobs:
         echo "✅ Configuración desplegada correctamente!"
 
   verify-deployment:
-    needs: [detect-changes, deploy-productos, deploy-usuarios, deploy-ventas, deploy-logistica, deploy-config]
+    needs: [authenticate, detect-changes, deploy-productos, deploy-usuarios, deploy-ventas, deploy-logistica, deploy-config]
     if: always() && (needs.detect-changes.outputs.productos == 'true' || needs.detect-changes.outputs.usuarios == 'true' || needs.detect-changes.outputs.ventas == 'true' || needs.detect-changes.outputs.logistica == 'true' || needs.detect-changes.outputs.config == 'true')
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-
-    - name: Get GKE credentials
-      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
 
     - name: Verify deployment
       run: |
