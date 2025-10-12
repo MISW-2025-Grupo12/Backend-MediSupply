@@ -47,6 +47,24 @@ def create_app(configuracion=None):
         app.register_blueprint(vendedor.bp)
         app.register_blueprint(cliente.bp)
         
+        @app.route("/")
+        def root():
+            return {
+                "status": "up",
+                "mode": "simplified",
+                "service": "usuarios",
+                "endpoints": [
+                    "POST /api/proveedores/", 
+                    "GET /api/proveedores/",
+                    "POST /api/vendedores/", 
+                    "GET /api/vendedores/",
+                    "GET /api/vendedores/<id>",
+                    "POST /api/clientes/", 
+                    "GET /api/clientes/",
+                    "GET /api/clientes/<id>"
+                ]
+            }
+
         @app.route("/health")
         def health():
             return {

@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: medisupply-ssl-cert
+  namespace: medisupply
+spec:
+  domains:
+    - medisupply.your-domain.com  # Reemplaza con tu dominio real

@@ -1,0 +1,74 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: default-backend-config
+  namespace: medisupply
+spec:
+  healthCheck:
+    checkIntervalSec: 10
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /
+    port: 8080
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: usuarios-backend-config
+  namespace: medisupply
+spec:
+  healthCheck:
+    checkIntervalSec: 10
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /health
+    port: 5001
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: productos-backend-config
+  namespace: medisupply
+spec:
+  healthCheck:
+    checkIntervalSec: 10
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /health
+    port: 5000
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: ventas-backend-config
+  namespace: medisupply
+spec:
+  healthCheck:
+    checkIntervalSec: 10
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /health
+    port: 5002
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: logistica-backend-config
+  namespace: medisupply
+spec:
+  healthCheck:
+    checkIntervalSec: 10
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /health
+    port: 5003
