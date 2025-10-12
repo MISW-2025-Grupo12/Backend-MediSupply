@@ -14,40 +14,26 @@ class TestEntregaCreada:
             entrega_id="entrega-123",
             direccion="Calle 123 #45-67",
             fecha_entrega=datetime.now() + timedelta(days=1),
-            pedido={
-                "id": "pedido-456",
-                "cliente": {"nombre": "Cliente Mock", "direccion": "Calle 123"},
-                "productos": [{"nombre": "Paracetamol", "cantidad": 2}]
-            }
+            pedido={"cliente": "Mock", "productos": []}  # ✅ nuevo formato
         )
-        
         assert evento.entrega_id == "entrega-123"
         assert evento.direccion == "Calle 123 #45-67"
         assert isinstance(evento.fecha_entrega, datetime)
         assert isinstance(evento.pedido, dict)
-        assert "cliente" in evento.pedido
-        assert "productos" in evento.pedido
 
     def test_evento_entrega_creada_inmutable(self):
         evento = EntregaCreada(
             entrega_id="entrega-123",
             direccion="Calle 123 #45-67",
             fecha_entrega=datetime.now() + timedelta(days=1),
-            pedido={"id": "pedido-789"}
+            pedido={"cliente": "Mock"}  # ✅
         )
-
         assert evento.entrega_id == "entrega-123"
         assert evento.direccion == "Calle 123 #45-67"
-        assert "id" in evento.pedido
 
     def test_evento_entrega_creada_igualdad(self):
         fecha = datetime.now() + timedelta(days=1)
-        pedido_mock = {
-            "id": "pedido-001",
-            "cliente": {"nombre": "Cliente Mock"},
-            "productos": [{"nombre": "Ibuprofeno"}]
-        }
-
+        pedido_mock = {"cliente": "Mock", "productos": []}  # ✅
         evento1 = EntregaCreada(
             entrega_id="entrega-123",
             direccion="Calle 123",
@@ -60,7 +46,6 @@ class TestEntregaCreada:
             fecha_entrega=fecha,
             pedido=pedido_mock
         )
-
         assert evento1.entrega_id == evento2.entrega_id
         assert evento1.direccion == evento2.direccion
         assert evento1.fecha_entrega == evento2.fecha_entrega

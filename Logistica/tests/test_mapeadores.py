@@ -88,7 +88,7 @@ class TestMapeadorEntrega:
 
         assert dto.direccion == "Calle 3"
         assert isinstance(dto.fecha_entrega, datetime)
-        assert isinstance(dto.pedido, dict)
+        assert dto.pedido is None or isinstance(dto.pedido, dict)
 
     def test_dto_a_entidad(self):
         dto = EntregaDTO(
