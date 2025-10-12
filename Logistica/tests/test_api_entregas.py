@@ -11,7 +11,7 @@ from aplicacion.dto import EntregaDTO
 
 class TestAPIEntregas:
     def setup_method(self):
-        # Mock de la base de datos para evitar conexión a PostgreSQL
+        # Mock de la base de datos para evitar conexión real
         with patch('config.db.init_db') as mock_init_db, \
              patch('api.entregas.ejecutar_consulta') as mock_ejecutar_consulta:
             
@@ -23,7 +23,6 @@ class TestAPIEntregas:
             self.app.config['TESTING'] = True
             self.client = self.app.test_client()
             
-            # Mock de la función de consulta
             self.mock_ejecutar_consulta = mock_ejecutar_consulta
 
     @patch('api.entregas.ejecutar_consulta')
@@ -31,8 +30,11 @@ class TestAPIEntregas:
         entrega_dto = EntregaDTO(
             direccion="Calle 123 #45-67",
             fecha_entrega=datetime.now() + timedelta(days=1),
-            producto_id="producto-123",
-            cliente_id="cliente-456"
+            pedido={
+                "id": "pedido-001",
+                "cliente": {"nombre": "Cliente Mock", "direccion": "Calle 123"},
+                "productos": [{"nombre": "Ibuprofeno", "cantidad": 3}]
+            }
         )
         
         mock_ejecutar_consulta.return_value = [entrega_dto]
@@ -42,6 +44,8 @@ class TestAPIEntregas:
         assert response.status_code == 200
         data = json.loads(response.data)
         assert isinstance(data, list)
+        assert "pedido" in data[0]
+        assert "productos" in data[0]["pedido"]
 
     @patch('api.entregas.ejecutar_consulta')
     def test_obtener_entregas_vacio(self, mock_ejecutar_consulta):
@@ -73,7 +77,7 @@ class TestAPIEntregas:
         assert response.status_code == 201
         data = json.loads(response.data)
         assert 'message' in data
-        assert '20 entregas generadas' in data['message']
+        assert 'Se han creado 20 entregas' in data['message']
 
     @patch('api.entregas.RepositorioEntregaSQLite')
     def test_crear_entregas_temp_error(self, mock_repo_class):

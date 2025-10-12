@@ -14,52 +14,57 @@ class TestEntregaCreada:
             entrega_id="entrega-123",
             direccion="Calle 123 #45-67",
             fecha_entrega=datetime.now() + timedelta(days=1),
-            producto_id="prod-456",
-            cliente_id="cliente-789"
+            pedido={
+                "id": "pedido-456",
+                "cliente": {"nombre": "Cliente Mock", "direccion": "Calle 123"},
+                "productos": [{"nombre": "Paracetamol", "cantidad": 2}]
+            }
         )
         
         assert evento.entrega_id == "entrega-123"
         assert evento.direccion == "Calle 123 #45-67"
-        assert evento.producto_id == "prod-456"
-        assert evento.cliente_id == "cliente-789"
         assert isinstance(evento.fecha_entrega, datetime)
+        assert isinstance(evento.pedido, dict)
+        assert "cliente" in evento.pedido
+        assert "productos" in evento.pedido
 
     def test_evento_entrega_creada_inmutable(self):
         evento = EntregaCreada(
             entrega_id="entrega-123",
             direccion="Calle 123 #45-67",
             fecha_entrega=datetime.now() + timedelta(days=1),
-            producto_id="prod-456",
-            cliente_id="cliente-789"
+            pedido={"id": "pedido-789"}
         )
-        
 
         assert evento.entrega_id == "entrega-123"
         assert evento.direccion == "Calle 123 #45-67"
+        assert "id" in evento.pedido
 
     def test_evento_entrega_creada_igualdad(self):
         fecha = datetime.now() + timedelta(days=1)
+        pedido_mock = {
+            "id": "pedido-001",
+            "cliente": {"nombre": "Cliente Mock"},
+            "productos": [{"nombre": "Ibuprofeno"}]
+        }
+
         evento1 = EntregaCreada(
             entrega_id="entrega-123",
             direccion="Calle 123",
             fecha_entrega=fecha,
-            producto_id="prod-456",
-            cliente_id="cliente-789"
+            pedido=pedido_mock
         )
         evento2 = EntregaCreada(
             entrega_id="entrega-123",
             direccion="Calle 123",
             fecha_entrega=fecha,
-            producto_id="prod-456",
-            cliente_id="cliente-789"
+            pedido=pedido_mock
         )
-        
 
         assert evento1.entrega_id == evento2.entrega_id
         assert evento1.direccion == evento2.direccion
         assert evento1.fecha_entrega == evento2.fecha_entrega
-        assert evento1.producto_id == evento2.producto_id
-        assert evento1.cliente_id == evento2.cliente_id
+        assert evento1.pedido == evento2.pedido
 
 class TestInventarioReservado:
     def test_crear_evento_inventario_reservado(self):
