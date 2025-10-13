@@ -66,6 +66,14 @@ jobs:
         python -m pytest tests/ -v --tb=short
         echo "✅ Pruebas de Productos pasaron correctamente!"
 
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
     - name: Configure Docker to use gcloud as a credential helper
       run: |
         gcloud auth configure-docker gcr.io
@@ -111,6 +119,14 @@ jobs:
         pip install -r requirements.txt
         python -m pytest tests/ -v --tb=short
         echo "✅ Pruebas de Usuarios pasaron correctamente!"
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
 
     - name: Configure Docker to use gcloud as a credential helper
       run: |
@@ -158,6 +174,14 @@ jobs:
         python -m pytest tests/ -v --tb=short
         echo "✅ Pruebas de Ventas pasaron correctamente!"
 
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
     - name: Configure Docker to use gcloud as a credential helper
       run: |
         gcloud auth configure-docker gcr.io
@@ -203,6 +227,14 @@ jobs:
         pip install -r requirements.txt
         python -m pytest tests/ -v --tb=short
         echo "✅ Pruebas de Logística pasaron correctamente!"
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
 
     - name: Configure Docker to use gcloud as a credential helper
       run: |
