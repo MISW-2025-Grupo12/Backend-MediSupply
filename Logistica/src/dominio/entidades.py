@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from seedwork.dominio.entidades import Entidad, AgregacionRaiz
-from .objetos_valor import Direccion, FechaEntrega, ProductoID, ClienteID, Cantidad, FechaVencimiento
+from .objetos_valor import Direccion, FechaEntrega, ProductoID, ClienteID, Cantidad, FechaVencimiento, BodegaID
 from .eventos import EntregaCreada, InventarioReservado, InventarioDescontado
 
 @dataclass
@@ -33,6 +33,15 @@ class Inventario(AgregacionRaiz):
     cantidad_disponible: Cantidad = field(default_factory=lambda: Cantidad(0))
     cantidad_reservada: Cantidad = field(default_factory=lambda: Cantidad(0))
     fecha_vencimiento: FechaVencimiento = field(default_factory=lambda: FechaVencimiento(datetime.now()))
+    bodega_id: str = "" 
+    pasillo: str = ""
+    estante: str = "" 
+    
+    @property
+    def ubicacion_fisica(self) -> str:
+        if self.bodega_id and self.pasillo and self.estante:
+            return f"Bodega #{self.bodega_id} - Pasillo {self.pasillo} - Estante {self.estante}"
+        return "Sin ubicación asignada"
     
     def __post_init__(self):
         super().__post_init__()
@@ -73,3 +82,11 @@ class Inventario(AgregacionRaiz):
             cantidad_reservada_restante=self.cantidad_reservada.valor
         )
         return True
+
+@dataclass
+class Bodega(AgregacionRaiz):
+    nombre: str = ""
+    direccion: str = ""
+    
+    def __post_init__(self):
+        super().__post_init__()

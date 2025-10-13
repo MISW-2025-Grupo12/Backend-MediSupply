@@ -1,8 +1,11 @@
 from seedwork.dominio.eventos import ManejadorEvento
-from infraestructura.repositorios import RepositorioInventarioSQLite
+from infraestructura.repositorios import RepositorioInventarioSQLite, RepositorioBodegaSQLite
 from aplicacion.dto import InventarioDTO
+from seedwork.aplicacion.comandos import ejecutar_comando
+from aplicacion.comandos.inicializar_bodegas import InicializarBodegas
 from datetime import datetime
 import logging
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -25,17 +28,47 @@ class ManejadorInventarioAsignado(ManejadorEvento):
                     logger.error(f"Formato de fecha inválido: {evento.fecha_vencimiento}")
                     return
             
-            # Crear DTO de inventario
+            # Obtener bodegas disponibles
+            from api import create_app
+            app = create_app()
+            with app.app_context():
+                try:
+                    repo_bodega = RepositorioBodegaSQLite()
+                    bodegas = repo_bodega.obtener_todas()
+                    
+                    if not bodegas:
+                        logger.warning("No hay bodegas creadas, inicializando...")
+                        ejecutar_comando(InicializarBodegas())
+                        bodegas = repo_bodega.obtener_todas()
+                    
+                    # Seleccionar bodega aleatoria
+                    bodega_seleccionada = random.choice(bodegas)
+                    
+                    # Generar pasillo y estante aleatorios
+                    pasillo = random.choice(['A', 'B', 'C', 'D', 'E'])
+                    estante = str(random.randint(1, 20))
+                    
+                    logger.info(f"Asignando producto {evento.producto_id} a {bodega_seleccionada.nombre} - Pasillo {pasillo} - Estante {estante}")
+                    
+                except Exception as bodega_error:
+                    logger.error(f"Error obteniendo bodegas: {bodega_error}")
+                    # Usar valores por defecto si hay error
+                    bodega_seleccionada = None
+                    pasillo = 'A'
+                    estante = '1'
+            
+            # Crear DTO de inventario con ubicación
             inventario_dto = InventarioDTO(
                 producto_id=str(evento.producto_id),
                 cantidad_disponible=evento.stock,
                 cantidad_reservada=0,
-                fecha_vencimiento=fecha_vencimiento or datetime.now()
+                fecha_vencimiento=fecha_vencimiento or datetime.now(),
+                bodega_id=bodega_seleccionada.id if bodega_seleccionada else None,
+                pasillo=pasillo,
+                estante=estante
             )
             
             # Guardar en repositorio con contexto de aplicación
-            from api import create_app
-            app = create_app()
             with app.app_context():
                 try:
                     repo_inventario = RepositorioInventarioSQLite()

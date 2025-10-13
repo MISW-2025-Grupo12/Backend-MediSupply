@@ -87,10 +87,12 @@ def create_app(configuracion=None):
         # Importar Blueprints del servicio
         from . import entregas
         from . import inventario
+        from . import bodegas
 
         # Registrar Blueprints
         app.register_blueprint(entregas.bp)
         app.register_blueprint(inventario.bp)
+        app.register_blueprint(bodegas.bp)
         
         # Importar consumidores de eventos
         from aplicacion.eventos.consumidor_pedido_confirmado import manejador
@@ -109,7 +111,11 @@ def create_app(configuracion=None):
                     "POST /logistica/api/inventario/reservar",
                     "POST /logistica/api/inventario/descontar",
                     "GET /logistica/api/inventario/producto/<id>",
-                    "POST /logistica/api/entregas/creartemp"
+                    "POST /logistica/api/entregas/creartemp",
+                    "GET /logistica/api/bodegas/",
+                    "POST /logistica/api/bodegas/inicializar",
+                    "GET /logistica/api/bodegas/<id>/productos",
+                    "GET /logistica/api/bodegas/producto/<id>/ubicaciones"
                 ]
             }
 
@@ -135,6 +141,10 @@ def create_app(configuracion=None):
                     "POST /logistica/api/inventario/reservar",
                     "POST /logistica/api/inventario/descontar",
                     "GET /logistica/api/inventario/producto/<id>",
+                    "GET /logistica/api/bodegas/",
+                    "POST /logistica/api/bodegas/inicializar",
+                    "GET /logistica/api/bodegas/<id>/productos",
+                    "GET /logistica/api/bodegas/producto/<id>/ubicaciones",
                     "GET /logistica/health"
                 ]
             }
