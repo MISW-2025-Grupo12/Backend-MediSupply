@@ -7,6 +7,7 @@ import requests
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from infraestructura.servicio_productos import ServicioProductos
+from .conftest import get_service_url
 
 class TestServicioProductos:
     def setup_method(self):
@@ -29,7 +30,7 @@ class TestServicioProductos:
         assert resultado is not None
         assert resultado["id"] == "prod-1"
         assert resultado["nombre"] == "Producto Test"
-        mock_get.assert_called_once_with("http://localhost:5004/api/productos/prod-1", timeout=5)
+        mock_get.assert_called_once_with(get_service_url('productos_service') + "/prod-1", timeout=5)
 
     @patch('infraestructura.servicio_productos.requests.get')
     def test_obtener_producto_por_id_no_encontrado(self, mock_get):
@@ -41,7 +42,7 @@ class TestServicioProductos:
         resultado = self.servicio.obtener_producto_por_id("prod-inexistente")
         
         assert resultado is None
-        mock_get.assert_called_once_with("http://localhost:5004/api/productos/prod-inexistente", timeout=5)
+        mock_get.assert_called_once_with(get_service_url('productos_service') + "/prod-inexistente", timeout=5)
 
     @patch('infraestructura.servicio_productos.requests.get')
     def test_obtener_producto_por_id_error_servidor(self, mock_get):
@@ -53,7 +54,7 @@ class TestServicioProductos:
         resultado = self.servicio.obtener_producto_por_id("prod-1")
         
         assert resultado is None
-        mock_get.assert_called_once_with("http://localhost:5004/api/productos/prod-1", timeout=5)
+        mock_get.assert_called_once_with(get_service_url('productos_service') + "/prod-1", timeout=5)
 
     @patch('infraestructura.servicio_productos.requests.get')
     def test_obtener_producto_por_id_excepcion(self, mock_get):
@@ -80,7 +81,7 @@ class TestServicioProductos:
         assert len(resultado) == 2
         assert resultado[0]["id"] == "prod-1"
         mock_get.assert_called_once_with(
-            "http://localhost:5004/api/productos",
+            get_service_url('productos_service'),
             params={'q': 'test', 'limite': 10},
             timeout=5
         )
@@ -96,7 +97,7 @@ class TestServicioProductos:
         
         assert resultado == []
         mock_get.assert_called_once_with(
-            "http://localhost:5004/api/productos",
+            get_service_url('productos_service'),
             params={'q': 'test', 'limite': 50},
             timeout=5
         )
@@ -125,7 +126,7 @@ class TestServicioProductos:
         
         assert len(resultado) == 2
         assert resultado[0]["id"] == "prod-1"
-        mock_get.assert_called_once_with("http://localhost:5004/api/productos", timeout=5)
+        mock_get.assert_called_once_with(get_service_url('productos_service'), timeout=5)
 
     @patch('infraestructura.servicio_productos.requests.get')
     def test_obtener_todos_productos_error_servidor(self, mock_get):
@@ -137,7 +138,7 @@ class TestServicioProductos:
         resultado = self.servicio.obtener_todos_productos()
         
         assert resultado == []
-        mock_get.assert_called_once_with("http://localhost:5004/api/productos", timeout=5)
+        mock_get.assert_called_once_with(get_service_url('productos_service'), timeout=5)
 
     @patch('infraestructura.servicio_productos.requests.get')
     def test_obtener_todos_productos_excepcion(self, mock_get):
