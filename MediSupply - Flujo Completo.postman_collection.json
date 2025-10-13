@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "02c7ddfe-f72c-42b4-9c96-963c49bb0d25",
+		"_postman_id": "9b4f61ca-4317-43e2-8cb2-33292e185da4",
 		"name": "MediSupply - Flujo Completo",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n3. **Crear Productos** - Con y sin inventario\n    \n4. **Crear Visitas** - Programar visitas de venta\n    \n5. **Crear Pedidos** - Con items y confirmación\n    \n6. **Gestionar Inventario** - Reservas y descuentos\n    \n7. **Consultar Entregas** - Ver entregas programadas",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n3. **Crear Productos** - Con y sin inventario\n    \n4. **Crear Visitas** - Programar visitas de venta\n    \n5. **Crear Pedidos** - Con items y confirmación\n    \n6. **Gestionar Inventario** - Reservas y descuentos\n    \n7. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n8. **Consultar Entregas** - Ver entregas programadas",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-02c7ddfe-f72c-42b4-9c96-963c49bb0d25?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-9b4f61ca-4317-43e2-8cb2-33292e185da4?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -864,7 +864,7 @@
 								"{{producto_inventario_id}}"
 							]
 						},
-						"description": "Obtiene el inventario detallado de un producto específico"
+						"description": "Obtiene el inventario detallado de un producto específico con ubicaciones en bodegas"
 					},
 					"response": []
 				},
@@ -908,7 +908,155 @@
 			"description": "Consultar y gestionar el inventario de productos"
 		},
 		{
-			"name": "🚚 7. Consultar Entregas",
+			"name": "🏢 7. Gestionar Bodegas",
+			"item": [
+				{
+					"name": "Inicializar Bodegas por Defecto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Bodegas inicializadas exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('count');",
+									"    pm.expect(response.count).to.be.greaterThan(0);",
+									"    console.log('Bodegas creadas:', response.count);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/bodegas/inicializar",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"bodegas",
+								"inicializar"
+							]
+						},
+						"description": "Crea 3 bodegas por defecto: Central, Norte y Sur"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Todas las Bodegas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Lista de bodegas obtenida exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.length).to.be.greaterThan(0);",
+									"    pm.collectionVariables.set('bodega_id', response[0].id);",
+									"    console.log('Bodegas encontradas:', response.length);",
+									"    console.log('Primera bodega ID guardado:', response[0].id);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/bodegas/",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"bodegas",
+								""
+							]
+						},
+						"description": "Obtiene la lista de todas las bodegas disponibles en el sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Productos en Bodega",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Productos en bodega obtenidos exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('productos');",
+									"    pm.expect(response.productos).to.be.an('array');",
+									"    console.log('Productos en bodega:', response.productos.length);",
+									"    console.log('Bodega:', response.nombre_bodega);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/bodegas/{{bodega_id}}/productos",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"bodegas",
+								"{{bodega_id}}",
+								"productos"
+							]
+						},
+						"description": "Obtiene todos los productos y sus cantidades en una bodega específica"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Ubicacion de Producto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/bodegas/producto/{{producto_inventario_id}}/ubicaciones",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"bodegas",
+								"producto",
+								"{{producto_inventario_id}}",
+								"ubicaciones"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Gestionar bodegas y consultar ubicaciones de productos"
+		},
+		{
+			"name": "🚚 8. Consultar Entregas",
 			"item": [
 				{
 					"name": "Crear Entregas de Prueba",
@@ -1294,6 +1442,10 @@
 		},
 		{
 			"key": "pedido_id",
+			"value": ""
+		},
+		{
+			"key": "bodega_id",
 			"value": ""
 		}
 	]

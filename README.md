@@ -129,16 +129,20 @@ docker-compose logs -f ventas
 - `GET /logistica/api/inventario/buscar` - Buscar productos con inventario
 - `POST /logistica/api/inventario/reservar` - Reservar inventario
 - `POST /logistica/api/inventario/descontar` - Descontar inventario
-- `GET /logistica/api/inventario/producto/{id}` - Obtener inventario de producto específico
+- `GET /logistica/api/inventario/producto/{id}` - Obtener inventario de producto específico (con ubicaciones en bodegas)
 
 #### Entregas
 - `GET /logistica/api/entregas/` - Obtener entregas programadas (con filtros de fecha)
 - `POST /logistica/api/entregas/creartemp` - Crear entregas temporales (para pruebas)
 
+#### Bodegas
+- `GET /logistica/api/bodegas/` - Obtener todas las bodegas
+- `POST /logistica/api/bodegas/inicializar` - Inicializar bodegas por defecto
+- `GET /logistica/api/bodegas/{bodega_id}/productos` - Obtener productos en una bodega específica
+
 #### Salud del Servicio
 - `GET /health` - Estado del servicio
 - `GET /logistica/health` - Estado detallado del servicio
-- `GET /spec` - Documentación Swagger
 
 ## 📋 Parámetros de Consulta y Filtros
 
@@ -160,4 +164,10 @@ docker-compose logs -f ventas
 ### Entregas (Logística)
 - `GET /logistica/api/entregas/?fecha_inicio=2024-01-01&fecha_fin=2024-01-31` - Filtrar entregas por rango de fechas
 - `GET /logistica/api/entregas/?fecha_inicio=2024-01-15&fecha_fin=2024-01-15` - Entregas de un día específico
+
+### Bodegas (Logística)
+- `GET /logistica/api/bodegas/` - Listar todas las bodegas disponibles
+- `GET /logistica/api/bodegas/{bodega_id}/productos` - Ver productos y sus ubicaciones en una bodega específica
+- `GET /logistica/api/bodegas/producto/{id}/ubicaciones` - Ver todas las ubicaciones de un producto en las bodegas
+- `GET /logistica/api/inventario/producto/{id}` - Ver en qué bodegas está ubicado un producto específico
 

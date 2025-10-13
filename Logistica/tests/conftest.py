@@ -24,7 +24,11 @@ API_ROUTES = {
         'inventario_buscar': '/logistica/api/inventario/buscar',
         'inventario_reservar': '/logistica/api/inventario/reservar',
         'inventario_descontar': '/logistica/api/inventario/descontar',
-        'inventario_producto': '/logistica/api/inventario/producto'
+        'inventario_producto': '/logistica/api/inventario/producto',
+        'bodegas': '/logistica/api/bodegas',
+        'bodegas_inicializar': '/logistica/api/bodegas/inicializar',
+        'bodegas_productos': '/logistica/api/bodegas',
+        'bodegas_ubicaciones': '/logistica/api/bodegas/producto'
     },
     'productos': {
         'productos': '/productos/api/productos',
@@ -53,10 +57,8 @@ def app():
     os.environ['TESTING'] = 'True'
     app = create_app()
     with app.app_context():
-        db.create_all()
+        pass
     yield app
-    with app.app_context():
-        db.drop_all()
 
 @pytest.fixture(scope='function')
 def client(app):
@@ -92,7 +94,11 @@ def logistica_urls():
         'inventario_buscar': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['inventario_buscar']}",
         'inventario_reservar': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['inventario_reservar']}",
         'inventario_descontar': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['inventario_descontar']}",
-        'inventario_producto': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['inventario_producto']}"
+        'inventario_producto': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['inventario_producto']}",
+        'bodegas': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas']}",
+        'bodegas_inicializar': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_inicializar']}",
+        'bodegas_productos': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_productos']}",
+        'bodegas_ubicaciones': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_ubicaciones']}"
     }
 
 @pytest.fixture
@@ -113,3 +119,19 @@ def get_logistica_url(endpoint: str) -> str:
 def get_service_url(service: str) -> str:
     """Obtiene la URL completa para un servicio externo"""
     return SERVICE_URLS[service]
+
+def get_bodegas_url() -> str:
+    """Obtiene la URL para listar bodegas"""
+    return f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas']}"
+
+def get_bodegas_inicializar_url() -> str:
+    """Obtiene la URL para inicializar bodegas"""
+    return f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_inicializar']}"
+
+def get_bodega_productos_url(bodega_id: str) -> str:
+    """Obtiene la URL para obtener productos de una bodega específica"""
+    return f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_productos']}/{bodega_id}/productos"
+
+def get_producto_ubicaciones_url(producto_id: str) -> str:
+    """Obtiene la URL para obtener ubicaciones de un producto"""
+    return f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_ubicaciones']}/{producto_id}/ubicaciones"

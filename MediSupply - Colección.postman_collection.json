@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "2d47cfb9-cc97-469c-b079-984030e3e446",
+		"_postman_id": "8522f01b-a3c1-4bfd-bfc9-01bb6207a119",
 		"name": "MediSupply - Colección",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-2d47cfb9-cc97-469c-b079-984030e3e446?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-8522f01b-a3c1-4bfd-bfc9-01bb6207a119?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -1168,7 +1168,94 @@
 										"{{producto_id}}"
 									]
 								},
-								"description": "Obtiene el inventario detallado de un producto específico"
+								"description": "Obtiene el inventario detallado de un producto específico con ubicaciones en bodegas"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Bodegas",
+					"item": [
+						{
+							"name": "Obtener Todas las Bodegas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todas las bodegas disponibles en el sistema"
+							},
+							"response": []
+						},
+						{
+							"name": "Inicializar Bodegas por Defecto",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/inicializar",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										"inicializar"
+									]
+								},
+								"description": "Crea 3 bodegas por defecto: Central, Norte y Sur"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Productos en Bodega",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/{{bodega_id}}/productos",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										"{{bodega_id}}",
+										"productos"
+									]
+								},
+								"description": "Obtiene todos los productos y sus cantidades en una bodega específica"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Ubicacion de Producto",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/producto/{{producto_inventario_id}}/ubicaciones",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										"producto",
+										"{{producto_inventario_id}}",
+										"ubicaciones"
+									]
+								}
 							},
 							"response": []
 						}
@@ -1198,74 +1285,89 @@
 					]
 				}
 			],
-			"description": "Microservicio de gestión de inventario y entregas"
+			"description": "Microservicio de gestión de inventario, entregas y bodegas"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost",
-			"type": "string"
+			"value": "http://localhost"
 		},
 		{
 			"key": "base_url_usuarios",
-			"value": "http://localhost:5001",
-			"type": "string"
+			"value": "http://localhost:5001"
 		},
 		{
 			"key": "base_url_productos",
-			"value": "http://localhost:5000",
-			"type": "string"
+			"value": "http://localhost:5000"
 		},
 		{
 			"key": "base_url_ventas",
-			"value": "http://localhost:5002",
-			"type": "string"
+			"value": "http://localhost:5002"
 		},
 		{
 			"key": "base_url_logistica",
-			"value": "http://localhost:5003",
-			"type": "string"
+			"value": "http://localhost:5003"
 		},
 		{
 			"key": "proveedor_id",
-			"value": "f965c696-bbeb-4d00-b80a-c4e518472753",
-			"type": "string"
+			"value": "f965c696-bbeb-4d00-b80a-c4e518472753"
 		},
 		{
 			"key": "vendedor_id",
-			"value": "f965c696-bbeb-4d00-b80a-c4e518472753",
-			"type": "string"
+			"value": "f965c696-bbeb-4d00-b80a-c4e518472753"
 		},
 		{
 			"key": "cliente_id",
-			"value": "3561abc0-f31d-4354-bfd2-3f07dbaff241",
-			"type": "string"
+			"value": "3561abc0-f31d-4354-bfd2-3f07dbaff241"
 		},
 		{
 			"key": "producto_id",
-			"value": "8c5ac5bf-a51a-483f-8200-5c468f84b797",
-			"type": "string"
+			"value": "8c5ac5bf-a51a-483f-8200-5c468f84b797"
 		},
 		{
 			"key": "categoria_id",
-			"value": "83ebf893-eea5-40bd-bb36-b78fc43c5770",
-			"type": "string"
+			"value": "83ebf893-eea5-40bd-bb36-b78fc43c5770"
 		},
 		{
 			"key": "pedido_id",
-			"value": "pedido-uuid-ejemplo",
-			"type": "string"
+			"value": "pedido-uuid-ejemplo"
 		},
 		{
 			"key": "visita_id",
-			"value": "visita-uuid-ejemplo",
-			"type": "string"
+			"value": "visita-uuid-ejemplo"
 		},
 		{
 			"key": "item_id",
-			"value": "item-uuid-ejemplo",
-			"type": "string"
+			"value": "item-uuid-ejemplo"
+		},
+		{
+			"key": "bodega_id",
+			"value": "bodega-uuid-ejemplo"
 		}
 	]
 }
