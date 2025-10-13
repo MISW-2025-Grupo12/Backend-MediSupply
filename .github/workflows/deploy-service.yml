@@ -86,6 +86,9 @@ jobs:
         docker pull hello-world
         echo "✅ Docker autenticado correctamente"
 
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
     - name: Build and push Productos image
       run: |
         cd Productos
@@ -139,6 +142,9 @@ jobs:
         gcloud auth list
         docker pull hello-world
         echo "✅ Docker autenticado correctamente"
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
 
     - name: Build and push Usuarios image
       run: |
@@ -194,6 +200,9 @@ jobs:
         docker pull hello-world
         echo "✅ Docker autenticado correctamente"
 
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
     - name: Build and push Ventas image
       run: |
         cd Ventas
@@ -247,6 +256,9 @@ jobs:
         gcloud auth list
         docker pull hello-world
         echo "✅ Docker autenticado correctamente"
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
 
     - name: Build and push Logistica image
       run: |
