@@ -31,25 +31,19 @@ def create_app(configuracion=None):
         app.register_blueprint(producto.bp)
         app.register_blueprint(categoria.bp)
 
-        @app.route("/spec")
-        def spec():
-            swag = swagger(app)
-            swag['info']['version'] = "1.0"
-            swag['info']['title'] = "Productos API"
-            return jsonify(swag)
 
         @app.route("/")
         def root():
             return {
-                "status": "productos-cicd-test",
+                "status": "up",
                 "mode": "simplified",
                 "service": "productos",
                 "endpoints": [
-                    "POST /api/productos/", 
-                    "GET /api/productos/",
-                    "GET /api/productos/<id>",
-                    "POST /api/productos/categorias/",
-                    "GET /api/productos/categorias/"
+                    "POST /productos/api/productos/", 
+                    "GET /productos/api/productos/",
+                    "GET /productos/api/productos/<id>",
+                    "POST /productos/api/categorias/",
+                    "GET /productos/api/categorias/"
                 ]
             }
 

@@ -100,18 +100,18 @@ def create_app(configuracion=None):
         def root():
             return {
                 "status": "up",
+                "mode": "simplified",
                 "service": "logistica",
                 "endpoints": [
-                    "GET /entregas-programadas",
-                    "GET /api/inventario",
-                    "GET /api/inventario/buscar",
-                    "POST /api/inventario/reservar",
-                    "POST /api/inventario/descontar",
-                    "GET /api/inventario/producto/<id>",
-                    "GET /spec",
-                    "GET /health"
+                    "GET /logistica/api/entregas/",
+                    "GET /logistica/api/inventario/",
+                    "GET /logistica/api/inventario/buscar",
+                    "POST /logistica/api/inventario/reservar",
+                    "POST /logistica/api/inventario/descontar",
+                    "GET /logistica/api/inventario/producto/<id>",
+                    "POST /logistica/api/entregas/creartemp"
                 ]
-            }, 200
+            }
 
         @app.route("/health")
         def health():
@@ -135,7 +135,6 @@ def create_app(configuracion=None):
                     "POST /logistica/api/inventario/reservar",
                     "POST /logistica/api/inventario/descontar",
                     "GET /logistica/api/inventario/producto/<id>",
-                    "GET /logistica/spec",
                     "GET /logistica/health"
                 ]
             }

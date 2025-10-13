@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 class ServicioProveedores:
     def __init__(self, base_url=None):
         # Usar variable de entorno o fallback a localhost
-        self.base_url = base_url or os.getenv('USUARIOS_SERVICE_URL', 'http://localhost:5001')
+        self.base_url = base_url or os.getenv('USUARIOS_SERVICE_URL', 'http://localhost:5001/usuarios/api')
     
     def obtener_proveedor_por_id(self, proveedor_id: str) -> dict:
         """Obtiene un proveedor específico por ID"""

@@ -54,14 +54,14 @@ def create_app(configuracion=None):
                 "mode": "simplified",
                 "service": "usuarios",
                 "endpoints": [
-                    "POST /api/proveedores/", 
-                    "GET /api/proveedores/",
-                    "POST /api/vendedores/", 
-                    "GET /api/vendedores/",
-                    "GET /api/vendedores/<id>",
-                    "POST /api/clientes/", 
-                    "GET /api/clientes/",
-                    "GET /api/clientes/<id>"
+                    "POST /usuarios/api/proveedores/", 
+                    "GET /usuarios/api/proveedores/",
+                    "POST /usuarios/api/vendedores/", 
+                    "GET /usuarios/api/vendedores/",
+                    "GET /usuarios/api/vendedores/<id>",
+                    "POST /usuarios/api/clientes/", 
+                    "GET /usuarios/api/clientes/",
+                    "GET /usuarios/api/clientes/<id>"
                 ]
             }
 

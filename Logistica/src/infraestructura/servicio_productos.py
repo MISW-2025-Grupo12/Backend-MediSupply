@@ -6,12 +6,12 @@ logger = logging.getLogger(__name__)
 
 class ServicioProductos:
     def __init__(self):
-        self.base_url = os.getenv('PRODUCTOS_SERVICE_URL', 'http://localhost:5004')
+        self.base_url = os.getenv('PRODUCTOS_SERVICE_URL', 'http://localhost:5000/productos/api')
     
     def obtener_producto_por_id(self, producto_id: str) -> dict:
         """Obtener producto por ID desde el servicio de Productos"""
         try:
-            url = f"{self.base_url}/api/productos/{producto_id}"
+            url = f"{self.base_url}/productos/{producto_id}"
             response = requests.get(url, timeout=5)
             
             if response.status_code == 200:
@@ -29,7 +29,7 @@ class ServicioProductos:
     def buscar_productos(self, termino: str, limite: int = 50) -> list[dict]:
         """Buscar productos por término de búsqueda"""
         try:
-            url = f"{self.base_url}/api/productos"
+            url = f"{self.base_url}/productos"
             params = {
                 'q': termino,
                 'limite': limite
@@ -49,7 +49,7 @@ class ServicioProductos:
     def obtener_todos_productos(self) -> list[dict]:
         """Obtener todos los productos"""
         try:
-            url = f"{self.base_url}/api/productos"
+            url = f"{self.base_url}/productos"
             response = requests.get(url, timeout=5)
             
             if response.status_code == 200:
