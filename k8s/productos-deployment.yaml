@@ -57,6 +57,13 @@ spec:
               key: productos-password
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)"
+        - name: USUARIOS_SERVICE_URL
+          value: "http://usuarios-service:5001"
+        - name: GCP_PROJECT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: GCP_PROJECT_ID
         resources:
           requests:
             memory: "64Mi"
@@ -64,6 +71,7 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "500m"
+      serviceAccountName: medisupply-ksa
 ---
 apiVersion: v1
 kind: Service

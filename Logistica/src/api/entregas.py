@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # Blueprint jerárquico bajo /api/logistica
-bp = api.crear_blueprint('entrega', '/api/logistica/entregas')
+bp = api.crear_blueprint('entrega', '/logistica/api/entregas')
 
 # Endpoint temporal: Crear entregas
 @bp.route('/creartemp', methods=['POST'])

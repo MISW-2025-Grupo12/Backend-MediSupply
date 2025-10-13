@@ -2,6 +2,7 @@ import pytest
 import json
 import uuid
 from unittest.mock import patch, Mock
+from .conftest import get_usuarios_url
 
 class TestAPICliente:
     """Test para la API de clientes usando SQLite"""
@@ -17,7 +18,7 @@ class TestAPICliente:
         }
         
         # Mock del comando
-        with patch('api.cliente.ejecutar_comando') as mock_ejecutar:
+        with patch('aplicacion.comandos.crear_cliente.CrearClienteHandler.handle') as mock_ejecutar:
             mock_cliente = Mock()
             mock_cliente.id = str(uuid.uuid4())
             mock_cliente.nombre = 'Juan Pérez'
@@ -27,7 +28,7 @@ class TestAPICliente:
             mock_ejecutar.return_value = mock_cliente
             
             # Act
-            response = client.post('/api/clientes', 
+            response = client.post(get_usuarios_url('clientes'), 
                                  data=json.dumps(cliente_data),
                                  content_type='application/json')
             
@@ -44,7 +45,7 @@ class TestAPICliente:
     def test_crear_cliente_sin_json(self, client):
         """Test crear cliente sin JSON"""
         # Act
-        response = client.post('/api/clientes')
+        response = client.post(get_usuarios_url('clientes'))
         
         # Assert
     
@@ -57,7 +58,7 @@ class TestAPICliente:
     def test_crear_cliente_json_invalido(self, client):
         """Test crear cliente con JSON inválido"""
         # Act
-        response = client.post('/api/clientes',
+        response = client.post(get_usuarios_url('clientes'),
                              data='invalid json',
                              content_type='application/json')
         
@@ -76,11 +77,11 @@ class TestAPICliente:
             'direccion': 'Calle 123 #45-67'
         }
         
-        with patch('api.cliente.ejecutar_comando') as mock_ejecutar:
+        with patch('aplicacion.comandos.crear_cliente.CrearClienteHandler.handle') as mock_ejecutar:
             mock_ejecutar.side_effect = Exception("Error interno")
             
             # Act
-            response = client.post('/api/clientes',
+            response = client.post(get_usuarios_url('clientes'),
                                  data=json.dumps(cliente_data),
                                  content_type='application/json')
             
@@ -93,17 +94,17 @@ class TestAPICliente:
     def test_obtener_clientes_exitoso(self, client):
         """Test obtener clientes exitoso"""
         # Arrange
-        with patch('api.cliente.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_clientes.ObtenerClientesHandler.handle') as mock_ejecutar:
             mock_clientes = [
-                Mock(id=str(uuid.uuid4()), nombre='Juan Pérez', 
+                Mock(id=str(uuid.uuid4()), nombre='Juan Pérez',
                      email='juan@email.com', telefono='1234567890', direccion='Calle 123 #45-67'),
-                Mock(id=str(uuid.uuid4()), nombre='María García', 
+                Mock(id=str(uuid.uuid4()), nombre='María García',
                      email='maria@email.com', telefono='0987654321', direccion='Avenida 456 #78-90')
             ]
             mock_ejecutar.return_value = mock_clientes
             
             # Act
-            response = client.get('/api/clientes')
+            response = client.get(get_usuarios_url('clientes'))
             
             # Assert
             assert response.status_code == 200
@@ -117,11 +118,11 @@ class TestAPICliente:
     def test_obtener_clientes_lista_vacia(self, client):
         """Test obtener clientes con lista vacía"""
         # Arrange
-        with patch('api.cliente.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_cliente_por_id.ObtenerClientePorIdHandler.handle') as mock_ejecutar:
             mock_ejecutar.return_value = []
             
             # Act
-            response = client.get('/api/clientes')
+            response = client.get(get_usuarios_url('clientes'))
             
             # Assert
             assert response.status_code == 200
@@ -131,11 +132,11 @@ class TestAPICliente:
     def test_obtener_clientes_error(self, client):
         """Test obtener clientes con error"""
         # Arrange
-        with patch('api.cliente.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_clientes.ObtenerClientesHandler.handle') as mock_ejecutar:
             mock_ejecutar.side_effect = Exception("Error de base de datos")
             
             # Act
-            response = client.get('/api/clientes')
+            response = client.get(get_usuarios_url('clientes'))
             
             # Assert
             assert response.status_code == 500
@@ -147,7 +148,7 @@ class TestAPICliente:
         """Test obtener cliente por ID exitoso"""
         # Arrange
         cliente_id = str(uuid.uuid4())
-        with patch('api.cliente.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_cliente_por_id.ObtenerClientePorIdHandler.handle') as mock_ejecutar:
             mock_cliente = Mock()
             mock_cliente.id = cliente_id
             mock_cliente.nombre = 'Juan Pérez'
@@ -157,7 +158,7 @@ class TestAPICliente:
             mock_ejecutar.return_value = mock_cliente
             
             # Act
-            response = client.get(f'/api/clientes/{cliente_id}')
+            response = client.get(f"{get_usuarios_url('clientes')}/{cliente_id}")
             
             # Assert
             assert response.status_code == 200
@@ -174,11 +175,11 @@ class TestAPICliente:
         """Test obtener cliente por ID no encontrado"""
         # Arrange
         cliente_id = str(uuid.uuid4())
-        with patch('api.cliente.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_cliente_por_id.ObtenerClientePorIdHandler.handle') as mock_ejecutar:
             mock_ejecutar.return_value = None
             
             # Act
-            response = client.get(f'/api/clientes/{cliente_id}')
+            response = client.get(f"{get_usuarios_url('clientes')}/{cliente_id}")
             
             # Assert
             assert response.status_code == 404
@@ -192,11 +193,11 @@ class TestAPICliente:
         """Test obtener cliente por ID con error"""
         # Arrange
         cliente_id = str(uuid.uuid4())
-        with patch('api.cliente.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_cliente_por_id.ObtenerClientePorIdHandler.handle') as mock_ejecutar:
             mock_ejecutar.side_effect = Exception("Error de base de datos")
             
             # Act
-            response = client.get(f'/api/clientes/{cliente_id}')
+            response = client.get(f"{get_usuarios_url('clientes')}/{cliente_id}")
             
             # Assert
             assert response.status_code == 500

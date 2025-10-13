@@ -8,6 +8,7 @@ from unittest.mock import Mock, patch, MagicMock
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from aplicacion.dto import EntregaDTO
+from .conftest import get_logistica_url
 
 class TestAPIEntregas:
     def setup_method(self):
@@ -39,7 +40,7 @@ class TestAPIEntregas:
         
         mock_ejecutar_consulta.return_value = [entrega_dto]
         
-        response = self.client.get('/api/logistica/entregas/')
+        response = self.client.get(get_logistica_url('entregas') + '/')
         
         assert response.status_code == 200
         data = json.loads(response.data)
@@ -51,7 +52,7 @@ class TestAPIEntregas:
     def test_obtener_entregas_vacio(self, mock_ejecutar_consulta):
         mock_ejecutar_consulta.return_value = []
         
-        response = self.client.get('/api/logistica/entregas/')
+        response = self.client.get(get_logistica_url('entregas') + '/')
         
         assert response.status_code == 200
         data = json.loads(response.data)
@@ -61,7 +62,7 @@ class TestAPIEntregas:
     def test_obtener_entregas_error(self, mock_ejecutar_consulta):
         mock_ejecutar_consulta.side_effect = Exception("Error de base de datos")
         
-        response = self.client.get('/api/logistica/entregas/')
+        response = self.client.get(get_logistica_url('entregas') + '/')
         
         assert response.status_code == 500
         data = json.loads(response.data)
@@ -72,7 +73,7 @@ class TestAPIEntregas:
         mock_repo = Mock()
         mock_repo_class.return_value = mock_repo
         
-        response = self.client.post('/api/logistica/entregas/creartemp')
+        response = self.client.post(get_logistica_url('entregas') + '/creartemp')
         
         assert response.status_code == 201
         data = json.loads(response.data)
@@ -85,7 +86,7 @@ class TestAPIEntregas:
         mock_repo.crear.side_effect = Exception("Error de base de datos")
         mock_repo_class.return_value = mock_repo
         
-        response = self.client.post('/api/logistica/entregas/creartemp')
+        response = self.client.post(get_logistica_url('entregas') + '/creartemp')
         
         assert response.status_code == 500
         data = json.loads(response.data)

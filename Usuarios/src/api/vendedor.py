@@ -12,7 +12,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-bp = api.crear_blueprint('vendedor', '/api/vendedores')
+bp = api.crear_blueprint('vendedor', '/usuarios/api/vendedores')
 
 # Endpoint para crear vendedor
 @bp.route('/', methods=['POST'])

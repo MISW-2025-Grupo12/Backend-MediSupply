@@ -41,17 +41,11 @@ def create_app(configuracion=None):
         init_db(app)
         logger.info("✅ Base de datos inicializada")
         
-        from . import visita
         from . import pedidos
-        app.register_blueprint(visita.bp)
+        from . import visita
         app.register_blueprint(pedidos.bp)
+        app.register_blueprint(visita.bp)
 
-        @app.route("/spec")
-        def spec():
-            swag = swagger(app)
-            swag['info']['version'] = "1.0"
-            swag['info']['title'] = "Ventas API"
-            return jsonify(swag)
 
         @app.route("/")
         def root():
@@ -60,17 +54,17 @@ def create_app(configuracion=None):
                 "mode": "simplified",
                 "service": "ventas",
                 "endpoints": [
-                    "POST /api/visitas/", 
-                    "GET /api/visitas/?estado=pendiente",
-                    "GET /api/visitas/vendedor/<vendedor_id>?estado=pendiente",
-                    "PUT /api/visitas/<visita_id>",
-                    "POST /api/pedidos/",
-                    "GET /api/pedidos/<pedido_id>",
-                    "POST /api/pedidos/<pedido_id>/items",
-                    "PUT /api/pedidos/<pedido_id>/items/<item_id>",
-                    "DELETE /api/pedidos/<pedido_id>/items/<item_id>",
-                    "POST /api/pedidos/<pedido_id>/confirmar",
-                    "GET /api/pedidos/productos/buscar"
+                    "POST /ventas/api/visitas/", 
+                    "GET /ventas/api/visitas/?estado=pendiente",
+                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente",
+                    "PUT /ventas/api/visitas/<visita_id>",
+                    "POST /ventas/api/pedidos/",
+                    "GET /ventas/api/pedidos/<pedido_id>",
+                    "POST /ventas/api/pedidos/<pedido_id>/items",
+                    "PUT /ventas/api/pedidos/<pedido_id>/items/<item_id>",
+                    "DELETE /ventas/api/pedidos/<pedido_id>/items/<item_id>",
+                    "POST /ventas/api/pedidos/<pedido_id>/confirmar",
+                    "GET /ventas/api/pedidos/productos/buscar"
                 ]
             }
 
@@ -78,19 +72,29 @@ def create_app(configuracion=None):
         def health():
             return {
                 "status": "up",
+                "service": "ventas",
+                "mode": "simplified"
+            }
+
+        @app.route("/ventas/health")
+        def ventas_health():
+            return {
+                "status": "up",
+                "service": "ventas",
+                "version": "1.0.0",
                 "mode": "simplified",
                 "endpoints": [
-                    "POST /api/visitas/", 
-                    "GET /api/visitas/?estado=pendiente",
-                    "GET /api/visitas/vendedor/<vendedor_id>?estado=pendiente",
-                    "PUT /api/visitas/<visita_id>",
-                    "POST /api/pedidos/",
-                    "GET /api/pedidos/<pedido_id>",
-                    "POST /api/pedidos/<pedido_id>/items",
-                    "PUT /api/pedidos/<pedido_id>/items/<item_id>",
-                    "DELETE /api/pedidos/<pedido_id>/items/<item_id>",
-                    "POST /api/pedidos/<pedido_id>/confirmar",
-                    "GET /api/pedidos/productos/buscar"
+                    "POST /ventas/api/visitas/", 
+                    "GET /ventas/api/visitas/?estado=pendiente",
+                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente",
+                    "PUT /ventas/api/visitas/<visita_id>",
+                    "POST /ventas/api/pedidos/",
+                    "GET /ventas/api/pedidos/<pedido_id>",
+                    "POST /ventas/api/pedidos/<pedido_id>/items",
+                    "PUT /ventas/api/pedidos/<pedido_id>/items/<item_id>",
+                    "DELETE /ventas/api/pedidos/<pedido_id>/items/<item_id>",
+                    "POST /ventas/api/pedidos/<pedido_id>/confirmar",
+                    "GET /ventas/api/pedidos/productos/buscar"
                 ]
             }
 

@@ -101,7 +101,7 @@ services:
       - DB_USER=productos_user
       - DB_PASSWORD=productos_pass
       - SQLALCHEMY_DATABASE_URI=postgresql://productos_user:productos_pass@productos-db:5432/productos_db
-      - USUARIOS_SERVICE_URL=http://usuarios:5001
+      - USUARIOS_SERVICE_URL=http://usuarios:5001/usuarios/api
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
@@ -138,7 +138,7 @@ services:
       - DB_USER=logistica_user
       - DB_PASSWORD=logistica_pass
       - SQLALCHEMY_DATABASE_URI=postgresql://logistica_user:logistica_pass@logistica-db:5432/logistica_db
-      - PRODUCTOS_SERVICE_URL=http://productos:5000
+      - PRODUCTOS_SERVICE_URL=http://productos:5000/productos/api
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
@@ -208,9 +208,9 @@ services:
       - DB_USER=ventas_user
       - DB_PASSWORD=ventas_pass
       - SQLALCHEMY_DATABASE_URI=postgresql://ventas_user:ventas_pass@ventas-db:5432/ventas_db
-      - USUARIOS_SERVICE_URL=http://usuarios:5001
-      - PRODUCTOS_SERVICE_URL=http://productos:5000
-      - LOGISTICA_SERVICE_URL=http://logistica:5003
+      - USUARIOS_SERVICE_URL=http://usuarios:5001/usuarios/api
+      - PRODUCTOS_SERVICE_URL=http://productos:5000/productos/api
+      - LOGISTICA_SERVICE_URL=http://logistica:5003/logistica/api
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local

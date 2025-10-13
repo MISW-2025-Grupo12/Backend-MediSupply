@@ -11,7 +11,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-bp = api.crear_blueprint('proveedor', '/api/proveedores')
+bp = api.crear_blueprint('proveedor', '/usuarios/api/proveedores')
 
 @bp.route('/', methods=['POST'])
 def crear_proveedor():

@@ -13,7 +13,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-bp = api.crear_blueprint('inventario', '/api/inventario')
+bp = api.crear_blueprint('inventario', '/logistica/api/inventario')
 
 @bp.route('/buscar', methods=['GET'])
 def buscar_productos_con_inventario():

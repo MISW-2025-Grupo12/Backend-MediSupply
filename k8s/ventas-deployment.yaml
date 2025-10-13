@@ -57,6 +57,8 @@ spec:
               key: ventas-password
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)"
+        - name: USUARIOS_SERVICE_URL
+          value: "http://usuarios-service:5001/usuarios/api"
         - name: PRODUCTOS_SERVICE_URL
           valueFrom:
             configMapKeyRef:
@@ -79,6 +81,7 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "500m"
+      serviceAccountName: medisupply-ksa
 ---
 apiVersion: v1
 kind: Service

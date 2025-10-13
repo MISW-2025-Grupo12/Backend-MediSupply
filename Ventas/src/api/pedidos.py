@@ -16,7 +16,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-bp = api.crear_blueprint('pedidos', '/api/pedidos')
+bp = api.crear_blueprint('pedidos', '/ventas/api/pedidos')
 
 @bp.route('/', methods=['POST'])
 def crear_pedido():

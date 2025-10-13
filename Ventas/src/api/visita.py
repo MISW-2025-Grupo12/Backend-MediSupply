@@ -14,7 +14,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-bp = api.crear_blueprint('visita', '/api/visitas')
+bp = api.crear_blueprint('visita', '/ventas/api/visitas')
 
 @bp.route('/', methods=['POST'])
 def crear_visita():

@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # Blueprint para categorías (POST y GET) - Jerárquico bajo productos
-bp = api.crear_blueprint('categoria', '/api/productos/categorias')
+bp = api.crear_blueprint('categoria', '/productos/api/categorias')
 
 # Endpoint para crear categoría
 @bp.route('/', methods=['POST'])

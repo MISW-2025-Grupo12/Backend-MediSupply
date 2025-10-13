@@ -100,35 +100,44 @@ def create_app(configuracion=None):
         def root():
             return {
                 "status": "up",
+                "mode": "simplified",
                 "service": "logistica",
                 "endpoints": [
-                    "GET /entregas-programadas",
-                    "GET /api/inventario",
-                    "GET /api/inventario/buscar",
-                    "POST /api/inventario/reservar",
-                    "POST /api/inventario/descontar",
-                    "GET /api/inventario/producto/<id>",
-                    "GET /spec",
-                    "GET /health"
+                    "GET /logistica/api/entregas/",
+                    "GET /logistica/api/inventario/",
+                    "GET /logistica/api/inventario/buscar",
+                    "POST /logistica/api/inventario/reservar",
+                    "POST /logistica/api/inventario/descontar",
+                    "GET /logistica/api/inventario/producto/<id>",
+                    "POST /logistica/api/entregas/creartemp"
                 ]
-            }, 200
+            }
 
         @app.route("/health")
         def health():
             return {
                 "status": "up",
                 "service": "logistica",
+                "mode": "simplified"
+            }
+
+        @app.route("/logistica/health")
+        def logistica_health():
+            return {
+                "status": "up",
+                "service": "logistica",
+                "version": "1.0.0",
+                "mode": "simplified",
                 "endpoints": [
-                    "GET /entregas-programadas",
-                    "GET /api/inventario",
-                    "GET /api/inventario/buscar",
-                    "POST /api/inventario/reservar",
-                    "POST /api/inventario/descontar",
-                    "GET /api/inventario/producto/<id>",
-                    "GET /spec",
-                    "GET /health"
+                    "GET /logistica/api/entregas-programadas",
+                    "GET /logistica/api/inventario",
+                    "GET /logistica/api/inventario/buscar",
+                    "POST /logistica/api/inventario/reservar",
+                    "POST /logistica/api/inventario/descontar",
+                    "GET /logistica/api/inventario/producto/<id>",
+                    "GET /logistica/health"
                 ]
-            }, 200
+            }
 
         logger.info("✅ Aplicación Flask de Logística configurada correctamente")
         return app
