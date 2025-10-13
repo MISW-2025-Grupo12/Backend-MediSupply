@@ -2,6 +2,7 @@ import pytest
 import json
 import uuid
 from unittest.mock import patch, Mock
+from .conftest import get_usuarios_url
 
 class TestAPIVendedor:
     """Test para la API de vendedores usando SQLite"""
@@ -17,7 +18,7 @@ class TestAPIVendedor:
         }
         
         # Mock del comando
-        with patch('api.vendedor.ejecutar_comando') as mock_ejecutar:
+        with patch('aplicacion.comandos.crear_vendedor.CrearVendedorHandler.handle') as mock_ejecutar:
             vendedor_id = str(uuid.uuid4())
             mock_vendedor = Mock()
             mock_vendedor.id = vendedor_id
@@ -28,7 +29,7 @@ class TestAPIVendedor:
             mock_ejecutar.return_value = mock_vendedor
             
             # Act
-            response = client.post('/api/vendedores', 
+            response = client.post(get_usuarios_url('vendedores'), 
                                  data=json.dumps(vendedor_data),
                                  content_type='application/json')
             
@@ -45,7 +46,7 @@ class TestAPIVendedor:
     def test_crear_vendedor_sin_json(self, client):
         """Test crear vendedor sin JSON"""
         # Act
-        response = client.post('/api/vendedores')
+        response = client.post(get_usuarios_url('vendedores'))
         
         # Assert
         assert response.status_code == 500
@@ -57,7 +58,7 @@ class TestAPIVendedor:
     def test_crear_vendedor_json_invalido(self, client):
         """Test crear vendedor con JSON inválido"""
         # Act
-        response = client.post('/api/vendedores',
+        response = client.post(get_usuarios_url('vendedores'),
                              data='invalid json',
                              content_type='application/json')
         
@@ -76,11 +77,11 @@ class TestAPIVendedor:
             'direccion': 'Calle 123 #45-67'
         }
         
-        with patch('api.vendedor.ejecutar_comando') as mock_ejecutar:
+        with patch('aplicacion.comandos.crear_vendedor.CrearVendedorHandler.handle') as mock_ejecutar:
             mock_ejecutar.side_effect = Exception("Error interno")
             
             # Act
-            response = client.post('/api/vendedores',
+            response = client.post(get_usuarios_url('vendedores'),
                                  data=json.dumps(vendedor_data),
                                  content_type='application/json')
             
@@ -93,7 +94,7 @@ class TestAPIVendedor:
     def test_obtener_vendedores_exitoso(self, client):
         """Test obtener vendedores exitoso"""
         # Arrange
-        with patch('api.vendedor.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_vendedores.ObtenerVendedoresHandler.handle') as mock_ejecutar:
             mock_vendedores = [
                 Mock(id=str(uuid.uuid4()), nombre='Carlos López', 
                      email='carlos@empresa.com', telefono='1234567890', direccion='Calle 123 #45-67'),
@@ -103,7 +104,7 @@ class TestAPIVendedor:
             mock_ejecutar.return_value = mock_vendedores
             
             # Act
-            response = client.get('/api/vendedores')
+            response = client.get(get_usuarios_url('vendedores'))
             
             # Assert
             assert response.status_code == 200
@@ -117,11 +118,11 @@ class TestAPIVendedor:
     def test_obtener_vendedores_lista_vacia(self, client):
         """Test obtener vendedores con lista vacía"""
         # Arrange
-        with patch('api.vendedor.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_vendedores.ObtenerVendedoresHandler.handle') as mock_ejecutar:
             mock_ejecutar.return_value = []
             
             # Act
-            response = client.get('/api/vendedores')
+            response = client.get(get_usuarios_url('vendedores'))
             
             # Assert
             assert response.status_code == 200
@@ -131,11 +132,11 @@ class TestAPIVendedor:
     def test_obtener_vendedores_error(self, client):
         """Test obtener vendedores con error"""
         # Arrange
-        with patch('api.vendedor.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_vendedores.ObtenerVendedoresHandler.handle') as mock_ejecutar:
             mock_ejecutar.side_effect = Exception("Error de base de datos")
             
             # Act
-            response = client.get('/api/vendedores')
+            response = client.get(get_usuarios_url('vendedores'))
             
             # Assert
             assert response.status_code == 500
@@ -147,7 +148,7 @@ class TestAPIVendedor:
         """Test obtener vendedor por ID exitoso"""
         # Arrange
         vendedor_id = str(uuid.uuid4())
-        with patch('api.vendedor.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_vendedor_por_id.ObtenerVendedorPorIdHandler.handle') as mock_ejecutar:
             mock_vendedor = Mock()
             mock_vendedor.id = vendedor_id
             mock_vendedor.nombre = 'Carlos López'
@@ -157,7 +158,7 @@ class TestAPIVendedor:
             mock_ejecutar.return_value = mock_vendedor
             
             # Act
-            response = client.get(f'/api/vendedores/{vendedor_id}')
+            response = client.get(f"{get_usuarios_url('vendedores')}/{vendedor_id}")
             
             # Assert
             assert response.status_code == 200
@@ -174,11 +175,11 @@ class TestAPIVendedor:
         """Test obtener vendedor por ID no encontrado"""
         # Arrange
         vendedor_id = str(uuid.uuid4())
-        with patch('api.vendedor.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_vendedor_por_id.ObtenerVendedorPorIdHandler.handle') as mock_ejecutar:
             mock_ejecutar.return_value = None
             
             # Act
-            response = client.get(f'/api/vendedores/{vendedor_id}')
+            response = client.get(f"{get_usuarios_url('vendedores')}/{vendedor_id}")
             
             # Assert
             assert response.status_code == 404
@@ -192,11 +193,11 @@ class TestAPIVendedor:
         """Test obtener vendedor por ID con error"""
         # Arrange
         vendedor_id = str(uuid.uuid4())
-        with patch('api.vendedor.ejecutar_consulta') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_vendedor_por_id.ObtenerVendedorPorIdHandler.handle') as mock_ejecutar:
             mock_ejecutar.side_effect = Exception("Error de base de datos")
             
             # Act
-            response = client.get(f'/api/vendedores/{vendedor_id}')
+            response = client.get(f"{get_usuarios_url('vendedores')}/{vendedor_id}")
             
             # Assert
             assert response.status_code == 500

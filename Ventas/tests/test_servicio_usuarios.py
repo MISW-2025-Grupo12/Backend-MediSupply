@@ -7,6 +7,7 @@ import requests
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from infraestructura.servicio_usuarios import ServicioUsuarios
+from .conftest import get_service_url
 
 
 class TestServicioUsuarios:
@@ -32,7 +33,7 @@ class TestServicioUsuarios:
         resultado = self.servicio.obtener_vendedor_por_id('vendedor123')
         
         assert resultado == vendedor_mock
-        mock_get.assert_called_once_with('http://localhost:5001/api/vendedores/vendedor123', timeout=5)
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/vendedor123", timeout=5)
     
     @patch('requests.get')
     def test_obtener_vendedor_por_id_no_existe(self, mock_get):
@@ -43,7 +44,7 @@ class TestServicioUsuarios:
         resultado = self.servicio.obtener_vendedor_por_id('vendedor123')
         
         assert resultado is None
-        mock_get.assert_called_once_with('http://localhost:5001/api/vendedores/vendedor123', timeout=5)
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/vendedor123", timeout=5)
     
     @patch('requests.get')
     def test_obtener_vendedor_por_id_error_servidor(self, mock_get):
@@ -54,7 +55,7 @@ class TestServicioUsuarios:
         resultado = self.servicio.obtener_vendedor_por_id('vendedor123')
         
         assert resultado is None
-        mock_get.assert_called_once_with('http://localhost:5001/api/vendedores/vendedor123', timeout=5)
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/vendedor123", timeout=5)
     
     @patch('requests.get')
     def test_obtener_vendedor_por_id_exception(self, mock_get):
@@ -63,7 +64,7 @@ class TestServicioUsuarios:
         resultado = self.servicio.obtener_vendedor_por_id('vendedor123')
         
         assert resultado is None
-        mock_get.assert_called_once_with('http://localhost:5001/api/vendedores/vendedor123', timeout=5)
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/vendedor123", timeout=5)
     
     @patch('requests.get')
     def test_obtener_cliente_por_id_exitoso(self, mock_get):
@@ -83,7 +84,7 @@ class TestServicioUsuarios:
         resultado = self.servicio.obtener_cliente_por_id('cliente456')
         
         assert resultado == cliente_mock
-        mock_get.assert_called_once_with('http://localhost:5001/api/clientes/cliente456', timeout=5)
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service').replace('/vendedores', '/clientes')}/cliente456", timeout=5)
     
     @patch('requests.get')
     def test_obtener_cliente_por_id_no_existe(self, mock_get):
@@ -94,7 +95,7 @@ class TestServicioUsuarios:
         resultado = self.servicio.obtener_cliente_por_id('cliente456')
         
         assert resultado is None
-        mock_get.assert_called_once_with('http://localhost:5001/api/clientes/cliente456', timeout=5)
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service').replace('/vendedores', '/clientes')}/cliente456", timeout=5)
     
     @patch('requests.get')
     def test_obtener_cliente_por_id_error_servidor(self, mock_get):
@@ -105,7 +106,7 @@ class TestServicioUsuarios:
         resultado = self.servicio.obtener_cliente_por_id('cliente456')
         
         assert resultado is None
-        mock_get.assert_called_once_with('http://localhost:5001/api/clientes/cliente456', timeout=5)
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service').replace('/vendedores', '/clientes')}/cliente456", timeout=5)
     
     @patch('requests.get')
     def test_obtener_cliente_por_id_exception(self, mock_get):
@@ -114,4 +115,4 @@ class TestServicioUsuarios:
         resultado = self.servicio.obtener_cliente_por_id('cliente456')
         
         assert resultado is None
-        mock_get.assert_called_once_with('http://localhost:5001/api/clientes/cliente456', timeout=5)
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service').replace('/vendedores', '/clientes')}/cliente456", timeout=5)

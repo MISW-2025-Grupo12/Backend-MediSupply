@@ -7,6 +7,7 @@ import requests
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from infraestructura.servicio_proveedores import ServicioProveedores
+from .conftest import get_service_url
 
 
 class TestServicioProveedores:
@@ -37,7 +38,7 @@ class TestServicioProveedores:
         
         # Assert
         assert resultado == proveedor_data
-        mock_get.assert_called_once_with(f"{self.servicio.base_url}/api/proveedores/{proveedor_id}")
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/{proveedor_id}")
     
     @patch('infraestructura.servicio_proveedores.requests.get')
     def test_obtener_proveedor_por_id_no_encontrado(self, mock_get):
@@ -54,7 +55,7 @@ class TestServicioProveedores:
         
         # Assert
         assert resultado is None
-        mock_get.assert_called_once_with(f"{self.servicio.base_url}/api/proveedores/{proveedor_id}")
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/{proveedor_id}")
     
     @patch('infraestructura.servicio_proveedores.requests.get')
     def test_obtener_proveedor_por_id_error_servidor(self, mock_get):
@@ -71,7 +72,7 @@ class TestServicioProveedores:
         
         # Assert
         assert resultado is None
-        mock_get.assert_called_once_with(f"{self.servicio.base_url}/api/proveedores/{proveedor_id}")
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/{proveedor_id}")
     
     @patch('infraestructura.servicio_proveedores.requests.get')
     def test_obtener_proveedor_por_id_excepcion_requests(self, mock_get):
@@ -85,7 +86,7 @@ class TestServicioProveedores:
         
         # Assert
         assert resultado is None
-        mock_get.assert_called_once_with(f"{self.servicio.base_url}/api/proveedores/{proveedor_id}")
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/{proveedor_id}")
     
     @patch('infraestructura.servicio_proveedores.requests.get')
     def test_validar_proveedor_existe_exitoso(self, mock_get):
@@ -109,7 +110,7 @@ class TestServicioProveedores:
         
         # Assert
         assert resultado is True
-        mock_get.assert_called_once_with(f"{self.servicio.base_url}/api/proveedores/{proveedor_id}")
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/{proveedor_id}")
     
     @patch('infraestructura.servicio_proveedores.requests.get')
     def test_validar_proveedor_existe_no_existe(self, mock_get):
@@ -126,7 +127,7 @@ class TestServicioProveedores:
         
         # Assert
         assert resultado is False
-        mock_get.assert_called_once_with(f"{self.servicio.base_url}/api/proveedores/{proveedor_id}")
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/{proveedor_id}")
     
     @patch('infraestructura.servicio_proveedores.requests.get')
     def test_validar_proveedor_existe_error_servidor(self, mock_get):
@@ -143,7 +144,7 @@ class TestServicioProveedores:
         
         # Assert
         assert resultado is False
-        mock_get.assert_called_once_with(f"{self.servicio.base_url}/api/proveedores/{proveedor_id}")
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/{proveedor_id}")
     
     @patch('infraestructura.servicio_proveedores.requests.get')
     def test_validar_proveedor_existe_excepcion_requests(self, mock_get):
@@ -157,4 +158,4 @@ class TestServicioProveedores:
         
         # Assert
         assert resultado is False
-        mock_get.assert_called_once_with(f"{self.servicio.base_url}/api/proveedores/{proveedor_id}")
+        mock_get.assert_called_once_with(f"{get_service_url('usuarios_service')}/{proveedor_id}")
