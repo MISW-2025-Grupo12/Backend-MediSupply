@@ -1,0 +1,1279 @@
+{
+	"info": {
+		"_postman_id": "25106d44-164d-4a54-9a44-96a989faeced",
+		"name": "MediSupply - Flujo Completo",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n3. **Crear Productos** - Con y sin inventario\n    \n4. **Crear Visitas** - Programar visitas de venta\n    \n5. **Crear Pedidos** - Con items y confirmación\n    \n6. **Gestionar Inventario** - Reservas y descuentos\n    \n7. **Consultar Entregas** - Ver entregas programadas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30409960",
+		"_collection_link": "https://drones-8622.postman.co/workspace/6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-25106d44-164d-4a54-9a44-96a989faeced?action=share&source=collection_link&creator=30409960"
+	},
+	"item": [
+		{
+			"name": "🔧 1. Configuración Inicial",
+			"item": [
+				{
+					"name": "Health Check - Usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Servicio de Usuarios está funcionando', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.status).to.eql('up');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_usuarios}}/health",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica el estado del microservicio de Usuarios"
+					},
+					"response": []
+				},
+				{
+					"name": "Health Check - Productos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Servicio de Productos está funcionando', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.status).to.eql('up');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_productos}}/health",
+							"host": [
+								"{{base_url_productos}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica el estado del microservicio de Productos"
+					},
+					"response": []
+				},
+				{
+					"name": "Health Check - Ventas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Servicio de Ventas está funcionando', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.status).to.eql('up');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/health",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica el estado del microservicio de Ventas"
+					},
+					"response": []
+				},
+				{
+					"name": "Health Check - Logística",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Servicio de Logística está funcionando', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.status).to.eql('up');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/health",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica el estado del microservicio de Logística"
+					},
+					"response": []
+				}
+			],
+			"description": "Verificar que todos los servicios estén funcionando correctamente"
+		},
+		{
+			"name": "👥 2. Crear Entidades Base",
+			"item": [
+				{
+					"name": "Crear Proveedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Proveedor creado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.collectionVariables.set('proveedor_id', response.id);",
+									"    console.log('Proveedor ID guardado:', response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/proveedores/",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"proveedores",
+								""
+							]
+						},
+						"description": "Crea un nuevo proveedor y guarda su ID para uso posterior"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Categoría",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Categoría creada exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.collectionVariables.set('categoria_id', response.id);",
+									"    console.log('Categoría ID guardada:', response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Medicamentos\",\n    \"descripcion\": \"Productos farmacéuticos y medicamentos\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_productos}}/api/productos/categorias/",
+							"host": [
+								"{{base_url_productos}}"
+							],
+							"path": [
+								"api",
+								"productos",
+								"categorias",
+								""
+							]
+						},
+						"description": "Crea una nueva categoría y guarda su ID para uso posterior"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Vendedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Vendedor creado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.collectionVariables.set('vendedor_id', response.id);",
+									"    console.log('Vendedor ID guardado:', response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/vendedores/",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"vendedores",
+								""
+							]
+						},
+						"description": "Crea un nuevo vendedor y guarda su ID para uso posterior"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Cliente creado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.collectionVariables.set('cliente_id', response.id);",
+									"    console.log('Cliente ID guardado:', response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/clientes/",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"clientes",
+								""
+							]
+						},
+						"description": "Crea un nuevo cliente y guarda su ID para uso posterior"
+					},
+					"response": []
+				}
+			],
+			"description": "Crear proveedores, categorías, vendedores y clientes necesarios para el flujo"
+		},
+		{
+			"name": "📦 3. Crear Productos",
+			"item": [
+				{
+					"name": "Crear Producto Básico",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Producto básico creado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.collectionVariables.set('producto_basico_id', response.id);",
+									"    console.log('Producto básico ID guardado:', response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Paracetamol 500mg\",\n    \"descripcion\": \"Analgésico y antipirético\",\n    \"precio\": 25000,\n    \"categoria\": \"Medicamentos\",\n    \"categoria_id\": \"{{categoria_id}}\",\n    \"proveedor_id\": \"{{proveedor_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_productos}}/api/productos/",
+							"host": [
+								"{{base_url_productos}}"
+							],
+							"path": [
+								"api",
+								"productos",
+								""
+							]
+						},
+						"description": "Crea un producto básico sin inventario"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Producto con Inventario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Producto con inventario creado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.collectionVariables.set('producto_inventario_id', response.id);",
+									"    console.log('Producto con inventario ID guardado:', response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Ibuprofeno 400mg\",\n    \"descripcion\": \"Antiinflamatorio no esteroideo\",\n    \"precio\": 18000,\n    \"stock\": 50,\n    \"fecha_vencimiento\": \"2025-12-31T00:00:00Z\",\n    \"categoria\": \"Medicamentos\",\n    \"categoria_id\": \"{{categoria_id}}\",\n    \"proveedor_id\": \"{{proveedor_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_productos}}/api/productos/con-inventario",
+							"host": [
+								"{{base_url_productos}}"
+							],
+							"path": [
+								"api",
+								"productos",
+								"con-inventario"
+							]
+						},
+						"description": "Crea un producto con información de inventario incluida"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos los Productos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Productos listados exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de productos:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_productos}}/api/productos/",
+							"host": [
+								"{{base_url_productos}}"
+							],
+							"path": [
+								"api",
+								"productos",
+								""
+							]
+						},
+						"description": "Lista todos los productos creados"
+					},
+					"response": []
+				}
+			],
+			"description": "Crear productos con y sin inventario usando las entidades base creadas"
+		},
+		{
+			"name": "📅 4. Crear Visitas",
+			"item": [
+				{
+					"name": "Crear Visita de Venta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Visita creada exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.collectionVariables.set('visita_id', response.id);",
+									"    console.log('Visita ID guardada:', response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2025-12-09T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada para presentación de productos\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_ventas}}/api/visitas/",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"visitas",
+								""
+							]
+						},
+						"description": "Crea una nueva visita de venta programada"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Visitas Pendientes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Visitas pendientes listadas exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de visitas pendientes:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/visitas/?estado=pendiente",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"visitas",
+								""
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "pendiente"
+								}
+							]
+						},
+						"description": "Lista las visitas en estado pendiente"
+					},
+					"response": []
+				}
+			],
+			"description": "Crear visitas de venta programadas"
+		},
+		{
+			"name": "🛒 5. Crear Pedidos",
+			"item": [
+				{
+					"name": "Crear Pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Pedido creado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('pedido_id');",
+									"    pm.collectionVariables.set('pedido_id', response.pedido_id);",
+									"    console.log('Pedido ID guardado:', response.pedido_id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_ventas}}/api/pedidos/",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								""
+							]
+						},
+						"description": "Crea un nuevo pedido en estado borrador"
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar Item al Pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Item agregado al pedido exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('success');",
+									"    pm.expect(response.success).to.be.true;",
+									"    console.log('Item agregado al pedido');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"producto_id\": \"{{producto_inventario_id}}\",\n    \"cantidad\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}/items",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								"{{pedido_id}}",
+								"items"
+							]
+						},
+						"description": "Agrega un producto al pedido con cantidad específica"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Detalle del Pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Detalle del pedido obtenido exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    console.log('Pedido obtenido:', response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								"{{pedido_id}}"
+							]
+						},
+						"description": "Obtiene el detalle completo del pedido con sus items"
+					},
+					"response": []
+				},
+				{
+					"name": "Confirmar Pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Pedido confirmado exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('success');",
+									"    pm.expect(response.success).to.be.true;",
+									"    console.log('Pedido confirmado y enviado a logística');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}/confirmar",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								"{{pedido_id}}",
+								"confirmar"
+							]
+						},
+						"description": "Confirma el pedido y lo envía a logística para procesamiento"
+					},
+					"response": []
+				}
+			],
+			"description": "Crear pedidos con items y confirmarlos"
+		},
+		{
+			"name": "📦 6. Gestionar Inventario",
+			"item": [
+				{
+					"name": "Buscar Productos con Inventario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Búsqueda de productos con inventario exitosa', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Productos con inventario encontrados:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/inventario/buscar?q=ibuprofeno&limite=10",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"inventario",
+								"buscar"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "ibuprofeno"
+								},
+								{
+									"key": "limite",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Busca productos que tengan inventario disponible"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Inventario de Producto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Inventario del producto obtenido exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('producto_id');",
+									"    console.log('Inventario del producto:', response.producto_id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/inventario/producto/{{producto_inventario_id}}",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"inventario",
+								"producto",
+								"{{producto_inventario_id}}"
+							]
+						},
+						"description": "Obtiene el inventario detallado de un producto específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Todo el Inventario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Inventario completo obtenido exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de productos en inventario:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/inventario/",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"inventario",
+								""
+							]
+						},
+						"description": "Obtiene todo el inventario agrupado por producto"
+					},
+					"response": []
+				}
+			],
+			"description": "Consultar y gestionar el inventario de productos"
+		},
+		{
+			"name": "🚚 7. Consultar Entregas",
+			"item": [
+				{
+					"name": "Crear Entregas de Prueba",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Entregas de prueba creadas exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('ids');",
+									"    console.log('Entregas creadas:', response.ids);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/logistica/entregas/creartemp",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"logistica",
+								"entregas",
+								"creartemp"
+							]
+						},
+						"description": "Crea 20 entregas de prueba para demostración"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Todas las Entregas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Entregas obtenidas exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de entregas:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/logistica/entregas/",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"logistica",
+								"entregas",
+								""
+							]
+						},
+						"description": "Obtiene la lista de todas las entregas programadas"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Entregas por Rango de Fechas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Entregas por rango de fechas obtenidas exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Entregas en el rango de fechas:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/logistica/entregas?fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"logistica",
+								"entregas"
+							],
+							"query": [
+								{
+									"key": "fecha_inicio",
+									"value": "2025-10-13"
+								},
+								{
+									"key": "fecha_fin",
+									"value": "2025-10-17"
+								}
+							]
+						},
+						"description": "Obtiene las entregas programadas en un rango de fechas específico"
+					},
+					"response": []
+				}
+			],
+			"description": "Consultar entregas programadas y crear datos de prueba"
+		},
+		{
+			"name": "📊 8. Consultas Adicionales",
+			"item": [
+				{
+					"name": "Listar Todos los Proveedores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Proveedores listados exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de proveedores:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/proveedores/",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"proveedores",
+								""
+							]
+						},
+						"description": "Lista todos los proveedores registrados"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos los Vendedores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Vendedores listados exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de vendedores:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/vendedores/",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"vendedores",
+								""
+							]
+						},
+						"description": "Lista todos los vendedores registrados"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos los Clientes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Clientes listados exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de clientes:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/clientes/",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"clientes",
+								""
+							]
+						},
+						"description": "Lista todos los clientes registrados"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todas las Categorías",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Categorías listadas exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de categorías:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_productos}}/api/productos/categorias/",
+							"host": [
+								"{{base_url_productos}}"
+							],
+							"path": [
+								"api",
+								"productos",
+								"categorias",
+								""
+							]
+						},
+						"description": "Lista todas las categorías de productos"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos los Pedidos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Pedidos listados exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de pedidos:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/pedidos/",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								""
+							]
+						},
+						"description": "Lista todos los pedidos del sistema"
+					},
+					"response": []
+				}
+			],
+			"description": "Consultas adicionales para verificar el estado del sistema"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url_usuarios",
+			"value": "http://localhost:5001",
+			"type": "string"
+		},
+		{
+			"key": "base_url_productos",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "base_url_ventas",
+			"value": "http://localhost:5002",
+			"type": "string"
+		},
+		{
+			"key": "base_url_logistica",
+			"value": "http://localhost:5003",
+			"type": "string"
+		},
+		{
+			"key": "proveedor_id",
+			"value": ""
+		},
+		{
+			"key": "categoria_id",
+			"value": ""
+		},
+		{
+			"key": "vendedor_id",
+			"value": ""
+		},
+		{
+			"key": "cliente_id",
+			"value": ""
+		},
+		{
+			"key": "producto_basico_id",
+			"value": ""
+		},
+		{
+			"key": "producto_inventario_id",
+			"value": ""
+		},
+		{
+			"key": "visita_id",
+			"value": ""
+		},
+		{
+			"key": "pedido_id",
+			"value": ""
+		}
+	]
+}

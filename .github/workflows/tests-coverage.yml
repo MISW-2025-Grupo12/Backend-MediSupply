@@ -1,0 +1,96 @@
+name: Tests and Coverage
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-productos:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies - Productos
+      run: |
+        cd Productos
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run tests with coverage - Productos
+      run: |
+        cd Productos
+        pytest --cov=src --cov-report=term --cov-fail-under=70
+
+  test-usuarios:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies - Usuarios
+      run: |
+        cd Usuarios
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run tests with coverage - Usuarios
+      run: |
+        cd Usuarios
+        pytest --cov=src --cov-report=term --cov-fail-under=70
+
+  test-ventas:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies - Ventas
+      run: |
+        cd Ventas
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run tests with coverage - Ventas
+      run: |
+        cd Ventas
+        pytest --cov=src --cov-report=term --cov-fail-under=70
+
+  test-logistica:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies - Logistica
+      run: |
+        cd Logistica
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run tests with coverage - Logistica
+      run: |
+        cd Logistica
+        pytest --cov=src --cov-report=term --cov-fail-under=70

@@ -1,0 +1,247 @@
+version: "3.8"
+
+services:
+  # Base de datos PostgreSQL para Usuarios
+  usuarios-db:
+    image: postgres:15-alpine
+    container_name: medi-supply-usuarios-db
+    environment:
+      POSTGRES_DB: usuarios_db
+      POSTGRES_USER: usuarios_user
+      POSTGRES_PASSWORD: usuarios_pass
+    volumes:
+      - usuarios_db_data:/var/lib/postgresql/data
+    networks:
+      - medi-supply-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U usuarios_user -d usuarios_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Base de datos PostgreSQL para Productos
+  productos-db:
+    image: postgres:15-alpine
+    container_name: medi-supply-productos-db
+    environment:
+      POSTGRES_DB: productos_db
+      POSTGRES_USER: productos_user
+      POSTGRES_PASSWORD: productos_pass
+    volumes:
+      - productos_db_data:/var/lib/postgresql/data
+    networks:
+      - medi-supply-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U productos_user -d productos_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Base de datos PostgreSQL para Logistica
+  logistica-db:
+    image: postgres:15-alpine
+    container_name: medi-supply-logistica-db
+    environment:
+      POSTGRES_DB: logistica_db
+      POSTGRES_USER: logistica_user
+      POSTGRES_PASSWORD: logistica_pass
+    volumes:
+      - logistica_db_data:/var/lib/postgresql/data
+    networks:
+      - medi-supply-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U logistica_user -d logistica_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Microservicio de Usuarios (Proveedores)
+  usuarios:
+    build:
+      context: ./Usuarios
+      dockerfile: Dockerfile
+    container_name: medi-supply-usuarios
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - DB_HOST=usuarios-db
+      - DB_PORT=5432
+      - DB_NAME=usuarios_db
+      - DB_USER=usuarios_user
+      - DB_PASSWORD=usuarios_pass
+      - SQLALCHEMY_DATABASE_URI=postgresql://usuarios_user:usuarios_pass@usuarios-db:5432/usuarios_db
+    networks:
+      - medi-supply-network
+    depends_on:
+      usuarios-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Microservicio de Productos
+  productos:
+    build:
+      context: ./Productos
+      dockerfile: Dockerfile
+    container_name: medi-supply-productos
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - DB_HOST=productos-db
+      - DB_PORT=5432
+      - DB_NAME=productos_db
+      - DB_USER=productos_user
+      - DB_PASSWORD=productos_pass
+      - SQLALCHEMY_DATABASE_URI=postgresql://productos_user:productos_pass@productos-db:5432/productos_db
+      - USUARIOS_SERVICE_URL=http://usuarios:5001
+      - USE_PUBSUB_EMULATOR=true
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - GCP_PROJECT_ID=medisupply-local
+    networks:
+      - medi-supply-network
+    depends_on:
+      productos-db:
+        condition: service_healthy
+      usuarios:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Microservicio de Logistica
+  logistica:
+    build:
+      context: ./Logistica
+      dockerfile: Dockerfile
+    container_name: medi-supply-logistica
+    ports:
+      - "5003:5003"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - DB_HOST=logistica-db
+      - DB_PORT=5432
+      - DB_NAME=logistica_db
+      - DB_USER=logistica_user
+      - DB_PASSWORD=logistica_pass
+      - SQLALCHEMY_DATABASE_URI=postgresql://logistica_user:logistica_pass@logistica-db:5432/logistica_db
+      - PRODUCTOS_SERVICE_URL=http://productos:5000
+      - USE_PUBSUB_EMULATOR=true
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - GCP_PROJECT_ID=medisupply-local
+    networks:
+      - medi-supply-network
+    depends_on:
+      logistica-db:
+        condition: service_healthy
+      productos:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Base de datos PostgreSQL para Ventas
+  ventas-db:
+    image: postgres:15-alpine
+    container_name: medi-supply-ventas-db
+    environment:
+      POSTGRES_DB: ventas_db
+      POSTGRES_USER: ventas_user
+      POSTGRES_PASSWORD: ventas_pass
+    volumes:
+      - ventas_db_data:/var/lib/postgresql/data
+    networks:
+      - medi-supply-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ventas_user -d ventas_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Emulador de Google Cloud Pub/Sub
+  pubsub-emulator:
+    image: google/cloud-sdk:latest
+    container_name: medi-supply-pubsub-emulator
+    ports:
+      - "8085:8085"
+    command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+    networks:
+      - medi-supply-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Microservicio de Ventas
+  ventas:
+    build:
+      context: ./Ventas
+      dockerfile: Dockerfile
+    container_name: medi-supply-ventas
+    ports:
+      - "5002:5002"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - DB_HOST=ventas-db
+      - DB_PORT=5432
+      - DB_NAME=ventas_db
+      - DB_USER=ventas_user
+      - DB_PASSWORD=ventas_pass
+      - SQLALCHEMY_DATABASE_URI=postgresql://ventas_user:ventas_pass@ventas-db:5432/ventas_db
+      - USUARIOS_SERVICE_URL=http://usuarios:5001
+      - PRODUCTOS_SERVICE_URL=http://productos:5000
+      - LOGISTICA_SERVICE_URL=http://logistica:5003
+      - USE_PUBSUB_EMULATOR=true
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - GCP_PROJECT_ID=medisupply-local
+    networks:
+      - medi-supply-network
+    depends_on:
+      ventas-db:
+        condition: service_healthy
+      usuarios:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# Volúmenes para persistir datos de PostgreSQL
+volumes:
+  usuarios_db_data:
+    driver: local
+  productos_db_data:
+    driver: local
+  logistica_db_data:
+    driver: local
+  ventas_db_data:
+    driver: local
+
+# Red para comunicación entre servicios
+networks:
+  medi-supply-network:
+    driver: bridge

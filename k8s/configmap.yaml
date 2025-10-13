@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: medisupply
+data:
+  # Configuración general
+  FLASK_ENV: "production"
+  PYTHONPATH: "/app"
+  
+  # URLs de servicios (para comunicación entre microservicios)
+  PRODUCTOS_SERVICE_URL: "http://productos-service:5000"
+  LOGISTICA_SERVICE_URL: "http://logistica-service:5003"
+  
+  # Configuración de GCP
+  GCP_PROJECT_ID: "desarrolloswcloud"
+  
+  # Configuración de base de datos
+  DB_PORT: "5432"
+  
+  # Nombres de bases de datos
+  USUARIOS_DB_NAME: "usuarios_db"
+  PRODUCTOS_DB_NAME: "productos_db"
+  VENTAS_DB_NAME: "ventas_db"
+  LOGISTICA_DB_NAME: "logistica_db"

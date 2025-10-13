@@ -1,0 +1,61 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: medisupply-ingress-health
+  namespace: medisupply
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "medisupply-ip"
+    kubernetes.io/ingress.allow-http: "true"
+spec:
+  rules:
+  - http:
+      paths:
+      # Microservicio de Usuarios
+      - path: /usuarios
+        pathType: Prefix
+        backend:
+          service:
+            name: usuarios-service
+            port:
+              number: 5001
+      # Microservicio de Productos  
+      - path: /productos
+        pathType: Prefix
+        backend:
+          service:
+            name: productos-service
+            port:
+              number: 5000
+      # Microservicio de Ventas
+      - path: /ventas
+        pathType: Prefix
+        backend:
+          service:
+            name: ventas-service
+            port:
+              number: 5002
+      # Microservicio de Logística
+      - path: /logistica
+        pathType: Prefix
+        backend:
+          service:
+            name: logistica-service
+            port:
+              number: 5003
+      # Health check - ruta que sabemos que funciona
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: usuarios-service
+            port:
+              number: 5001
+      # Ruta raíz - redirige a health
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: usuarios-service
+            port:
+              number: 5001

@@ -1,0 +1,378 @@
+name: Deploy MediSupply Services
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: desarrolloswcloud
+  GKE_CLUSTER: medisupply-cluster
+  GKE_ZONE: us-central1-a
+  GKE_NAMESPACE: medisupply
+  REGISTRY: gcr.io
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      productos: ${{ steps.changes.outputs.productos }}
+      usuarios: ${{ steps.changes.outputs.usuarios }}
+      ventas: ${{ steps.changes.outputs.ventas }}
+      logistica: ${{ steps.changes.outputs.logistica }}
+      config: ${{ steps.changes.outputs.config }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Check for changes
+      uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          productos:
+            - 'Productos/**'
+          usuarios:
+            - 'Usuarios/**'
+          ventas:
+            - 'Ventas/**'
+          logistica:
+            - 'Logistica/**'
+          config:
+            - 'k8s/**'
+            - '.github/**'
+
+  deploy-productos:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.productos == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Run Productos tests
+      run: |
+        echo "🧪 Ejecutando pruebas de Productos..."
+        cd Productos
+        pip install -r requirements.txt
+        python -m pytest tests/ -v --tb=short
+        echo "✅ Pruebas de Productos pasaron correctamente!"
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Configure Docker to use gcloud as a credential helper
+      run: |
+        gcloud auth configure-docker gcr.io
+        gcloud auth configure-docker us-docker.pkg.dev
+
+    - name: Verify Docker authentication
+      run: |
+        echo "Verificando autenticación de Docker..."
+        gcloud auth list
+        docker pull hello-world
+        echo "✅ Docker autenticado correctamente"
+
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        echo "Instalando gke-gcloud-auth-plugin..."
+        gcloud components install gke-gcloud-auth-plugin --quiet
+        echo "✅ Plugin instalado correctamente"
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
+    - name: Build and push Productos image
+      run: |
+        cd Productos
+        docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/productos:${{ github.sha }} .
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/productos:${{ github.sha }}
+        docker tag ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/productos:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/productos:latest
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/productos:latest
+
+    - name: Deploy Productos
+      run: |
+        kubectl set image deployment/productos-deployment productos=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/productos:${{ github.sha }} -n ${{ env.GKE_NAMESPACE }}
+        kubectl rollout status deployment/productos-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
+
+  deploy-usuarios:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.usuarios == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Run Usuarios tests
+      run: |
+        echo "🧪 Ejecutando pruebas de Usuarios..."
+        cd Usuarios
+        pip install -r requirements.txt
+        python -m pytest tests/ -v --tb=short
+        echo "✅ Pruebas de Usuarios pasaron correctamente!"
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Configure Docker to use gcloud as a credential helper
+      run: |
+        gcloud auth configure-docker gcr.io
+        gcloud auth configure-docker us-docker.pkg.dev
+
+    - name: Verify Docker authentication
+      run: |
+        echo "Verificando autenticación de Docker..."
+        gcloud auth list
+        docker pull hello-world
+        echo "✅ Docker autenticado correctamente"
+
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        echo "Instalando gke-gcloud-auth-plugin..."
+        gcloud components install gke-gcloud-auth-plugin --quiet
+        echo "✅ Plugin instalado correctamente"
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
+    - name: Build and push Usuarios image
+      run: |
+        cd Usuarios
+        docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/usuarios:${{ github.sha }} .
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/usuarios:${{ github.sha }}
+        docker tag ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/usuarios:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/usuarios:latest
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/usuarios:latest
+
+    - name: Deploy Usuarios
+      run: |
+        kubectl set image deployment/usuarios-deployment usuarios=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/usuarios:${{ github.sha }} -n ${{ env.GKE_NAMESPACE }}
+        kubectl rollout status deployment/usuarios-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
+
+  deploy-ventas:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.ventas == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Run Ventas tests
+      run: |
+        echo "🧪 Ejecutando pruebas de Ventas..."
+        cd Ventas
+        pip install -r requirements.txt
+        python -m pytest tests/ -v --tb=short
+        echo "✅ Pruebas de Ventas pasaron correctamente!"
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Configure Docker to use gcloud as a credential helper
+      run: |
+        gcloud auth configure-docker gcr.io
+        gcloud auth configure-docker us-docker.pkg.dev
+
+    - name: Verify Docker authentication
+      run: |
+        echo "Verificando autenticación de Docker..."
+        gcloud auth list
+        docker pull hello-world
+        echo "✅ Docker autenticado correctamente"
+
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        echo "Instalando gke-gcloud-auth-plugin..."
+        gcloud components install gke-gcloud-auth-plugin --quiet
+        echo "✅ Plugin instalado correctamente"
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
+    - name: Build and push Ventas image
+      run: |
+        cd Ventas
+        docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/ventas:${{ github.sha }} .
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/ventas:${{ github.sha }}
+        docker tag ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/ventas:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/ventas:latest
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/ventas:latest
+
+    - name: Deploy Ventas
+      run: |
+        kubectl set image deployment/ventas-deployment ventas=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/ventas:${{ github.sha }} -n ${{ env.GKE_NAMESPACE }}
+        kubectl rollout status deployment/ventas-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
+
+  deploy-logistica:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.logistica == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Run Logistica tests
+      run: |
+        echo "🧪 Ejecutando pruebas de Logística..."
+        cd Logistica
+        pip install -r requirements.txt
+        python -m pytest tests/ -v --tb=short
+        echo "✅ Pruebas de Logística pasaron correctamente!"
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Configure Docker to use gcloud as a credential helper
+      run: |
+        gcloud auth configure-docker gcr.io
+        gcloud auth configure-docker us-docker.pkg.dev
+
+    - name: Verify Docker authentication
+      run: |
+        echo "Verificando autenticación de Docker..."
+        gcloud auth list
+        docker pull hello-world
+        echo "✅ Docker autenticado correctamente"
+
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        echo "Instalando gke-gcloud-auth-plugin..."
+        gcloud components install gke-gcloud-auth-plugin --quiet
+        echo "✅ Plugin instalado correctamente"
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
+    - name: Build and push Logistica image
+      run: |
+        cd Logistica
+        docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/logistica:${{ github.sha }} .
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/logistica:${{ github.sha }}
+        docker tag ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/logistica:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/logistica:latest
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/logistica:latest
+
+    - name: Deploy Logistica
+      run: |
+        kubectl set image deployment/logistica-deployment logistica=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/logistica:${{ github.sha }} -n ${{ env.GKE_NAMESPACE }}
+        kubectl rollout status deployment/logistica-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
+
+  deploy-config:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.config == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        echo "Instalando gke-gcloud-auth-plugin..."
+        gcloud components install gke-gcloud-auth-plugin --quiet
+        echo "✅ Plugin instalado correctamente"
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
+    - name: Deploy configuration
+      run: |
+        echo "🔧 Desplegando configuración de Kubernetes..."
+        kubectl apply -f k8s/namespace.yaml
+        kubectl apply -f k8s/configmap.yaml
+        kubectl apply -f k8s/secret.yaml
+        kubectl apply -f k8s/ingress.yaml
+        echo "✅ Configuración desplegada correctamente!"
+
+  verify-deployment:
+    needs: [detect-changes, deploy-productos, deploy-usuarios, deploy-ventas, deploy-logistica, deploy-config]
+    if: always() && (needs.detect-changes.outputs.productos == 'true' || needs.detect-changes.outputs.usuarios == 'true' || needs.detect-changes.outputs.ventas == 'true' || needs.detect-changes.outputs.logistica == 'true' || needs.detect-changes.outputs.config == 'true')
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        echo "Instalando gke-gcloud-auth-plugin..."
+        gcloud components install gke-gcloud-auth-plugin --quiet
+        echo "✅ Plugin instalado correctamente"
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
+    - name: Verify deployment
+      run: |
+        echo "Verificando estado de los pods..."
+        kubectl get pods -n ${{ env.GKE_NAMESPACE }}
+        
+        echo "Verificando estado de los servicios..."
+        kubectl get services -n ${{ env.GKE_NAMESPACE }}
+        
+        echo "Verificando estado del Ingress..."
+        kubectl get ingress -n ${{ env.GKE_NAMESPACE }}
+        
+        echo "Obteniendo IP del Ingress..."
+        INGRESS_IP=$(kubectl get ingress -n ${{ env.GKE_NAMESPACE }} -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
+        echo "Ingress IP: $INGRESS_IP"
+        
+        echo "Probando endpoints..."
+        if [ ! -z "$INGRESS_IP" ]; then
+          echo "Probando ruta raíz..."
+          curl -f http://$INGRESS_IP/ || echo "Error en ruta raíz"
+        fi

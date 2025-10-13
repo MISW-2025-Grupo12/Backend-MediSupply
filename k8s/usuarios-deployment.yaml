@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usuarios-deployment
+  namespace: medisupply
+  labels:
+    app: usuarios
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: usuarios
+  template:
+    metadata:
+      labels:
+        app: usuarios
+    spec:
+      containers:
+      - name: usuarios
+        image: gcr.io/desarrolloswcloud/usuarios:latest
+        ports:
+        - containerPort: 5001
+        env:
+        - name: FLASK_APP
+          value: "src/main.py"
+        - name: FLASK_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: FLASK_ENV
+        - name: PYTHONPATH
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: PYTHONPATH
+        - name: DB_HOST
+          value: "10.74.0.3"  # IP privada de usuarios-db
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_PORT
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: USUARIOS_DB_NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: usuarios-user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: usuarios-password
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: usuarios-service
+  namespace: medisupply
+  labels:
+    app: usuarios
+spec:
+  selector:
+    app: usuarios
+  ports:
+  - port: 5001
+    targetPort: 5001
+  type: ClusterIP
