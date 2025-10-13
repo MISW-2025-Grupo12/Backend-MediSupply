@@ -12,7 +12,7 @@ class ServicioProveedores:
     def obtener_proveedor_por_id(self, proveedor_id: str) -> dict:
         """Obtiene un proveedor específico por ID"""
         try:
-            response = requests.get(f"{self.base_url}/api/proveedores/{proveedor_id}")
+            response = requests.get(f"{self.base_url}/proveedores/{proveedor_id}")
             if response.status_code == 200:
                 return response.json()
             elif response.status_code == 404:

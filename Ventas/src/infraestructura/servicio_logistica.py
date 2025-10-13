@@ -6,12 +6,12 @@ logger = logging.getLogger(__name__)
 
 class ServicioLogistica:
     def __init__(self):
-        self.base_url = os.getenv('LOGISTICA_SERVICE_URL', 'http://localhost:5003')
+        self.base_url = os.getenv('LOGISTICA_SERVICE_URL', 'http://localhost:5003/logistica/api')
     
     def buscar_productos(self, termino: str) -> list[dict]:
         """Buscar productos con inventario disponible"""
         try:
-            url = f"{self.base_url}/api/inventario/buscar"
+            url = f"{self.base_url}/inventario/buscar"
             params = {
                 'q': termino,
                 'limite': 50
@@ -31,7 +31,7 @@ class ServicioLogistica:
     def obtener_inventario_producto(self, producto_id: str) -> dict:
         """Obtener inventario de un producto específico"""
         try:
-            url = f"{self.base_url}/api/inventario/producto/{producto_id}"
+            url = f"{self.base_url}/inventario/producto/{producto_id}"
             logger.info(f"Consultando inventario en: {url}")
             response = requests.get(url, timeout=5)
             
@@ -56,7 +56,7 @@ class ServicioLogistica:
     def reservar_inventario(self, items: list[dict]) -> dict:
         """Reservar inventario para un pedido"""
         try:
-            url = f"{self.base_url}/api/inventario/reservar"
+            url = f"{self.base_url}/inventario/reservar"
             data = {
                 'items': items
             }

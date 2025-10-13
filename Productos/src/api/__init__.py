@@ -57,13 +57,23 @@ def create_app(configuracion=None):
         def health():
             return {
                 "status": "up",
+                "service": "productos",
+                "mode": "simplified"
+            }
+
+        @app.route("/productos/health")
+        def productos_health():
+            return {
+                "status": "up",
+                "service": "productos",
+                "version": "1.0.0",
                 "mode": "simplified",
                 "endpoints": [
-                    "POST /api/productos/", 
-                    "GET /api/productos/",
-                    "GET /api/productos/<id>",
-                    "POST /api/productos/categorias/",
-                    "GET /api/productos/categorias/"
+                    "POST /productos/api/productos/", 
+                    "GET /productos/api/productos/",
+                    "GET /productos/api/productos/<id>",
+                    "POST /productos/api/categorias/",
+                    "GET /productos/api/categorias/"
                 ]
             }
 

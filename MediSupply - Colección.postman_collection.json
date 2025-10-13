@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "c45dbc36-1891-4d41-9db0-1369f781f227",
+		"_postman_id": "2d47cfb9-cc97-469c-b079-984030e3e446",
 		"name": "MediSupply - Colección",
 		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-c45dbc36-1891-4d41-9db0-1369f781f227?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-2d47cfb9-cc97-469c-b079-984030e3e446?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -413,13 +413,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url_productos}}/api/productos/categorias/",
+									"raw": "{{base_url_productos}}/api/categorias/",
 									"host": [
 										"{{base_url_productos}}"
 									],
 									"path": [
 										"api",
-										"productos",
 										"categorias",
 										""
 									]
@@ -434,13 +433,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_productos}}/api/productos/categorias/",
+									"raw": "{{base_url_productos}}/api/categorias/",
 									"host": [
 										"{{base_url_productos}}"
 									],
 									"path": [
 										"api",
-										"productos",
 										"categorias",
 										""
 									]
@@ -962,13 +960,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_logistica}}/api/logistica/entregas/",
+									"raw": "{{base_url_logistica}}/api/entregas/",
 									"host": [
 										"{{base_url_logistica}}"
 									],
 									"path": [
 										"api",
-										"logistica",
 										"entregas",
 										""
 									]
@@ -1015,13 +1012,12 @@
 								"method": "POST",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_logistica}}/api/logistica/entregas/creartemp",
+									"raw": "{{base_url_logistica}}/api/entregas/creartemp",
 									"host": [
 										"{{base_url_logistica}}"
 									],
 									"path": [
 										"api",
-										"logistica",
 										"entregas",
 										"creartemp"
 									]
@@ -1206,6 +1202,11 @@
 		}
 	],
 	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost",
+			"type": "string"
+		},
 		{
 			"key": "base_url_usuarios",
 			"value": "http://localhost:5001",

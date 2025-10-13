@@ -14,7 +14,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-bp = api.crear_blueprint('producto', '/api/productos')
+bp = api.crear_blueprint('producto', '/productos/api/productos')
 
 # Endpoint para crear producto
 @bp.route('/', methods=['POST'])
