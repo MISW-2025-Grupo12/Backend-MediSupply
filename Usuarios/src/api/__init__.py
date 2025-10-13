@@ -50,7 +50,7 @@ def create_app(configuracion=None):
         @app.route("/")
         def root():
             return {
-                "status": "up",
+                "status": "up-test-cicd",
                 "mode": "simplified",
                 "service": "usuarios",
                 "endpoints": [
