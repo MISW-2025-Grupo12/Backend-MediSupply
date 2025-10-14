@@ -6,8 +6,10 @@ from aplicacion.comandos.agregar_item_pedido import AgregarItemPedido
 from aplicacion.comandos.actualizar_item_pedido import ActualizarItemPedido
 from aplicacion.comandos.quitar_item_pedido import QuitarItemPedido
 from aplicacion.comandos.confirmar_pedido import ConfirmarPedido
+from aplicacion.comandos.crear_pedido_completo import CrearPedidoCompleto, ItemPedidoCompleto
 from aplicacion.consultas.obtener_pedido import ObtenerPedido
 from aplicacion.consultas.obtener_pedidos import ObtenerPedidos
+from aplicacion.servicios.validador_pedidos import ValidadorPedidos
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from infraestructura.servicio_logistica import ServicioLogistica
@@ -34,9 +36,11 @@ def crear_pedido():
         vendedor_id = data.get('vendedor_id', '').strip()
         cliente_id = data.get('cliente_id', '').strip()
         
-        if not vendedor_id or not cliente_id:
+        # Usar validador de reglas de negocio
+        es_valido, error = ValidadorPedidos.validar_datos_basicos_pedido(vendedor_id, cliente_id)
+        if not es_valido:
             return Response(
-                json.dumps({'error': 'vendedor_id y cliente_id son obligatorios'}), 
+                json.dumps({'error': error}), 
                 status=400, 
                 mimetype='application/json'
             )
@@ -143,9 +147,16 @@ def agregar_item_pedido(pedido_id):
         producto_id = data.get('producto_id', '').strip()
         cantidad = data.get('cantidad', 0)
         
-        if not producto_id or cantidad <= 0:
+        
+        from aplicacion.servicios.validador_pedidos import ValidadorItemsPedido
+        es_valido, error = ValidadorItemsPedido.validar_item_individual({
+            'producto_id': producto_id,
+            'cantidad': cantidad
+        }, 0)
+        
+        if not es_valido:
             return Response(
-                json.dumps({'error': 'producto_id y cantidad > 0 son obligatorios'}), 
+                json.dumps({'error': error}), 
                 status=400, 
                 mimetype='application/json'
             )
@@ -194,9 +205,16 @@ def actualizar_item_pedido(pedido_id, item_id):
         
         cantidad = data.get('cantidad', 0)
         
-        if cantidad < 0:
+        # Usar validador de reglas de negocio
+        from aplicacion.servicios.validador_pedidos import ValidadorItemsPedido
+        es_valido, error = ValidadorItemsPedido.validar_item_individual({
+            'producto_id': 'dummy',  # No validamos producto_id en actualización
+            'cantidad': cantidad
+        }, 0)
+        
+        if not es_valido:
             return Response(
-                json.dumps({'error': 'La cantidad no puede ser negativa'}), 
+                json.dumps({'error': error}), 
                 status=400, 
                 mimetype='application/json'
             )
@@ -322,6 +340,72 @@ def buscar_productos():
         
     except Exception as e:
         logger.error(f"Error buscando productos: {e}")
+        return Response(
+            json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
+            status=500, 
+            mimetype='application/json'
+        )
+
+@bp.route('/completo', methods=['POST'])
+def crear_pedido_completo():
+    """Crear un pedido completo con items y confirmarlo en una sola operación"""
+    try:
+        data = request.json
+        
+        if not data:
+            return Response(
+                json.dumps({'error': 'Se requiere un JSON válido'}), 
+                status=400, 
+                mimetype='application/json'
+            )
+        
+        vendedor_id = data.get('vendedor_id', '').strip()
+        cliente_id = data.get('cliente_id', '').strip()
+        items_data = data.get('items', [])
+        
+        # Usar validador de reglas de negocio
+        es_valido, error, items_validados = ValidadorPedidos.validar_pedido_completo(
+            vendedor_id, cliente_id, items_data
+        )
+        
+        if not es_valido:
+            return Response(
+                json.dumps({'error': error}), 
+                status=400, 
+                mimetype='application/json'
+            )
+        
+        # Convertir items validados a objetos de dominio
+        items = []
+        for item_data in items_validados:
+            items.append(ItemPedidoCompleto(
+                producto_id=item_data['producto_id'],
+                cantidad=item_data['cantidad']
+            ))
+        
+        comando = CrearPedidoCompleto(
+            vendedor_id=vendedor_id,
+            cliente_id=cliente_id,
+            items=items
+        )
+        
+        resultado = ejecutar_comando(comando)
+        
+        if resultado.get('success'):
+            return Response(
+                json.dumps(resultado), 
+                status=201, 
+                mimetype='application/json'
+            )
+        else:
+            return Response(
+                json.dumps(resultado), 
+                status=400, 
+                mimetype='application/json'
+            )
+        
+    except Exception as e:
+        logger.error(f"Error creando pedido completo: {e}")
         return Response(
             json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
             status=500, 

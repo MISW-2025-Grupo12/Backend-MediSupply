@@ -106,3 +106,60 @@ class ClienteDebeEstarSeleccionado(ReglaNegocio):
     
     def es_valido(self) -> bool:
         return self.cliente_id is not None and self.cliente_id.strip() != ""
+
+# Reglas de negocio para pedidos
+@dataclass
+class PedidoDebeTenerItems(ReglaNegocio):
+    items: list
+    
+    def es_valido(self) -> bool:
+        return self.items is not None and len(self.items) > 0
+
+@dataclass
+class ItemPedidoDebeTenerProductoId(ReglaNegocio):
+    producto_id: str
+    
+    def es_valido(self) -> bool:
+        return self.producto_id is not None and self.producto_id.strip() != ""
+
+@dataclass
+class ItemPedidoDebeTenerCantidadPositiva(ReglaNegocio):
+    cantidad: int
+    
+    def es_valido(self) -> bool:
+        return self.cantidad is not None and self.cantidad > 0
+
+@dataclass
+class PedidoDebeEstarEnEstadoBorrador(ReglaNegocio):
+    estado: str
+    
+    def es_valido(self) -> bool:
+        return self.estado == "borrador"
+
+@dataclass
+class PedidoDebeTenerCliente(ReglaNegocio):
+    cliente_id: str
+    
+    def es_valido(self) -> bool:
+        return self.cliente_id is not None and self.cliente_id.strip() != ""
+
+@dataclass
+class PedidoDebeTenerVendedor(ReglaNegocio):
+    vendedor_id: str
+    
+    def es_valido(self) -> bool:
+        return self.vendedor_id is not None and self.vendedor_id.strip() != ""
+
+@dataclass
+class ItemsDebenSerLista(ReglaNegocio):
+    items: any
+    
+    def es_valido(self) -> bool:
+        return isinstance(self.items, list)
+
+@dataclass
+class ItemDebeSerDiccionario(ReglaNegocio):
+    item: any
+    
+    def es_valido(self) -> bool:
+        return isinstance(self.item, dict)

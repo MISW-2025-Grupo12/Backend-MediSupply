@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "8522f01b-a3c1-4bfd-bfc9-01bb6207a119",
 		"name": "MediSupply - Colección",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
 		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-8522f01b-a3c1-4bfd-bfc9-01bb6207a119?action=share&source=collection_link&creator=30409960"
@@ -512,9 +512,9 @@
 										"value": "application/json"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2025-12-09T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada\"\n}",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2025-10-15T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -556,95 +556,211 @@
 							},
 							"response": []
 						},
-						{
-							"name": "Obtener Visitas Pendientes",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url_ventas}}/api/visitas/?estado=pendiente",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"visitas",
-										""
-									],
-									"query": [
-										{
-											"key": "estado",
-											"value": "pendiente",
-											"description": "Filtrar por estado de la visita"
-										}
-									]
-								},
-								"description": "Obtiene solo las visitas en estado pendiente"
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener Visitas por Vendedor",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?estado=pendiente",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"visitas",
-										"vendedor",
-										"{{vendedor_id}}"
-									],
-									"query": [
-										{
-											"key": "estado",
-											"value": "pendiente",
-											"description": "Filtrar por estado (opcional)"
-										}
-									]
-								},
-								"description": "Obtiene las visitas asignadas a un vendedor específico"
-							},
-							"response": []
-						},
-						{
-							"name": "Actualizar Visita (Registrar Realizada)",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
+					{
+						"name": "Obtener Visitas Pendientes",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{base_url_ventas}}/api/visitas/?estado=pendiente",
+								"host": [
+									"{{base_url_ventas}}"
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"fecha_realizada\": \"2025-01-10\",\n    \"hora_realizada\": \"14:30:00\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"novedades\": \"Cliente muy satisfecho con la presentación. Solicita seguimiento en 2 semanas.\",\n    \"pedido_generado\": true\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
+								"path": [
+									"api",
+									"visitas",
+									""
+								],
+								"query": [
+									{
+										"key": "estado",
+										"value": "pendiente",
+										"description": "Filtrar por estado de la visita"
 									}
-								},
-								"url": {
-									"raw": "{{base_url_ventas}}/api/visitas/{{visita_id}}",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"visitas",
-										"{{visita_id}}"
-									]
-								},
-								"description": "Registra una visita como realizada con sus detalles"
+								]
 							},
-							"response": []
-						}
+							"description": "Obtiene solo las visitas en estado pendiente"
+						},
+						"response": []
+					},
+					{
+						"name": "Obtener Visitas por Rango de Fechas",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{base_url_ventas}}/api/visitas/?fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+								"host": [
+									"{{base_url_ventas}}"
+								],
+								"path": [
+									"api",
+									"visitas",
+									""
+								],
+								"query": [
+									{
+										"key": "fecha_inicio",
+										"value": "2025-10-13",
+										"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+									},
+									{
+										"key": "fecha_fin",
+										"value": "2025-10-17",
+										"description": "Fecha de fin del rango (YYYY-MM-DD)"
+									}
+								]
+							},
+							"description": "Obtiene las visitas programadas en un rango de fechas específico"
+						},
+						"response": []
+					},
+					{
+						"name": "Obtener Visitas Pendientes por Fechas",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{base_url_ventas}}/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+								"host": [
+									"{{base_url_ventas}}"
+								],
+								"path": [
+									"api",
+									"visitas",
+									""
+								],
+								"query": [
+									{
+										"key": "estado",
+										"value": "pendiente",
+										"description": "Filtrar por estado de la visita"
+									},
+									{
+										"key": "fecha_inicio",
+										"value": "2025-10-13",
+										"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+									},
+									{
+										"key": "fecha_fin",
+										"value": "2025-10-17",
+										"description": "Fecha de fin del rango (YYYY-MM-DD)"
+									}
+								]
+							},
+							"description": "Obtiene las visitas pendientes en un rango de fechas específico"
+						},
+						"response": []
+					},
+					{
+						"name": "Obtener Visitas por Vendedor y Fechas",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{base_url_ventas}}/api/visitas/?vendedor_id={{vendedor_id}}&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+								"host": [
+									"{{base_url_ventas}}"
+								],
+								"path": [
+									"api",
+									"visitas",
+									""
+								],
+								"query": [
+									{
+										"key": "vendedor_id",
+										"value": "{{vendedor_id}}",
+										"description": "ID del vendedor"
+									},
+									{
+										"key": "fecha_inicio",
+										"value": "2025-10-13",
+										"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+									},
+									{
+										"key": "fecha_fin",
+										"value": "2025-10-17",
+										"description": "Fecha de fin del rango (YYYY-MM-DD)"
+									}
+								]
+							},
+							"description": "Obtiene las visitas de un vendedor específico en un rango de fechas"
+						},
+						"response": []
+					},
+					{
+						"name": "Obtener Visitas por Vendedor",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+								"host": [
+									"{{base_url_ventas}}"
+								],
+								"path": [
+									"api",
+									"visitas",
+									"vendedor",
+									"{{vendedor_id}}"
+								],
+								"query": [
+									{
+										"key": "estado",
+										"value": "pendiente",
+										"description": "Filtrar por estado (opcional)"
+									},
+									{
+										"key": "fecha_inicio",
+										"value": "2025-10-13",
+										"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+									},
+									{
+										"key": "fecha_fin",
+										"value": "2025-10-17",
+										"description": "Fecha de fin del rango (YYYY-MM-DD)"
+									}
+								]
+							},
+							"description": "Obtiene las visitas asignadas a un vendedor específico, opcionalmente filtradas por estado y rango de fechas"
+						},
+						"response": []
+					},
+					{
+						"name": "Actualizar Visita (Registrar Realizada)",
+						"request": {
+							"method": "PUT",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n    \"fecha_realizada\": \"2025-01-10\",\n    \"hora_realizada\": \"14:30:00\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"novedades\": \"Cliente muy satisfecho con la presentación. Solicita seguimiento en 2 semanas.\",\n    \"pedido_generado\": true\n}",
+								"options": {
+									"raw": {
+										"language": "json"
+									}
+								}
+							},
+							"url": {
+								"raw": "{{base_url_ventas}}/api/visitas/{{visita_id}}",
+								"host": [
+									"{{base_url_ventas}}"
+								],
+								"path": [
+									"api",
+									"visitas",
+									"{{visita_id}}"
+								]
+							},
+							"description": "Registra una visita como realizada con sus detalles"
+						},
+						"response": []
+					}
 					]
 				},
 				{
@@ -681,6 +797,40 @@
 									]
 								},
 								"description": "Crea un nuevo pedido en estado borrador"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear Pedido Completo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"items\": [\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 5\n        },\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 3\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/completo",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"completo"
+									]
+								},
+								"description": "Crea un pedido completo con items y lo confirma automáticamente en una sola operación. Valida inventario y reserva stock."
 							},
 							"response": []
 						},
@@ -1258,6 +1408,26 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Obtener Todos los Productos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/productos",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										"productos"
+									]
+								},
+								"description": "Obtiene todos los productos de todas las bodegas con sus ubicaciones"
+							},
+							"response": []
 						}
 					]
 				},
@@ -1319,19 +1489,19 @@
 		},
 		{
 			"key": "base_url_usuarios",
-			"value": "http://localhost:5001"
+			"value": "http://localhost:5001/usuarios"
 		},
 		{
 			"key": "base_url_productos",
-			"value": "http://localhost:5000"
+			"value": "http://localhost:5000/productos"
 		},
 		{
 			"key": "base_url_ventas",
-			"value": "http://localhost:5002"
+			"value": "http://localhost:5002/ventas"
 		},
 		{
 			"key": "base_url_logistica",
-			"value": "http://localhost:5003"
+			"value": "http://localhost:5003/logistica"
 		},
 		{
 			"key": "proveedor_id",

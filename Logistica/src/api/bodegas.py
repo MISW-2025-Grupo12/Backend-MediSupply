@@ -5,6 +5,7 @@ from aplicacion.comandos.inicializar_bodegas import InicializarBodegas
 from aplicacion.consultas.obtener_bodegas import ObtenerBodegas
 from aplicacion.consultas.obtener_productos_por_bodega import ObtenerProductosPorBodega
 from aplicacion.consultas.obtener_ubicaciones_producto import ObtenerUbicacionesProducto
+from aplicacion.consultas.obtener_todos_los_productos import ObtenerTodosLosProductos
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
 
@@ -47,5 +48,15 @@ def obtener_ubicaciones_producto(producto_id):
         consulta = ObtenerUbicacionesProducto(producto_id=producto_id)
         ubicaciones = ejecutar_consulta(consulta)
         return Response(json.dumps(ubicaciones), status=200, mimetype='application/json')
+    except Exception as e:
+        return Response(json.dumps({'error': str(e)}), status=500, mimetype='application/json')
+
+@bp.route('/productos', methods=['GET'])
+def obtener_todos_los_productos():
+    """Obtener todos los productos de todas las bodegas"""
+    try:
+        consulta = ObtenerTodosLosProductos()
+        productos = ejecutar_consulta(consulta)
+        return Response(json.dumps(productos), status=200, mimetype='application/json')
     except Exception as e:
         return Response(json.dumps({'error': str(e)}), status=500, mimetype='application/json')

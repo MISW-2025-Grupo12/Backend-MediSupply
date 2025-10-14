@@ -95,6 +95,10 @@ class RepositorioBodegaSQLite:
     def obtener_inventario_por_bodega(self, bodega_id: str) -> list[InventarioModel]:
         """Obtener inventario de una bodega específica."""
         return InventarioModel.query.filter_by(bodega_id=bodega_id).all()
+    
+    def obtener_todos_los_inventarios(self) -> list[InventarioModel]:
+        """Obtener todos los inventarios de todas las bodegas."""
+        return InventarioModel.query.all()
 
 class RepositorioInventarioSQLite:
     """Repositorio para acceder al inventario (SQLite)."""
