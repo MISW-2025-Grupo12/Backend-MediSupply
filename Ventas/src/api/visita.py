@@ -81,10 +81,29 @@ def crear_visita():
 
 @bp.route('/', methods=['GET'])
 def obtener_visitas():
+
+    def parsear_fecha(valor):
+        """Intenta parsear fecha con o sin hora."""
+        try:
+            return datetime.fromisoformat(valor)
+        except ValueError:
+            return datetime.strptime(valor, "%Y-%m-%d")
+    
     try:
         estado = request.args.get('estado')
+        vendedor_id = request.args.get('vendedor_id')
+        fecha_inicio_str = request.args.get("fecha_inicio")
+        fecha_fin_str = request.args.get("fecha_fin")
+
+        fecha_inicio = parsear_fecha(fecha_inicio_str) if fecha_inicio_str else None
+        fecha_fin = parsear_fecha(fecha_fin_str) if fecha_fin_str else None
         
-        consulta = ObtenerVisitas(estado=estado)
+        consulta = ObtenerVisitas(
+            estado=estado,
+            vendedor_id=vendedor_id,
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin
+        )
         
         visitas_agregacion = ejecutar_consulta(consulta)
         
@@ -107,10 +126,28 @@ def obtener_visitas():
 
 @bp.route('/vendedor/<vendedor_id>', methods=['GET'])
 def obtener_visitas_por_vendedor(vendedor_id):
+
+    def parsear_fecha(valor):
+        """Intenta parsear fecha con o sin hora."""
+        try:
+            return datetime.fromisoformat(valor)
+        except ValueError:
+            return datetime.strptime(valor, "%Y-%m-%d")
+    
     try:
         estado = request.args.get('estado')
+        fecha_inicio_str = request.args.get("fecha_inicio")
+        fecha_fin_str = request.args.get("fecha_fin")
+
+        fecha_inicio = parsear_fecha(fecha_inicio_str) if fecha_inicio_str else None
+        fecha_fin = parsear_fecha(fecha_fin_str) if fecha_fin_str else None
         
-        consulta = ObtenerVisitasPorVendedor(vendedor_id=vendedor_id, estado=estado)
+        consulta = ObtenerVisitasPorVendedor(
+            vendedor_id=vendedor_id, 
+            estado=estado,
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin
+        )
         
         visitas_agregacion = ejecutar_consulta(consulta)
         

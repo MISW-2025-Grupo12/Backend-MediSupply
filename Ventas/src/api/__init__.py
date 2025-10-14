@@ -55,8 +55,8 @@ def create_app(configuracion=None):
                 "service": "ventas",
                 "endpoints": [
                     "POST /ventas/api/visitas/", 
-                    "GET /ventas/api/visitas/?estado=pendiente",
-                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente",
+                    "GET /ventas/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17&vendedor_id=<id>",
+                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
                     "PUT /ventas/api/visitas/<visita_id>",
                     "POST /ventas/api/pedidos/",
                     "GET /ventas/api/pedidos/<pedido_id>",
@@ -64,6 +64,7 @@ def create_app(configuracion=None):
                     "PUT /ventas/api/pedidos/<pedido_id>/items/<item_id>",
                     "DELETE /ventas/api/pedidos/<pedido_id>/items/<item_id>",
                     "POST /ventas/api/pedidos/<pedido_id>/confirmar",
+                    "POST /ventas/api/pedidos/completo",
                     "GET /ventas/api/pedidos/productos/buscar"
                 ]
             }
@@ -85,8 +86,8 @@ def create_app(configuracion=None):
                 "mode": "simplified",
                 "endpoints": [
                     "POST /ventas/api/visitas/", 
-                    "GET /ventas/api/visitas/?estado=pendiente",
-                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente",
+                    "GET /ventas/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17&vendedor_id=<id>",
+                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
                     "PUT /ventas/api/visitas/<visita_id>",
                     "POST /ventas/api/pedidos/",
                     "GET /ventas/api/pedidos/<pedido_id>",
@@ -94,6 +95,7 @@ def create_app(configuracion=None):
                     "PUT /ventas/api/pedidos/<pedido_id>/items/<item_id>",
                     "DELETE /ventas/api/pedidos/<pedido_id>/items/<item_id>",
                     "POST /ventas/api/pedidos/<pedido_id>/confirmar",
+                    "POST /ventas/api/pedidos/completo",
                     "GET /ventas/api/pedidos/productos/buscar"
                 ]
             }
