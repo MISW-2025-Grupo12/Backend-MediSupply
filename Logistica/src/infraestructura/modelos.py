@@ -2,6 +2,7 @@ from config.db import db
 import uuid
 from datetime import datetime
 from sqlalchemy.dialects.sqlite import JSON
+from sqlalchemy import Boolean
 
 class EntregaModel(db.Model):
     __tablename__ = 'entregas'
@@ -54,6 +55,7 @@ class InventarioModel(db.Model):
     estante = db.Column(db.String(10), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    requiere_cadena_frio = db.Column(Boolean, nullable=False, default=False)
 
     def to_dict(self):
         return {

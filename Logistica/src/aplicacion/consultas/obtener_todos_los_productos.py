@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from operator import inv
 from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta
 from infraestructura.repositorios import RepositorioBodegaSQLite
 from infraestructura.servicio_productos import ServicioProductos
@@ -30,17 +31,25 @@ class ObtenerTodosLosProductosHandler:
             pid_key = str(pid)
 
             if pid not in productos_agrupados:
-
                 det = productos_por_id.get(pid_key)
-                producto_nombre = det.get('nombre')
-                categoria_id = det.get('categoria_id') or (det.get('categoria', {}) if isinstance(det.get('categoria'), dict) else {}).get('id')
+                producto_nombre = det.get('nombre') if det else None
+                categoria_id = (
+                    det.get('categoria_id')
+                    or (det.get('categoria', {}).get('id') if isinstance(det.get('categoria'), dict) else None)
+                    if det else None
+                )
                 categoria_nombre = (
-                    det.get('categoria') if isinstance(det.get('categoria'), str) else None
-                ) or det.get('categoria_nombre') or (det.get('categoria', {}) if isinstance(det.get('categoria'), dict) else {}).get('nombre')
+                    (det.get('categoria') if isinstance(det.get('categoria'), str) else None)
+                    or det.get('categoria_nombre')
+                    or (det.get('categoria', {}).get('nombre') if isinstance(det.get('categoria'), dict) else None)
+                    if det else None
+                )
 
                 fecha_vencimiento = getattr(inv, 'fecha_vencimiento', None)
                 if isinstance(fecha_vencimiento, (datetime, date)):
                     fecha_vencimiento = fecha_vencimiento.isoformat()
+
+                requiere_cadena_frio = getattr(inv, 'requiere_cadena_frio', False)
 
                 productos_agrupados[pid] = {
                     'producto_id': pid,
@@ -49,6 +58,7 @@ class ObtenerTodosLosProductosHandler:
                     'categoria_nombre': categoria_nombre,
                     'cantidad_total': 0,
                     'fecha_vencimiento': fecha_vencimiento,
+                    'requiere_cadena_frio': requiere_cadena_frio,
                     'ubicaciones': []
                 }
 
