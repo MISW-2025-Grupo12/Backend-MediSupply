@@ -117,6 +117,7 @@ class RepositorioInventarioSQLite:
                 cantidad_disponible=inventario_model.cantidad_disponible,
                 cantidad_reservada=inventario_model.cantidad_reservada,
                 fecha_vencimiento=inventario_model.fecha_vencimiento,
+                requiere_cadena_frio=inventario_model.requiere_cadena_frio, 
                 bodega_id=inventario_model.bodega_id,
                 pasillo=inventario_model.pasillo,
                 estante=inventario_model.estante,
@@ -135,7 +136,8 @@ class RepositorioInventarioSQLite:
             fecha_vencimiento=inventario_dto.fecha_vencimiento,
             bodega_id=inventario_dto.bodega_id if hasattr(inventario_dto, 'bodega_id') else None,
             pasillo=inventario_dto.pasillo if hasattr(inventario_dto, 'pasillo') else None,
-            estante=inventario_dto.estante if hasattr(inventario_dto, 'estante') else None
+            estante=inventario_dto.estante if hasattr(inventario_dto, 'estante') else None,
+            requiere_cadena_frio=inventario_dto.requiere_cadena_frio
         )
         db.session.add(inventario_model)
         db.session.commit()
@@ -148,6 +150,7 @@ class RepositorioInventarioSQLite:
             cantidad_disponible=inventario_dto.cantidad_disponible,
             cantidad_reservada=inventario_dto.cantidad_reservada,
             fecha_vencimiento=inventario_dto.fecha_vencimiento,
+            requiere_cadena_frio=inventario_dto.requiere_cadena_frio,
             bodega_id=inventario_dto.bodega_id if hasattr(inventario_dto, 'bodega_id') else None,
             pasillo=inventario_dto.pasillo if hasattr(inventario_dto, 'pasillo') else None,
             estante=inventario_dto.estante if hasattr(inventario_dto, 'estante') else None
@@ -181,11 +184,12 @@ class RepositorioInventarioSQLite:
                 producto_id=inventario_dto.producto_id,
                 fecha_vencimiento=inventario_dto.fecha_vencimiento
             ).first()
-            
+
             if inventario_model:
                 # Actualizar el lote existente
                 inventario_model.cantidad_disponible = inventario_dto.cantidad_disponible
                 inventario_model.cantidad_reservada = inventario_dto.cantidad_reservada
+                inventario_model.requiere_cadena_frio = inventario_dto.requiere_cadena_frio
             else:
                 # Crear un nuevo lote
                 inventario_model = InventarioModel(
@@ -215,7 +219,8 @@ class RepositorioInventarioSQLite:
                 producto_id=inventario_model.producto_id,
                 cantidad_disponible=inventario_model.cantidad_disponible,
                 cantidad_reservada=inventario_model.cantidad_reservada,
-                fecha_vencimiento=inventario_model.fecha_vencimiento
+                fecha_vencimiento=inventario_model.fecha_vencimiento,
+                requiere_cadena_frio=inventario_model.requiere_cadena_frio
             ))
 
         return inventarios_dto

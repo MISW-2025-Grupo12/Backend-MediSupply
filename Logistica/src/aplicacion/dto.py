@@ -21,6 +21,7 @@ class InventarioDTO(DTO):
     pasillo: str = None
     estante: str = None
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    requiere_cadena_frio: bool = False
 
 @dataclass(frozen=True)
 class BodegaDTO(DTO):
