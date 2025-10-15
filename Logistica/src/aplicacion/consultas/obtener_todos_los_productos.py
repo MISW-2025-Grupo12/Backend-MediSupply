@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta
 from infraestructura.repositorios import RepositorioBodegaSQLite
 from infraestructura.servicio_productos import ServicioProductos
+from datetime import date, datetime
 
 @dataclass
 class ObtenerTodosLosProductos(Consulta):
@@ -37,12 +38,17 @@ class ObtenerTodosLosProductosHandler:
                     det.get('categoria') if isinstance(det.get('categoria'), str) else None
                 ) or det.get('categoria_nombre') or (det.get('categoria', {}) if isinstance(det.get('categoria'), dict) else {}).get('nombre')
 
+                fecha_vencimiento = getattr(inv, 'fecha_vencimiento', None)
+                if isinstance(fecha_vencimiento, (datetime, date)):
+                    fecha_vencimiento = fecha_vencimiento.isoformat()
+
                 productos_agrupados[pid] = {
                     'producto_id': pid,
                     'producto_nombre': producto_nombre,
                     'categoria': categoria_id,
                     'categoria_nombre': categoria_nombre,
                     'cantidad_total': 0,
+                    'fecha_vencimiento': fecha_vencimiento,
                     'ubicaciones': []
                 }
 
@@ -53,7 +59,6 @@ class ObtenerTodosLosProductosHandler:
                 'estante': inv.estante,
                 'cantidad_disponible': inv.cantidad_disponible,
                 'cantidad_reservada': inv.cantidad_reservada,
-                #'fecha_vencimiento': getattr(inv, 'fecha_vencimiento', None)
             })
 
         return list(productos_agrupados.values())
