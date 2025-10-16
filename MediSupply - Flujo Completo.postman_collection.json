@@ -1,13 +1,201 @@
 {
 	"info": {
-		"_postman_id": "9b4f61ca-4317-43e2-8cb2-33292e185da4",
+		"_postman_id": "888a6b51-fab1-46c8-b94a-39cb99089600",
 		"name": "MediSupply - Flujo Completo",
 		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n3. **Crear Productos** - Con y sin inventario\n    \n4. **Crear Visitas** - Programar visitas de venta\n    \n5. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n6. **Gestionar Inventario** - Reservas y descuentos\n    \n7. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n8. **Consultar Entregas** - Ver entregas programadas",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-9b4f61ca-4317-43e2-8cb2-33292e185da4?action=share&source=collection_link&creator=30409960"
+		"_exporter_id": "20553656",
+		"_collection_link": "https://devops-1116.postman.co/workspace/ProyectoFInal-MISW~f9e7974b-1769-49ba-af63-5181d533a2c9/collection/20553656-888a6b51-fab1-46c8-b94a-39cb99089600?action=share&source=collection_link&creator=20553656"
 	},
 	"item": [
+		{
+			"name": "📊 0. Consultas Adicionales",
+			"item": [
+				{
+					"name": "Listar Todos los Proveedores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Proveedores listados exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de proveedores:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/proveedores/",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"proveedores",
+								""
+							]
+						},
+						"description": "Lista todos los proveedores registrados"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos los Vendedores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Vendedores listados exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de vendedores:', response.length);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/vendedores/",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"vendedores",
+								""
+							]
+						},
+						"description": "Lista todos los vendedores registrados"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos los Clientes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Clientes listados exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de clientes:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/clientes/",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"clientes",
+								""
+							]
+						},
+						"description": "Lista todos los clientes registrados"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todas las Categorías",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Categorías listadas exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de categorías:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_productos}}/api/categorias/",
+							"host": [
+								"{{base_url_productos}}"
+							],
+							"path": [
+								"api",
+								"categorias",
+								""
+							]
+						},
+						"description": "Lista todas las categorías de productos"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos los Pedidos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Pedidos listados exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de pedidos:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/pedidos/",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								""
+							]
+						},
+						"description": "Lista todos los pedidos del sistema"
+					},
+					"response": []
+				}
+			],
+			"description": "Consultas adicionales para verificar el estado del sistema"
+		},
 		{
 			"name": "🔧 1. Configuración Inicial",
 			"item": [
@@ -1496,190 +1684,86 @@
 			"description": "Consultar entregas programadas y crear datos de prueba"
 		},
 		{
-			"name": "📊 8. Consultas Adicionales",
+			"name": "📊  9. Informes de ventas",
 			"item": [
 				{
-					"name": "Listar Todos los Proveedores",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Proveedores listados exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de proveedores:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
+					"name": "Listar datos informe de ventas",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url_usuarios}}/api/proveedores/",
-							"host": [
-								"{{base_url_usuarios}}"
-							],
-							"path": [
-								"api",
-								"proveedores",
-								""
-							]
-						},
-						"description": "Lista todos los proveedores registrados"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todos los Vendedores",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Vendedores listados exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de vendedores:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url_usuarios}}/api/vendedores/",
-							"host": [
-								"{{base_url_usuarios}}"
-							],
-							"path": [
-								"api",
-								"vendedores",
-								""
-							]
-						},
-						"description": "Lista todos los vendedores registrados"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todos los Clientes",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Clientes listados exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de clientes:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url_usuarios}}/api/clientes/",
-							"host": [
-								"{{base_url_usuarios}}"
-							],
-							"path": [
-								"api",
-								"clientes",
-								""
-							]
-						},
-						"description": "Lista todos los clientes registrados"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todas las Categorías",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Categorías listadas exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de categorías:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url_productos}}/api/categorias/",
-							"host": [
-								"{{base_url_productos}}"
-							],
-							"path": [
-								"api",
-								"categorias",
-								""
-							]
-						},
-						"description": "Lista todas las categorías de productos"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todos los Pedidos",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Pedidos listados exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de pedidos:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url_ventas}}/api/pedidos/",
+							"raw": "{{base_url_ventas}}/api/informes/ventas",
 							"host": [
 								"{{base_url_ventas}}"
 							],
 							"path": [
 								"api",
-								"pedidos",
-								""
+								"informes",
+								"ventas"
 							]
-						},
-						"description": "Lista todos los pedidos del sistema"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar datos informe por vendedor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/informes/ventas?vendedor_id={{vendedor_id}",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"informes",
+								"ventas"
+							],
+							"query": [
+								{
+									"key": "vendedor_id",
+									"value": "{{vendedor_id}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar datos informe rango de fechas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/informes/ventas?vendedor_id={{vendedor_id}}&fecha_inicio=2025-09-01T00:00:00&fecha_fin=2025-10-31T23:59:59",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"informes",
+								"ventas"
+							],
+							"query": [
+								{
+									"key": "vendedor_id",
+									"value": "{{vendedor_id}}"
+								},
+								{
+									"key": "fecha_inicio",
+									"value": "2025-09-01T00:00:00"
+								},
+								{
+									"key": "fecha_fin",
+									"value": "2025-10-31T23:59:59"
+								}
+							]
+						}
 					},
 					"response": []
 				}
-			],
-			"description": "Consultas adicionales para verificar el estado del sistema"
+			]
 		}
 	],
 	"event": [
@@ -1761,6 +1845,10 @@
 		},
 		{
 			"key": "bodega_id",
+			"value": ""
+		},
+		{
+			"key": "pedido_completo_id",
 			"value": ""
 		}
 	]
