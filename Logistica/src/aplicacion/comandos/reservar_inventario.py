@@ -104,6 +104,13 @@ class ReservarInventarioHandler:
                 'message': f'Inventario reservado exitosamente para {len(comando.items)} productos'
             }
             
+        except ValueError as e:
+            # Error específico de validación (fecha de vencimiento, etc.)
+            logger.error(f"Error en reservar inventario: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
         except Exception as e:
             logger.error(f"Error en reservar inventario: {e}")
             return {

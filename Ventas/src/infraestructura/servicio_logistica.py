@@ -65,11 +65,22 @@ class ServicioLogistica:
             if response.status_code == 200:
                 return response.json()
             else:
-                logger.error(f"Error reservando inventario: {response.status_code}")
-                return {
-                    'success': False,
-                    'error': f'Error reservando inventario: {response.status_code}'
-                }
+                # Intentar extraer el mensaje de error específico del JSON de respuesta
+                try:
+                    error_response = response.json()
+                    error_message = error_response.get('error', f'Error reservando inventario: {response.status_code}')
+                    logger.error(f"Error reservando inventario: {error_message}")
+                    return {
+                        'success': False,
+                        'error': error_message
+                    }
+                except:
+                    # Si no se puede parsear el JSON, usar el código de estado
+                    logger.error(f"Error reservando inventario: {response.status_code}")
+                    return {
+                        'success': False,
+                        'error': f'Error reservando inventario: {response.status_code}'
+                    }
                 
         except Exception as e:
             logger.error(f"Error reservando inventario: {e}")
