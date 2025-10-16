@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta
 from infraestructura.repositorios import RepositorioInventarioSQLite, RepositorioBodegaSQLite
+from infraestructura.servicio_productos import ServicioProductos
 import logging
 
 logger = logging.getLogger(__name__)
@@ -10,9 +11,10 @@ class ObtenerUbicacionesProducto(Consulta):
     producto_id: str
 
 class ObtenerUbicacionesProductoHandler:
-    def __init__(self, repositorio_inventario=None, repositorio_bodega=None):
+    def __init__(self, repositorio_inventario=None, repositorio_bodega=None, servicio_productos=None):
         self.repositorio_inventario = repositorio_inventario or RepositorioInventarioSQLite()
         self.repositorio_bodega = repositorio_bodega or RepositorioBodegaSQLite()
+        self.servicio_productos = servicio_productos or ServicioProductos()
     
     def handle(self, consulta: ObtenerUbicacionesProducto) -> dict:
         logger.info(f"Obteniendo ubicaciones del producto {consulta.producto_id} en todas las bodegas...")
@@ -87,14 +89,60 @@ class ObtenerUbicacionesProductoHandler:
         
         logger.info(f"Producto {consulta.producto_id} encontrado en {len(ubicaciones)} bodegas")
         
-        return {
-            'producto_id': consulta.producto_id,
-            'ubicaciones': ubicaciones,
-            'total_bodegas': len(ubicaciones),
-            'total_cantidad_disponible': total_cantidad_disponible,
-            'total_cantidad_reservada': total_cantidad_reservada,
-            'mensaje': f'Producto encontrado en {len(ubicaciones)} bodega(s)'
+        # Consultar detalles del producto en el microservicio de productos
+        try:
+            det = self.servicio_productos.obtener_producto_por_id(consulta.producto_id) or {}
+        except Exception:
+            det = {}
+
+        # Extraer campos del producto
+        producto_nombre = det.get('nombre', 'Producto sin nombre')
+        descripcion = det.get('descripcion', '')
+        precio = det.get('precio', 0)
+        categoria = det.get('categoria', {}) if isinstance(det.get('categoria'), dict) else {}
+        proveedor = det.get('proveedor', {}) if isinstance(det.get('proveedor'), dict) else {}
+
+        # Armar estructura homóloga al endpoint /bodegas/productos
+        producto = {
+            'id': str(consulta.producto_id),
+            'nombre': producto_nombre,
+            'descripcion': descripcion,
+            'precio': precio,
+            'stock': total_cantidad_disponible,
+            'fecha_vencimiento': None,
+            'requiere_cadena_frio': any(
+                getattr(l, 'requiere_cadena_frio', False) for l in lotes_inventario
+            ),
+            'categoria': {
+                'id': str(categoria.get('id', '1')),
+                'nombre': categoria.get('nombre', 'Sin categoría'),
+                'descripcion': categoria.get('descripcion', '')
+            },
+            'proveedor': {
+                'id': str(proveedor.get('id', '1')),
+                'nombre': proveedor.get('nombre', 'Proveedor genérico'),
+                'email': proveedor.get('email', ''),
+                'direccion': proveedor.get('direccion', '')
+            },
+            'ubicaciones': []
         }
+
+        # Transformar tus ubicaciones existentes al nuevo formato
+        for u in ubicaciones:
+            for uf in u['ubicaciones_fisicas']:
+                producto['ubicaciones'].append({
+                    'id': f"{u['bodega_id'] or 'sin_asignar'}-{uf['pasillo']}-{uf['estante']}",
+                    'nombre': u['bodega_nombre'] or 'Sin asignar',
+                    'pasillo': uf['pasillo'],
+                    'estante': uf['estante'],
+                    'stock_disponible': uf['cantidad_disponible'],
+                    'stock_reservado': uf['cantidad_reservada']
+                })
+
+        logger.info(f"✅ Producto {consulta.producto_id} homologado con {len(producto['ubicaciones'])} ubicaciones")
+
+        return producto
+
 
 @ejecutar_consulta.register(ObtenerUbicacionesProducto)
 def ejecutar_obtener_ubicaciones_producto(consulta: ObtenerUbicacionesProducto):
