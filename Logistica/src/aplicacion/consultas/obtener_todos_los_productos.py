@@ -52,23 +52,36 @@ class ObtenerTodosLosProductosHandler:
                 requiere_cadena_frio = getattr(inv, 'requiere_cadena_frio', False)
 
                 productos_agrupados[pid] = {
-                    'producto_id': pid,
-                    'producto_nombre': producto_nombre,
-                    'categoria': categoria_id,
-                    'categoria_nombre': categoria_nombre,
-                    'cantidad_total': 0,
+                    'id': str(pid),
+                    'nombre': producto_nombre or 'Producto sin nombre',
+                    'descripcion': det.get('descripcion', '') if det else '',
+                    'precio': det.get('precio', 0) if det else 0,
+                    'stock': 0,
                     'fecha_vencimiento': fecha_vencimiento,
                     'requiere_cadena_frio': requiere_cadena_frio,
+                    'categoria': {
+                        'id': str(categoria_id) if categoria_id else '1',
+                        'nombre': categoria_nombre or 'Sin categoría',
+                        'descripcion': det.get('categoria', {}).get('descripcion', '') if det else ''
+                    },
+                    'proveedor': {
+                        'id': str(det.get('proveedor', {}).get('id', '1')) if det else '1',
+                        'nombre': det.get('proveedor', {}).get('nombre', 'Proveedor genérico') if det else 'Proveedor genérico',
+                        'email': det.get('proveedor', {}).get('email', '') if det else '',
+                        'direccion': det.get('proveedor', {}).get('direccion', '') if det else ''
+                    },
                     'ubicaciones': []
                 }
 
-            productos_agrupados[pid]['cantidad_total'] += inv.cantidad_disponible + inv.cantidad_reservada
+            productos_agrupados[pid]['stock'] += inv.cantidad_disponible
+
             productos_agrupados[pid]['ubicaciones'].append({
-                'bodega_id': inv.bodega_id,
+                'id': str(inv.id),
+                'nombre': f"Bodega {inv.bodega_id or 'N/A'}",
                 'pasillo': inv.pasillo,
                 'estante': inv.estante,
-                'cantidad_disponible': inv.cantidad_disponible,
-                'cantidad_reservada': inv.cantidad_reservada,
+                'stock_disponible': inv.cantidad_disponible,
+                'stock_reservado': inv.cantidad_reservada
             })
 
         return list(productos_agrupados.values())

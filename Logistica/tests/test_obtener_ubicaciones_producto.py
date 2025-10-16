@@ -67,25 +67,20 @@ class TestObtenerUbicacionesProducto:
         
         resultado = handler.handle(consulta)
         
-        assert resultado['producto_id'] == "prod-1"
-        assert resultado['total_bodegas'] == 1
-        assert resultado['total_cantidad_disponible'] == 50
-        assert resultado['total_cantidad_reservada'] == 10
+        assert resultado['id'] == "prod-1"
         assert len(resultado['ubicaciones']) == 1
-        
+
+        # Suma de cantidades desde ubicaciones
+        assert sum(u['stock_disponible'] for u in resultado['ubicaciones']) == 50
+        assert sum(u['stock_reservado'] for u in resultado['ubicaciones']) == 10
+
+        # Validar estructura de la primera ubicación
         ubicacion = resultado['ubicaciones'][0]
-        assert ubicacion['bodega_id'] == "bodega-1"
-        assert ubicacion['bodega_nombre'] == "Bodega Central"
-        assert ubicacion['bodega_direccion'] == "Av. Principal #123"
-        assert ubicacion['total_cantidad_disponible'] == 50
-        assert ubicacion['total_cantidad_reservada'] == 10
-        
-        ubicacion_fisica = ubicacion['ubicaciones_fisicas'][0]
-        assert ubicacion_fisica['pasillo'] == "A"
-        assert ubicacion_fisica['estante'] == "5"
-        assert ubicacion_fisica['cantidad_disponible'] == 50
-        assert ubicacion_fisica['cantidad_reservada'] == 10
-        assert "Bodega Central - Pasillo A - Estante 5" in ubicacion_fisica['ubicacion_descripcion']
+        assert ubicacion['nombre'] == "Bodega Central"
+        assert ubicacion['pasillo'] == "A"
+        assert ubicacion['estante'] == "5"
+        assert ubicacion['stock_disponible'] == 50
+        assert ubicacion['stock_reservado'] == 10
 
     def test_obtener_ubicaciones_producto_handler_sin_bodega_asignada(self):
         """Test para producto con inventario sin bodega asignada"""
@@ -112,20 +107,20 @@ class TestObtenerUbicacionesProducto:
         
         resultado = handler.handle(consulta)
         
-        assert resultado['producto_id'] == "prod-1"
-        assert resultado['total_bodegas'] == 1
-        assert resultado['total_cantidad_disponible'] == 30
-        assert resultado['total_cantidad_reservada'] == 5
-        
+        assert resultado['id'] == "prod-1"
+        assert len(resultado['ubicaciones']) == 1
+
+        # Validar sumatorias desde las ubicaciones
+        assert sum(u['stock_disponible'] for u in resultado['ubicaciones']) == 30
+        assert sum(u['stock_reservado'] for u in resultado['ubicaciones']) == 5
+
+        # Validar la primera ubicación sin bodega asignada
         ubicacion = resultado['ubicaciones'][0]
-        assert ubicacion['bodega_id'] is None
-        assert ubicacion['bodega_nombre'] == "Sin asignar"
-        assert ubicacion['bodega_direccion'] is None
-        
-        ubicacion_fisica = ubicacion['ubicaciones_fisicas'][0]
-        assert ubicacion_fisica['pasillo'] is None
-        assert ubicacion_fisica['estante'] is None
-        assert ubicacion_fisica['ubicacion_descripcion'] == "Sin ubicación asignada"
+        assert ubicacion['nombre'] == "Sin asignar"
+        assert ubicacion['pasillo'] is None
+        assert ubicacion['estante'] is None
+        assert ubicacion['stock_disponible'] == 30
+        assert ubicacion['stock_reservado'] == 5
 
     def test_obtener_ubicaciones_producto_handler_multiple_bodegas(self):
         """Test para producto con inventario en múltiples bodegas"""
@@ -181,16 +176,32 @@ class TestObtenerUbicacionesProducto:
         
         resultado = handler.handle(consulta)
         
-        assert resultado['producto_id'] == "prod-1"
-        assert resultado['total_bodegas'] == 2
-        assert resultado['total_cantidad_disponible'] == 50  # 30 + 20
-        assert resultado['total_cantidad_reservada'] == 8   # 5 + 3
+        assert resultado['id'] == "prod-1"
+
+        # Verificar que hay dos ubicaciones
         assert len(resultado['ubicaciones']) == 2
-        
-        # Verificar que ambas bodegas están presentes
-        bodega_ids = [ubicacion['bodega_id'] for ubicacion in resultado['ubicaciones']]
-        assert "bodega-1" in bodega_ids
-        assert "bodega-2" in bodega_ids
+
+        # Sumar cantidades desde ubicaciones
+        assert sum(u['stock_disponible'] for u in resultado['ubicaciones']) == 50  # 30 + 20
+        assert sum(u['stock_reservado'] for u in resultado['ubicaciones']) == 8    # 5 + 3
+
+        # Validar que ambas bodegas están presentes
+        nombres_bodegas = [u['nombre'] for u in resultado['ubicaciones']]
+        assert "Bodega Central" in nombres_bodegas
+        assert "Bodega Norte" in nombres_bodegas
+
+        # Validar que las ubicaciones tengan los datos correctos
+        ubicacion_central = next(u for u in resultado['ubicaciones'] if u['nombre'] == "Bodega Central")
+        assert ubicacion_central['pasillo'] == "A"
+        assert ubicacion_central['estante'] == "5"
+        assert ubicacion_central['stock_disponible'] == 30
+        assert ubicacion_central['stock_reservado'] == 5
+
+        ubicacion_norte = next(u for u in resultado['ubicaciones'] if u['nombre'] == "Bodega Norte")
+        assert ubicacion_norte['pasillo'] == "B"
+        assert ubicacion_norte['estante'] == "10"
+        assert ubicacion_norte['stock_disponible'] == 20
+        assert ubicacion_norte['stock_reservado'] == 3
 
     def test_obtener_ubicaciones_producto_handler_con_repositorios_por_defecto(self):
         """Test para verificar que se pueden crear repositorios por defecto"""
