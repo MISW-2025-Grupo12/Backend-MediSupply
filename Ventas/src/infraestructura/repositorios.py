@@ -259,3 +259,91 @@ class RepositorioPedidoSQLite:
         except Exception as e:
             db.session.rollback()
             return False
+
+    def obtener_pedidos_confirmados(self, vendedor_id: str = None, fecha_inicio=None, fecha_fin=None) -> list[Pedido]:
+        """
+        Obtener pedidos CONFIRMADOS, opcionalmente filtrados por vendedor y rango de fechas.
+
+        Comportamiento:
+        - Si se envían ambas fechas -> filtra entre ellas (rango cerrado).
+        - Si solo se envía fecha_inicio -> trae desde esa fecha hasta el futuro.
+        - Si solo se envía fecha_fin -> trae desde el inicio hasta esa fecha.
+        - Si no se envían fechas -> trae todos los pedidos confirmados.
+        """
+        import logging
+        from datetime import datetime
+        from sqlalchemy import func
+
+        logger = logging.getLogger(__name__)
+        logger.info("🔎 Obteniendo pedidos CONFIRMADOS filtrados")
+
+        # Consulta base (insensible a mayúsculas)
+        query = PedidoModel.query.filter(func.lower(PedidoModel.estado) == "confirmado")
+
+        # Filtro opcional por vendedor
+        if vendedor_id:
+            query = query.filter(PedidoModel.vendedor_id == vendedor_id)
+            logger.info(f"📦 Filtrando por vendedor_id={vendedor_id}")
+
+        # Filtros por fechas usando 'created_at'
+        if fecha_inicio or fecha_fin:
+            try:
+                if fecha_inicio:
+                    inicio = datetime.fromisoformat(fecha_inicio)
+                else:
+                    inicio = datetime.min  # fecha más antigua posible
+
+                if fecha_fin:
+                    fin = datetime.fromisoformat(fecha_fin)
+                else:
+                    fin = datetime.max  # hasta el futuro
+
+                query = query.filter(PedidoModel.created_at >= inicio, PedidoModel.created_at <= fin)
+                logger.info(f"🗓️ Filtrando pedidos creados entre {inicio} y {fin}")
+            except Exception as e:
+                logger.warning(f"⚠️ Formato inválido de fechas: {e}")
+
+        # Ejecutar consulta
+        pedidos_model = query.all()
+
+        if not pedidos_model:
+            logger.info("⚠️ No se encontraron pedidos confirmados con los filtros aplicados")
+            return []
+
+        pedidos = []
+
+        for pedido_model in pedidos_model:
+            # Obtener items asociados
+            items_model = ItemPedidoModel.query.filter_by(pedido_id=pedido_model.id).all()
+            items = []
+            for item_model in items_model:
+                items.append(ItemPedido(
+                    id=uuid.UUID(item_model.id),
+                    producto_id=item_model.producto_id,
+                    nombre_producto=item_model.nombre_producto,
+                    cantidad=Cantidad(item_model.cantidad),
+                    precio_unitario=Precio(item_model.precio_unitario)
+                ))
+
+            # Convertir total a float de forma segura
+            try:
+                total_valor = float(pedido_model.total)
+            except Exception:
+                total_valor = 0.0
+
+            # Crear entidad de dominio Pedido
+            pedido = Pedido(
+                id=uuid.UUID(pedido_model.id),
+                vendedor_id=pedido_model.vendedor_id,
+                cliente_id=getattr(pedido_model, 'cliente_id', None),
+                items=items,
+                estado=EstadoPedido(pedido_model.estado),
+                total=Precio(total_valor)
+            )
+
+            pedido._created_at_model = pedido_model.created_at
+
+            pedidos.append(pedido)
+
+        logger.info(f"✅ Pedidos CONFIRMADOS encontrados: {len(pedidos)}")
+        return pedidos
