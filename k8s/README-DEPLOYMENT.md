@@ -1,5 +1,7 @@
 # MediSupply - Guía de Despliegue en GKE
 
+> **NOTA IMPORTANTE**: Esta guía es para despliegue manual. Si usas Terraform (IaC/), los nombres de recursos tendrán sufijo `-prod` (ej: `medisupply-cluster-prod`, `medisupply-db-prod`). Ver [IaC/README.md](../IaC/README.md) para despliegue automatizado.
+
 ## ⚙️ Configuración Inicial
 
 ### 1. Creación de Bases de Datos PostgreSQL
@@ -190,10 +192,10 @@ kubectl annotate serviceaccount medisupply-ksa \
 cd "C:\Users\Usuario\OneDrive\Documentos\Maestria Uniandes\Proyecto 2\Backend-MediSupply"
 
 # Construir todas las imágenes en paralelo (usar rutas absolutas)
-docker build -f "Productos/Dockerfile" -t gcr.io/desarrolloswcloud/medisupply-productos:latest "Productos" &
-docker build -f "Usuarios/Dockerfile" -t gcr.io/desarrolloswcloud/medisupply-usuarios:latest "Usuarios" &
-docker build -f "Ventas/Dockerfile" -t gcr.io/desarrolloswcloud/medisupply-ventas:latest "Ventas" &
-docker build -f "Logistica/Dockerfile" -t gcr.io/desarrolloswcloud/medisupply-logistica:latest "Logistica" &
+docker build -f "Productos/Dockerfile" -t gcr.io/desarrolloswcloud/productos:latest "Productos" &
+docker build -f "Usuarios/Dockerfile" -t gcr.io/desarrolloswcloud/usuarios:latest "Usuarios" &
+docker build -f "Ventas/Dockerfile" -t gcr.io/desarrolloswcloud/ventas:latest "Ventas" &
+docker build -f "Logistica/Dockerfile" -t gcr.io/desarrolloswcloud/logistica:latest "Logistica" &
 
 # Esperar a que terminen todas las construcciones
 wait
@@ -208,10 +210,10 @@ docker images | grep medisupply
 ### Subir Imágenes a GCR
 ```bash
 # Subir todas las imágenes en paralelo
-docker push gcr.io/desarrolloswcloud/medisupply-productos:latest &
-docker push gcr.io/desarrolloswcloud/medisupply-usuarios:latest &
-docker push gcr.io/desarrolloswcloud/medisupply-ventas:latest &
-docker push gcr.io/desarrolloswcloud/medisupply-logistica:latest &
+docker push gcr.io/desarrolloswcloud/productos:latest &
+docker push gcr.io/desarrolloswcloud/usuarios:latest &
+docker push gcr.io/desarrolloswcloud/ventas:latest &
+docker push gcr.io/desarrolloswcloud/logistica:latest &
 
 # Esperar a que terminen todas las subidas
 wait
