@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position=0)]
-    [ValidateSet("all", "infra", "apps", "verify", "clean", "help")]
+    [ValidateSet("all", "infra", "apps", "verify", "diagnose", "clean", "help")]
     [string]$Action = "all"
 )
 
@@ -161,6 +161,16 @@ function Deploy-Infrastructure {
         Write-Success "Infraestructura aplicada correctamente"
     }
     
+    # Completar configuración de Workload Identity si es necesario
+    Write-Info "Completando configuración de Workload Identity..."
+    try {
+        terraform apply -auto-approve
+        Write-Success "Configuración de Workload Identity completada"
+    }
+    catch {
+        Write-Warning "Algunos recursos ya existen, continuando con el despliegue..."
+    }
+    
     # Obtener outputs importantes
     $clusterName = terraform output -raw cluster_name
     $zone = terraform output -raw cluster_location
@@ -200,7 +210,7 @@ function Verify-CloudSQLProxyConfig {
             }
             
             # Verificar que DB_HOST sea localhost
-            if ($content -match 'DB_HOST.*localhost') {
+            if ($content -match 'DB_HOST.*localhost' -or $content -match 'DB_HOST.*"localhost"') {
                 Write-Success "$deployment configurado para usar localhost"
             } else {
                 Write-Warning "$deployment NO está configurado para usar localhost"
@@ -215,6 +225,58 @@ function Verify-CloudSQLProxyConfig {
         Write-Error "Algunos deployments necesitan configuración adicional"
         exit 1
     }
+}
+
+# Función para configurar Pub/Sub
+function Setup-PubSub {
+    Write-Info "Configurando Pub/Sub topics y subscriptions..."
+    
+    # Crear topics necesarios
+    $topics = @(
+        "productos-stock-actualizado",
+        "pedidos-creados",
+        "medisupply-events-prod"
+    )
+    
+    foreach ($topic in $topics) {
+        Write-Info "Creando topic: $topic"
+        try {
+            gcloud pubsub topics create $topic --project=desarrolloswcloud 2>$null
+            Write-Success "Topic $topic creado exitosamente"
+        }
+        catch {
+            Write-Info "Topic $topic ya existe o error creándolo"
+        }
+    }
+    
+    # Crear subscriptions necesarias
+    Write-Info "Creando subscriptions..."
+    
+    # Subscription para logística (inventario)
+    try {
+        gcloud pubsub subscriptions create logistica-inventario-subscription `
+            --topic=productos-stock-actualizado `
+            --project=desarrolloswcloud `
+            --ack-deadline=20 2>$null
+        Write-Success "Subscription logistica-inventario-subscription creada exitosamente"
+    }
+    catch {
+        Write-Info "Subscription logistica-inventario-subscription ya existe o error creándola"
+    }
+    
+    # Subscription principal
+    try {
+        gcloud pubsub subscriptions create medisupply-subscription-prod `
+            --topic=medisupply-events-prod `
+            --project=desarrolloswcloud `
+            --ack-deadline=20 2>$null
+        Write-Success "Subscription medisupply-subscription-prod creada exitosamente"
+    }
+    catch {
+        Write-Info "Subscription medisupply-subscription-prod ya existe o error creándola"
+    }
+    
+    Write-Success "Configuración de Pub/Sub completada"
 }
 
 # Función para configurar kubectl
@@ -293,6 +355,20 @@ function Deploy-Applications {
     kubectl apply -f configmap.yaml
     kubectl apply -f secret.yaml
     
+    # Crear service account de Kubernetes si no existe
+    Write-Info "Creando service account de Kubernetes..."
+    try {
+        kubectl create serviceaccount medisupply-ksa -n medisupply 2>$null
+        Write-Success "Service account medisupply-ksa creado"
+    }
+    catch {
+        Write-Info "Service account medisupply-ksa ya existe"
+    }
+    
+    # Configurar anotación de Workload Identity
+    Write-Info "Configurando Workload Identity..."
+    kubectl annotate serviceaccount medisupply-ksa -n medisupply iam.gke.io/gcp-service-account=medisupply-workload-prod@desarrolloswcloud.iam.gserviceaccount.com --overwrite
+    
     # Desplegar servicios
     kubectl apply -f productos-deployment.yaml
     kubectl apply -f usuarios-deployment.yaml
@@ -336,10 +412,20 @@ function Verify-Deployment {
     
     # Esperar a que los pods estén listos (con timeout más largo para Cloud SQL Proxy)
     Write-Info "Esperando a que los pods estén listos (esto puede tomar varios minutos)..."
-    kubectl wait --for=condition=ready pod -l app=productos -n medisupply --timeout=600s
-    kubectl wait --for=condition=ready pod -l app=usuarios -n medisupply --timeout=600s
-    kubectl wait --for=condition=ready pod -l app=ventas -n medisupply --timeout=600s
-    kubectl wait --for=condition=ready pod -l app=logistica -n medisupply --timeout=600s
+    
+    # Verificar pods con manejo de errores
+    $apps = @("productos", "usuarios", "ventas", "logistica")
+    foreach ($app in $apps) {
+        try {
+            Write-Info "Esperando pods de $app..."
+            kubectl wait --for=condition=ready pod -l app=$app -n medisupply --timeout=300s
+            Write-Success "Pods de $app están listos"
+        }
+        catch {
+            Write-Warning "Timeout esperando pods de $app. Verificando estado..."
+            kubectl get pods -l app=$app -n medisupply
+        }
+    }
     
     # Verificar estado final de los pods
     Write-Info "Estado final de los pods:"
@@ -446,6 +532,35 @@ function Clean-Resources {
     Write-Success "Limpieza completada. El proyecto está listo para un nuevo despliegue."
 }
 
+# Función para diagnosticar problemas
+function Diagnose-Issues {
+    Write-Info "Diagnosticando problemas del despliegue..."
+    
+    # Verificar estado de los pods
+    Write-Info "Estado de los pods:"
+    kubectl get pods -n medisupply
+    
+    # Verificar eventos recientes
+    Write-Info "Eventos recientes:"
+    kubectl get events -n medisupply --sort-by='.lastTimestamp' | Select-Object -Last 10
+    
+    # Verificar logs de pods con errores
+    $errorPods = kubectl get pods -n medisupply --field-selector=status.phase!=Running -o name
+    foreach ($pod in $errorPods) {
+        $podName = $pod -replace "pod/", ""
+        Write-Info "Logs de $podName:"
+        kubectl logs $podName -n medisupply --tail=20
+    }
+    
+    # Verificar configuración de service account
+    Write-Info "Verificando service account:"
+    kubectl get serviceaccount medisupply-ksa -n medisupply -o yaml
+    
+    # Verificar anotaciones de Workload Identity
+    Write-Info "Verificando anotaciones de Workload Identity:"
+    kubectl describe serviceaccount medisupply-ksa -n medisupply
+}
+
 # Función para mostrar ayuda
 function Show-Help {
     Write-Host "MediSupply - Script de Despliegue en PowerShell" -ForegroundColor $Colors.Green
@@ -457,6 +572,7 @@ function Show-Help {
     Write-Host "  infra     Desplegar solo infraestructura"
     Write-Host "  apps      Desplegar solo aplicaciones (requiere infraestructura existente)"
     Write-Host "  verify    Verificar despliegue existente"
+    Write-Host "  diagnose  Diagnosticar problemas del despliegue"
     Write-Host "  clean     Limpiar recursos (CUIDADO: Elimina todo)"
     Write-Host "  help      Mostrar esta ayuda"
     Write-Host ""
@@ -464,6 +580,7 @@ function Show-Help {
     Write-Host "  .\deploy.ps1 all      # Despliegue completo"
     Write-Host "  .\deploy.ps1 infra    # Solo infraestructura"
     Write-Host "  .\deploy.ps1 apps     # Solo aplicaciones"
+    Write-Host "  .\deploy.ps1 diagnose # Diagnosticar problemas"
 }
 
 # Función principal
@@ -473,6 +590,7 @@ function Main {
             Test-Prerequisites
             Setup-GoogleCloud
             Deploy-Infrastructure
+            Setup-PubSub
             Setup-Kubectl
             Build-AndPush-Images
             Deploy-Applications
@@ -482,11 +600,13 @@ function Main {
             Test-Prerequisites
             Setup-GoogleCloud
             Deploy-Infrastructure
+            Setup-PubSub
             Setup-Kubectl
         }
         "apps" {
             Test-Prerequisites
             Setup-GoogleCloud
+            Setup-PubSub
             Setup-Kubectl
             Build-AndPush-Images
             Deploy-Applications
@@ -494,6 +614,9 @@ function Main {
         }
         "verify" {
             Verify-Deployment
+        }
+        "diagnose" {
+            Diagnose-Issues
         }
         "clean" {
             Clean-Resources

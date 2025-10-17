@@ -58,7 +58,10 @@ spec:
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)"
         - name: USUARIOS_SERVICE_URL
-          value: "http://usuarios-service:5001/usuarios/api"
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: USUARIOS_SERVICE_URL
         - name: PRODUCTOS_SERVICE_URL
           valueFrom:
             configMapKeyRef:

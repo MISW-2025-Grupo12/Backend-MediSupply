@@ -9,6 +9,7 @@ data:
   PYTHONPATH: "/app"
   
   # URLs de servicios (para comunicación entre microservicios)
+  USUARIOS_SERVICE_URL: "http://usuarios-service:5001/usuarios/api"
   PRODUCTOS_SERVICE_URL: "http://productos-service:5000/productos/api"
   LOGISTICA_SERVICE_URL: "http://logistica-service:5003/logistica/api"
   
