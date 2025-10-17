@@ -15,6 +15,9 @@ data:
   # Configuración de GCP
   GCP_PROJECT_ID: "desarrolloswcloud"
   
+  # Cloud SQL Proxy
+  CLOUD_SQL_CONNECTION_NAME: "desarrolloswcloud:us-central1:medisupply-db-prod"
+  
   # Configuración de base de datos
   DB_PORT: "5432"
   
