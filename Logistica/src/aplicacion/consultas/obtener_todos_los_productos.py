@@ -75,9 +75,17 @@ class ObtenerTodosLosProductosHandler:
 
             productos_agrupados[pid]['stock'] += inv.cantidad_disponible
 
+            # Obtener información de la bodega
+            bodega_nombre = "Sin asignar"
+            if inv.bodega_id:
+                bodega = self.repositorio_bodega.obtener_por_id(inv.bodega_id)
+                if bodega:
+                    bodega_nombre = bodega.nombre
+            
             productos_agrupados[pid]['ubicaciones'].append({
                 'id': str(inv.id),
-                'nombre': f"Bodega {inv.bodega_id or 'N/A'}",
+                'bodega_id': str(inv.bodega_id) if inv.bodega_id else None,
+                'nombre': bodega_nombre,
                 'pasillo': inv.pasillo,
                 'estante': inv.estante,
                 'stock_disponible': inv.cantidad_disponible,
