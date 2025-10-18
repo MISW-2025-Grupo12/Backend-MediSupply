@@ -13,7 +13,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-bp = api.crear_blueprint('inventario', '/api/inventario')
+bp = api.crear_blueprint('inventario', '/logistica/api/inventario')
 
 @bp.route('/buscar', methods=['GET'])
 def buscar_productos_con_inventario():
@@ -156,7 +156,7 @@ def descontar_inventario():
 
 @bp.route('/producto/<producto_id>', methods=['GET'])
 def obtener_inventario_producto(producto_id):
-    """Obtener inventario de un producto específico"""
+    """Obtener inventario de un producto específico con ubicaciones"""
     try:
         repositorio = RepositorioInventarioSQLite()
         lotes_inventario = repositorio.obtener_por_producto_id(producto_id)
@@ -168,21 +168,32 @@ def obtener_inventario_producto(producto_id):
                 mimetype='application/json'
             )
         
-        # Calcular totales
-        total_disponible = sum(lote.cantidad_disponible for lote in lotes_inventario)
-        total_reservado = sum(lote.cantidad_reservada for lote in lotes_inventario)
+        # Agrupar por bodega
+        por_bodega = {}
+        for lote in lotes_inventario:
+            bid = lote.bodega_id or 'sin_asignar'
+            if bid not in por_bodega:
+                por_bodega[bid] = {
+                    'bodega_id': lote.bodega_id,
+                    'ubicaciones': [],
+                    'total_disponible': 0,
+                    'total_reservado': 0
+                }
+            
+            por_bodega[bid]['total_disponible'] += lote.cantidad_disponible
+            por_bodega[bid]['total_reservado'] += lote.cantidad_reservada
+            por_bodega[bid]['ubicaciones'].append({
+                'pasillo': lote.pasillo,
+                'estante': lote.estante,
+                'ubicacion': f"Bodega #{lote.bodega_id} - Pasillo {lote.pasillo} - Estante {lote.estante}" if lote.bodega_id else None,
+                'cantidad_disponible': lote.cantidad_disponible,
+                'cantidad_reservada': lote.cantidad_reservada,
+                'fecha_vencimiento': lote.fecha_vencimiento.isoformat()
+            })
         
         response_data = {
             'producto_id': producto_id,
-            'total_disponible': total_disponible,
-            'total_reservado': total_reservado,
-            'lotes': [
-                {
-                    'fecha_vencimiento': lote.fecha_vencimiento.isoformat(),
-                    'cantidad_disponible': lote.cantidad_disponible,
-                    'cantidad_reservada': lote.cantidad_reservada
-                } for lote in lotes_inventario
-            ]
+            'bodegas': list(por_bodega.values())
         }
         
         return Response(

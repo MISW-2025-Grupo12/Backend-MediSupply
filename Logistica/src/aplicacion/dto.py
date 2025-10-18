@@ -17,3 +17,14 @@ class InventarioDTO(DTO):
     cantidad_disponible: int
     cantidad_reservada: int
     fecha_vencimiento: datetime
+    bodega_id: str = None
+    pasillo: str = None
+    estante: str = None
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    requiere_cadena_frio: bool = False
+
+@dataclass(frozen=True)
+class BodegaDTO(DTO):
+    nombre: str
+    direccion: str
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))

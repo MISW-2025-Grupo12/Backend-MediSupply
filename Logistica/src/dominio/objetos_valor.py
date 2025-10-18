@@ -32,3 +32,17 @@ class FechaVencimiento:
     def __post_init__(self):
         if self.valor < datetime.now():
             raise ValueError("La fecha de vencimiento no puede ser en el pasado")
+
+@dataclass(frozen=True)
+class BodegaID:
+    valor: str
+
+@dataclass(frozen=True)
+class UbicacionFisica:
+    bodega_id: str
+    pasillo: str
+    estante: str
+    
+    @property
+    def descripcion(self) -> str:
+        return f"Bodega #{self.bodega_id} - Pasillo {self.pasillo} - Estante {self.estante}"

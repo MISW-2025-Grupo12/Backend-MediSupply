@@ -8,6 +8,7 @@ from unittest.mock import patch, Mock
 # Configurar el path para importar los módulos
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+from .conftest import get_usuarios_url
 
 class TestIntegration:
     """Pruebas de integración usando la aplicación Flask completa con SQLite"""
@@ -39,8 +40,8 @@ class TestIntegration:
         
         response_data = json.loads(response.data.decode())
         assert response_data['status'] == 'up'
-        assert 'endpoints' in response_data
-        assert len(response_data['endpoints']) > 0
+        assert response_data['service'] == 'usuarios'
+        assert response_data['mode'] == 'simplified'
     
     def test_proveedor_workflow(self):
         """Prueba de integración: flujo completo de proveedores"""
@@ -67,20 +68,20 @@ class TestIntegration:
                 'direccion': 'Calle 123 #45-67'
             }
             
-            response = self.client.post('/api/proveedores', 
+            response = self.client.post(get_usuarios_url('proveedores'), 
                                       data=json.dumps(proveedor_data),
                                       content_type='application/json')
             assert response.status_code == 201
             
             # 2. Obtener lista de proveedores
-            response = self.client.get('/api/proveedores')
+            response = self.client.get(get_usuarios_url('proveedores'))
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
             assert len(response_data) == 1
             assert response_data[0]['nombre'] == 'Farmacia Central'
             
             # 3. Obtener proveedor por ID
-            response = self.client.get(f'/api/proveedores/{proveedor_id}')
+            response = self.client.get(f"{get_usuarios_url('proveedores')}/{proveedor_id}")
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
             assert response_data['id'] == proveedor_id
@@ -110,20 +111,20 @@ class TestIntegration:
                 'direccion': 'Calle 123 #45-67'
             }
             
-            response = self.client.post('/api/clientes', 
+            response = self.client.post(get_usuarios_url('clientes'), 
                                       data=json.dumps(cliente_data),
                                       content_type='application/json')
             assert response.status_code == 201
             
             # 2. Obtener lista de clientes
-            response = self.client.get('/api/clientes')
+            response = self.client.get(get_usuarios_url('clientes'))
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
             assert len(response_data) == 1
             assert response_data[0]['nombre'] == 'Juan Pérez'
             
             # 3. Obtener cliente por ID
-            response = self.client.get(f'/api/clientes/{cliente_id}')
+            response = self.client.get(f"{get_usuarios_url('clientes')}/{cliente_id}")
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
             assert response_data['id'] == cliente_id
@@ -153,20 +154,20 @@ class TestIntegration:
                 'direccion': 'Calle 123 #45-67'
             }
             
-            response = self.client.post('/api/vendedores', 
+            response = self.client.post(get_usuarios_url('vendedores'), 
                                       data=json.dumps(vendedor_data),
                                       content_type='application/json')
             assert response.status_code == 201
             
             # 2. Obtener lista de vendedores
-            response = self.client.get('/api/vendedores')
+            response = self.client.get(get_usuarios_url('vendedores'))
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
             assert len(response_data) == 1
             assert response_data[0]['nombre'] == 'Carlos López'
             
             # 3. Obtener vendedor por ID
-            response = self.client.get(f'/api/vendedores/{vendedor_id}')
+            response = self.client.get(f"{get_usuarios_url('vendedores')}/{vendedor_id}")
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
             assert response_data['id'] == vendedor_id
@@ -174,16 +175,16 @@ class TestIntegration:
     def test_error_scenarios(self):
         """Prueba de integración: escenarios de error"""
         # Test 404 - Proveedor no encontrado
-        with patch('api.proveedor.ejecutar_consulta') as mock_obtener:
+        with patch('aplicacion.consultas.obtener_proveedor_por_id.ObtenerProveedorPorIdHandler.handle') as mock_obtener:
             mock_obtener.return_value = None
             
-            response = self.client.get(f'/api/proveedores/{str(uuid.uuid4())}')
+            response = self.client.get(f"{get_usuarios_url('proveedores')}/{str(uuid.uuid4())}")
             assert response.status_code == 404
             response_data = json.loads(response.data.decode())
             assert 'error' in response_data
         
         # Test 500 - Error interno
-        with patch('api.proveedor.ejecutar_comando') as mock_crear:
+        with patch('aplicacion.comandos.crear_proveedor.CrearProveedorHandler.handle') as mock_crear:
             mock_crear.side_effect = Exception("Error de base de datos")
             
             proveedor_data = {
@@ -192,7 +193,7 @@ class TestIntegration:
                 'direccion': 'Calle 123 #45-67'
             }
             
-            response = self.client.post('/api/proveedores',
+            response = self.client.post(get_usuarios_url('proveedores'),
                                       data=json.dumps(proveedor_data),
                                       content_type='application/json')
             assert response.status_code == 500

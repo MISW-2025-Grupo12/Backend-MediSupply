@@ -1,6 +1,6 @@
 from config.db import db
-from infraestructura.modelos import EntregaModel, InventarioModel
-from aplicacion.dto import EntregaDTO, InventarioDTO
+from infraestructura.modelos import EntregaModel, InventarioModel, BodegaModel
+from aplicacion.dto import EntregaDTO, InventarioDTO, BodegaDTO
 from datetime import datetime
 import uuid
 import json
@@ -70,6 +70,36 @@ class RepositorioEntregaSQLite:
 
         return entregas_dto
 
+class RepositorioBodegaSQLite:
+    """Repositorio para acceder a las bodegas (SQLite)."""
+
+    def crear(self, bodega_dto: BodegaDTO) -> BodegaDTO:
+        """Crear una nueva bodega."""
+        bodega_model = BodegaModel(
+            id=bodega_dto.id,
+            nombre=bodega_dto.nombre,
+            direccion=bodega_dto.direccion
+        )
+        db.session.add(bodega_model)
+        db.session.commit()
+        return bodega_dto
+    
+    def obtener_por_id(self, bodega_id: str) -> BodegaModel:
+        """Obtener una bodega por su ID."""
+        return BodegaModel.query.get(bodega_id)
+    
+    def obtener_todas(self) -> list[BodegaModel]:
+        """Obtener todas las bodegas."""
+        return BodegaModel.query.all()
+    
+    def obtener_inventario_por_bodega(self, bodega_id: str) -> list[InventarioModel]:
+        """Obtener inventario de una bodega específica."""
+        return InventarioModel.query.filter_by(bodega_id=bodega_id).all()
+    
+    def obtener_todos_los_inventarios(self) -> list[InventarioModel]:
+        """Obtener todos los inventarios de todas las bodegas."""
+        return InventarioModel.query.all()
+
 class RepositorioInventarioSQLite:
     """Repositorio para acceder al inventario (SQLite)."""
 
@@ -86,10 +116,32 @@ class RepositorioInventarioSQLite:
                 producto_id=inventario_model.producto_id,
                 cantidad_disponible=inventario_model.cantidad_disponible,
                 cantidad_reservada=inventario_model.cantidad_reservada,
-                fecha_vencimiento=inventario_model.fecha_vencimiento
+                fecha_vencimiento=inventario_model.fecha_vencimiento,
+                requiere_cadena_frio=inventario_model.requiere_cadena_frio, 
+                bodega_id=inventario_model.bodega_id,
+                pasillo=inventario_model.pasillo,
+                estante=inventario_model.estante,
+                id=inventario_model.id
             ))
         
         return inventarios_dto
+
+    def crear(self, inventario_dto: InventarioDTO) -> InventarioDTO:
+        """Crear un nuevo lote de inventario."""
+        inventario_model = InventarioModel(
+            id=inventario_dto.id,
+            producto_id=inventario_dto.producto_id,
+            cantidad_disponible=inventario_dto.cantidad_disponible,
+            cantidad_reservada=inventario_dto.cantidad_reservada,
+            fecha_vencimiento=inventario_dto.fecha_vencimiento,
+            bodega_id=inventario_dto.bodega_id if hasattr(inventario_dto, 'bodega_id') else None,
+            pasillo=inventario_dto.pasillo if hasattr(inventario_dto, 'pasillo') else None,
+            estante=inventario_dto.estante if hasattr(inventario_dto, 'estante') else None,
+            requiere_cadena_frio=inventario_dto.requiere_cadena_frio
+        )
+        db.session.add(inventario_model)
+        db.session.commit()
+        return inventario_dto
 
     def crear_lote(self, inventario_dto: InventarioDTO) -> InventarioDTO:
         """Crear un nuevo lote de inventario."""
@@ -97,7 +149,11 @@ class RepositorioInventarioSQLite:
             producto_id=inventario_dto.producto_id,
             cantidad_disponible=inventario_dto.cantidad_disponible,
             cantidad_reservada=inventario_dto.cantidad_reservada,
-            fecha_vencimiento=inventario_dto.fecha_vencimiento
+            fecha_vencimiento=inventario_dto.fecha_vencimiento,
+            requiere_cadena_frio=inventario_dto.requiere_cadena_frio,
+            bodega_id=inventario_dto.bodega_id if hasattr(inventario_dto, 'bodega_id') else None,
+            pasillo=inventario_dto.pasillo if hasattr(inventario_dto, 'pasillo') else None,
+            estante=inventario_dto.estante if hasattr(inventario_dto, 'estante') else None
         )
         db.session.add(inventario_model)
         db.session.commit()
@@ -128,18 +184,22 @@ class RepositorioInventarioSQLite:
                 producto_id=inventario_dto.producto_id,
                 fecha_vencimiento=inventario_dto.fecha_vencimiento
             ).first()
-            
+
             if inventario_model:
                 # Actualizar el lote existente
                 inventario_model.cantidad_disponible = inventario_dto.cantidad_disponible
                 inventario_model.cantidad_reservada = inventario_dto.cantidad_reservada
+                inventario_model.requiere_cadena_frio = inventario_dto.requiere_cadena_frio
             else:
                 # Crear un nuevo lote
                 inventario_model = InventarioModel(
                     producto_id=inventario_dto.producto_id,
                     cantidad_disponible=inventario_dto.cantidad_disponible,
                     cantidad_reservada=inventario_dto.cantidad_reservada,
-                    fecha_vencimiento=inventario_dto.fecha_vencimiento
+                    fecha_vencimiento=inventario_dto.fecha_vencimiento,
+                    bodega_id=inventario_dto.bodega_id if hasattr(inventario_dto, 'bodega_id') else None,
+                    pasillo=inventario_dto.pasillo if hasattr(inventario_dto, 'pasillo') else None,
+                    estante=inventario_dto.estante if hasattr(inventario_dto, 'estante') else None
                 )
                 db.session.add(inventario_model)
             
@@ -159,7 +219,8 @@ class RepositorioInventarioSQLite:
                 producto_id=inventario_model.producto_id,
                 cantidad_disponible=inventario_model.cantidad_disponible,
                 cantidad_reservada=inventario_model.cantidad_reservada,
-                fecha_vencimiento=inventario_model.fecha_vencimiento
+                fecha_vencimiento=inventario_model.fecha_vencimiento,
+                requiere_cadena_frio=inventario_model.requiere_cadena_frio
             ))
 
         return inventarios_dto

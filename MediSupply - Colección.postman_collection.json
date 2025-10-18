@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "c45dbc36-1891-4d41-9db0-1369f781f227",
+		"_postman_id": "f04d32ee-738b-47c3-96ef-97dbdb063dce",
 		"name": "MediSupply - Colección",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-c45dbc36-1891-4d41-9db0-1369f781f227?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-f04d32ee-738b-47c3-96ef-97dbdb063dce?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -413,13 +413,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url_productos}}/api/productos/categorias/",
+									"raw": "{{base_url_productos}}/api/categorias/",
 									"host": [
 										"{{base_url_productos}}"
 									],
 									"path": [
 										"api",
-										"productos",
 										"categorias",
 										""
 									]
@@ -434,13 +433,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_productos}}/api/productos/categorias/",
+									"raw": "{{base_url_productos}}/api/categorias/",
 									"host": [
 										"{{base_url_productos}}"
 									],
 									"path": [
 										"api",
-										"productos",
 										"categorias",
 										""
 									]
@@ -516,7 +514,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2025-12-09T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada\"\n}",
+									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2025-10-15T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -586,12 +584,118 @@
 							"response": []
 						},
 						{
+							"name": "Obtener Visitas por Rango de Fechas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/?fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										""
+									],
+									"query": [
+										{
+											"key": "fecha_inicio",
+											"value": "2025-10-13",
+											"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2025-10-17",
+											"description": "Fecha de fin del rango (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Obtiene las visitas programadas en un rango de fechas específico"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Visitas Pendientes por Fechas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										""
+									],
+									"query": [
+										{
+											"key": "estado",
+											"value": "pendiente",
+											"description": "Filtrar por estado de la visita"
+										},
+										{
+											"key": "fecha_inicio",
+											"value": "2025-10-13",
+											"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2025-10-17",
+											"description": "Fecha de fin del rango (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Obtiene las visitas pendientes en un rango de fechas específico"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Visitas por Vendedor y Fechas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/?vendedor_id={{vendedor_id}}&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										""
+									],
+									"query": [
+										{
+											"key": "vendedor_id",
+											"value": "{{vendedor_id}}",
+											"description": "ID del vendedor"
+										},
+										{
+											"key": "fecha_inicio",
+											"value": "2025-10-13",
+											"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2025-10-17",
+											"description": "Fecha de fin del rango (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Obtiene las visitas de un vendedor específico en un rango de fechas"
+							},
+							"response": []
+						},
+						{
 							"name": "Obtener Visitas por Vendedor",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?estado=pendiente",
+									"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
 									"host": [
 										"{{base_url_ventas}}"
 									],
@@ -606,10 +710,20 @@
 											"key": "estado",
 											"value": "pendiente",
 											"description": "Filtrar por estado (opcional)"
+										},
+										{
+											"key": "fecha_inicio",
+											"value": "2025-10-13",
+											"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2025-10-17",
+											"description": "Fecha de fin del rango (YYYY-MM-DD)"
 										}
 									]
 								},
-								"description": "Obtiene las visitas asignadas a un vendedor específico"
+								"description": "Obtiene las visitas asignadas a un vendedor específico, opcionalmente filtradas por estado y rango de fechas"
 							},
 							"response": []
 						},
@@ -683,6 +797,40 @@
 									]
 								},
 								"description": "Crea un nuevo pedido en estado borrador"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear Pedido Completo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"items\": [\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 5\n        },\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 3\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/completo",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"completo"
+									]
+								},
+								"description": "Crea un pedido completo con items y lo confirma automáticamente en una sola operación. Valida inventario y reserva stock."
 							},
 							"response": []
 						},
@@ -946,6 +1094,87 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Informes",
+					"item": [
+						{
+							"name": "Informes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/informes/ventas",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"informes",
+										"ventas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Informes filtro por vendedor",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/informes/ventas?vendedor_id={{vendedor_id}}",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"informes",
+										"ventas"
+									],
+									"query": [
+										{
+											"key": "vendedor_id",
+											"value": "{{vendedor_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Informes filtro por fechas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5002/ventas/api/informes/ventas?fecha_inicio=2025-10-01T00:00:00&fecha_fin=2025-10-16T23:59:59",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5002",
+									"path": [
+										"ventas",
+										"api",
+										"informes",
+										"ventas"
+									],
+									"query": [
+										{
+											"key": "fecha_inicio",
+											"value": "2025-10-01T00:00:00"
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2025-10-16T23:59:59"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			],
 			"description": "Microservicio de gestión de visitas y pedidos"
@@ -962,13 +1191,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_logistica}}/api/logistica/entregas/",
+									"raw": "{{base_url_logistica}}/api/entregas/",
 									"host": [
 										"{{base_url_logistica}}"
 									],
 									"path": [
 										"api",
-										"logistica",
 										"entregas",
 										""
 									]
@@ -1015,13 +1243,12 @@
 								"method": "POST",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_logistica}}/api/logistica/entregas/creartemp",
+									"raw": "{{base_url_logistica}}/api/entregas/creartemp",
 									"host": [
 										"{{base_url_logistica}}"
 									],
 									"path": [
 										"api",
-										"logistica",
 										"entregas",
 										"creartemp"
 									]
@@ -1172,7 +1399,114 @@
 										"{{producto_id}}"
 									]
 								},
-								"description": "Obtiene el inventario detallado de un producto específico"
+								"description": "Obtiene el inventario detallado de un producto específico con ubicaciones en bodegas"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Bodegas",
+					"item": [
+						{
+							"name": "Obtener Todas las Bodegas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todas las bodegas disponibles en el sistema"
+							},
+							"response": []
+						},
+						{
+							"name": "Inicializar Bodegas por Defecto",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/inicializar",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										"inicializar"
+									]
+								},
+								"description": "Crea 3 bodegas por defecto: Central, Norte y Sur"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Productos en Bodega",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/{{bodega_id}}/productos",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										"{{bodega_id}}",
+										"productos"
+									]
+								},
+								"description": "Obtiene todos los productos y sus cantidades en una bodega específica"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Ubicacion de Producto",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/producto/{{producto_inventario_id}}/ubicaciones",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										"producto",
+										"{{producto_inventario_id}}",
+										"ubicaciones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todos los Productos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/bodegas/productos",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"bodegas",
+										"productos"
+									]
+								},
+								"description": "Obtiene todos los productos de todas las bodegas con sus ubicaciones"
 							},
 							"response": []
 						}
@@ -1202,69 +1536,89 @@
 					]
 				}
 			],
-			"description": "Microservicio de gestión de inventario y entregas"
+			"description": "Microservicio de gestión de inventario, entregas y bodegas"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
+			"key": "base_url",
+			"value": "http://localhost"
+		},
+		{
 			"key": "base_url_usuarios",
-			"value": "http://localhost:5001",
-			"type": "string"
+			"value": "http://localhost:5001/usuarios"
 		},
 		{
 			"key": "base_url_productos",
-			"value": "http://localhost:5000",
-			"type": "string"
+			"value": "http://localhost:5000/productos"
 		},
 		{
 			"key": "base_url_ventas",
-			"value": "http://localhost:5002",
-			"type": "string"
+			"value": "http://localhost:5002/ventas"
 		},
 		{
 			"key": "base_url_logistica",
-			"value": "http://localhost:5003",
-			"type": "string"
+			"value": "http://localhost:5003/logistica"
 		},
 		{
 			"key": "proveedor_id",
-			"value": "f965c696-bbeb-4d00-b80a-c4e518472753",
-			"type": "string"
+			"value": "f965c696-bbeb-4d00-b80a-c4e518472753"
 		},
 		{
 			"key": "vendedor_id",
-			"value": "f965c696-bbeb-4d00-b80a-c4e518472753",
-			"type": "string"
+			"value": "f965c696-bbeb-4d00-b80a-c4e518472753"
 		},
 		{
 			"key": "cliente_id",
-			"value": "3561abc0-f31d-4354-bfd2-3f07dbaff241",
-			"type": "string"
+			"value": "3561abc0-f31d-4354-bfd2-3f07dbaff241"
 		},
 		{
 			"key": "producto_id",
-			"value": "8c5ac5bf-a51a-483f-8200-5c468f84b797",
-			"type": "string"
+			"value": "8c5ac5bf-a51a-483f-8200-5c468f84b797"
 		},
 		{
 			"key": "categoria_id",
-			"value": "83ebf893-eea5-40bd-bb36-b78fc43c5770",
-			"type": "string"
+			"value": "83ebf893-eea5-40bd-bb36-b78fc43c5770"
 		},
 		{
 			"key": "pedido_id",
-			"value": "pedido-uuid-ejemplo",
-			"type": "string"
+			"value": "pedido-uuid-ejemplo"
 		},
 		{
 			"key": "visita_id",
-			"value": "visita-uuid-ejemplo",
-			"type": "string"
+			"value": "visita-uuid-ejemplo"
 		},
 		{
 			"key": "item_id",
-			"value": "item-uuid-ejemplo",
-			"type": "string"
+			"value": "item-uuid-ejemplo"
+		},
+		{
+			"key": "bodega_id",
+			"value": "bodega-uuid-ejemplo"
 		}
 	]
 }

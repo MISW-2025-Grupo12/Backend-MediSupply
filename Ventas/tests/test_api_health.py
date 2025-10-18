@@ -24,5 +24,4 @@ class TestAPIHealth:
         data = response.get_json()
         assert data['status'] == 'up'
         assert data['mode'] == 'simplified'
-        assert 'endpoints' in data
-        assert len(data['endpoints']) > 0
+        assert data['service'] == 'ventas'

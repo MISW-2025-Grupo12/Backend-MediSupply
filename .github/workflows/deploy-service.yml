@@ -9,7 +9,7 @@ on:
 
 env:
   PROJECT_ID: desarrolloswcloud
-  GKE_CLUSTER: medisupply-cluster
+  GKE_CLUSTER: medisupply-cluster-prod
   GKE_ZONE: us-central1-a
   GKE_NAMESPACE: medisupply
   REGISTRY: gcr.io

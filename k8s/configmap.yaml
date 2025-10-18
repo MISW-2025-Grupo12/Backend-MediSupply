@@ -9,11 +9,15 @@ data:
   PYTHONPATH: "/app"
   
   # URLs de servicios (para comunicación entre microservicios)
-  PRODUCTOS_SERVICE_URL: "http://productos-service:5000"
-  LOGISTICA_SERVICE_URL: "http://logistica-service:5003"
+  USUARIOS_SERVICE_URL: "http://usuarios-service:5001/usuarios/api"
+  PRODUCTOS_SERVICE_URL: "http://productos-service:5000/productos/api"
+  LOGISTICA_SERVICE_URL: "http://logistica-service:5003/logistica/api"
   
   # Configuración de GCP
   GCP_PROJECT_ID: "desarrolloswcloud"
+  
+  # Cloud SQL Proxy
+  CLOUD_SQL_CONNECTION_NAME: "desarrolloswcloud:us-central1:medisupply-db-prod"
   
   # Configuración de base de datos
   DB_PORT: "5432"

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta
 import logging
 from aplicacion.dto import VisitaDTO
@@ -13,6 +14,8 @@ class ObtenerVisitasPorVendedor(Consulta):
     """Consulta para obtener visitas por vendedor con agregación completa"""
     vendedor_id: str
     estado: str = None  # Filtro opcional por estado
+    fecha_inicio: datetime = None  # Filtro opcional por fecha inicio
+    fecha_fin: datetime = None  # Filtro opcional por fecha fin
 
 class ObtenerVisitasPorVendedorHandler:
     def __init__(self, repositorio=None, servicio_usuarios=None):
@@ -31,7 +34,16 @@ class ObtenerVisitasPorVendedorHandler:
             if consulta.estado:
                 visitas_vendedor = [v for v in visitas_vendedor if v.estado == consulta.estado]
             
-            # 4. Construir agregaciones completas
+            # 4. Aplicar filtro por rango de fechas si se especifica
+            if consulta.fecha_inicio and consulta.fecha_fin:
+                # Si ambas fechas son iguales → filtrar solo ese día
+                if consulta.fecha_inicio.date() == consulta.fecha_fin.date():
+                    visitas_vendedor = [v for v in visitas_vendedor if v.fecha_programada.date() == consulta.fecha_inicio.date()]
+                else:
+                    # Si son diferentes → rango normal
+                    visitas_vendedor = [v for v in visitas_vendedor if consulta.fecha_inicio.date() <= v.fecha_programada.date() <= consulta.fecha_fin.date()]
+            
+            # 5. Construir agregaciones completas
             agregaciones = []
             for visita in visitas_vendedor:
                 try:

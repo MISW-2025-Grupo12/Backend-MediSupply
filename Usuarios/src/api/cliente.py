@@ -12,7 +12,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-bp = api.crear_blueprint('cliente', '/api/clientes')
+bp = api.crear_blueprint('cliente', '/usuarios/api/clientes')
 
 # Endpoint para crear cliente
 @bp.route('/', methods=['POST'])

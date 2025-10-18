@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "25106d44-164d-4a54-9a44-96a989faeced",
+		"_postman_id": "0b0ad8ee-1522-4c83-b92b-7bc5894bef5b",
 		"name": "MediSupply - Flujo Completo",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n3. **Crear Productos** - Con y sin inventario\n    \n4. **Crear Visitas** - Programar visitas de venta\n    \n5. **Crear Pedidos** - Con items y confirmación\n    \n6. **Gestionar Inventario** - Reservas y descuentos\n    \n7. **Consultar Entregas** - Ver entregas programadas",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n3. **Crear Productos** - Con y sin inventario\n    \n4. **Crear Visitas** - Programar visitas de venta\n    \n5. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n6. **Gestionar Inventario** - Reservas y descuentos\n    \n7. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n8. **Consultar Entregas** - Ver entregas programadas",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-25106d44-164d-4a54-9a44-96a989faeced?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-0b0ad8ee-1522-4c83-b92b-7bc5894bef5b?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -237,13 +237,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url_productos}}/api/productos/categorias/",
+							"raw": "{{base_url_productos}}/api/categorias/",
 							"host": [
 								"{{base_url_productos}}"
 							],
 							"path": [
 								"api",
-								"productos",
 								"categorias",
 								""
 							]
@@ -519,7 +518,9 @@
 									"    console.log('Visita ID guardada:', response.id);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -533,7 +534,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2025-12-09T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada para presentación de productos\"\n}",
+							"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2026-10-15T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada para presentación de productos\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -596,6 +597,113 @@
 						"description": "Lista las visitas en estado pendiente"
 					},
 					"response": []
+				},
+				{
+					"name": "Listar Visitas por Rango de Fechas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Visitas por rango de fechas listadas exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de visitas en el rango:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/visitas/?fecha_inicio=2025-10-13&fecha_fin=2025-10-17&estado=pendiente",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"visitas",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha_inicio",
+									"value": "2025-10-13",
+									"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+								},
+								{
+									"key": "fecha_fin",
+									"value": "2025-10-17",
+									"description": "Fecha de fin del rango (YYYY-MM-DD)"
+								},
+								{
+									"key": "estado",
+									"value": "pendiente",
+									"description": "Filtrar por estado de la visita"
+								}
+							]
+						},
+						"description": "Lista las visitas programadas en un rango de fechas específico, filtradas por estado"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Visitas por Vendedor y Fechas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Visitas por vendedor y fechas listadas exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    console.log('Total de visitas del vendedor en el rango:', response.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?fecha_inicio=2025-10-13&fecha_fin=2025-10-17&estado=pendiente",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"visitas",
+								"vendedor",
+								"{{vendedor_id}}"
+							],
+							"query": [
+								{
+									"key": "fecha_inicio",
+									"value": "2025-10-13",
+									"description": "Fecha de inicio del rango (YYYY-MM-DD)"
+								},
+								{
+									"key": "fecha_fin",
+									"value": "2025-10-17",
+									"description": "Fecha de fin del rango (YYYY-MM-DD)"
+								},
+								{
+									"key": "estado",
+									"value": "pendiente",
+									"description": "Filtrar por estado de la visita"
+								}
+							]
+						},
+						"description": "Lista las visitas de un vendedor específico en un rango de fechas, filtradas por estado"
+					},
+					"response": []
 				}
 			],
 			"description": "Crear visitas de venta programadas"
@@ -651,6 +759,63 @@
 							]
 						},
 						"description": "Crea un nuevo pedido en estado borrador"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Pedido Completo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Pedido completo creado y confirmado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('success');",
+									"    pm.expect(response.success).to.be.true;",
+									"    pm.expect(response).to.have.property('pedido_id');",
+									"    pm.expect(response).to.have.property('estado');",
+									"    pm.expect(response.estado).to.eql('confirmado');",
+									"    pm.collectionVariables.set('pedido_completo_id', response.pedido_id);",
+									"    console.log('Pedido completo creado y confirmado:', response.pedido_id);",
+									"    console.log('Total del pedido:', response.total);",
+									"    console.log('Items procesados:', response.items_count);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"items\": [\n        {\n            \"producto_id\": \"{{producto_inventario_id}}\",\n            \"cantidad\": 5\n        },\n        {\n            \"producto_id\": \"{{producto_inventario_id}}\",\n            \"cantidad\": 3\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_ventas}}/api/pedidos/completo",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								"completo"
+							]
+						},
+						"description": "Crea un pedido completo con items y lo confirma automáticamente en una sola operación. Valida inventario y reserva stock."
 					},
 					"response": []
 				},
@@ -865,7 +1030,7 @@
 								"{{producto_inventario_id}}"
 							]
 						},
-						"description": "Obtiene el inventario detallado de un producto específico"
+						"description": "Obtiene el inventario detallado de un producto específico con ubicaciones en bodegas"
 					},
 					"response": []
 				},
@@ -909,7 +1074,310 @@
 			"description": "Consultar y gestionar el inventario de productos"
 		},
 		{
-			"name": "🚚 7. Consultar Entregas",
+			"name": "🏢 7. Gestionar Bodegas",
+			"item": [
+				{
+					"name": "Inicializar Bodegas por Defecto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Bodegas inicializadas exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('count');",
+									"    pm.expect(response.count).to.be.greaterThan(0);",
+									"    console.log('Bodegas creadas:', response.count);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/bodegas/inicializar",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"bodegas",
+								"inicializar"
+							]
+						},
+						"description": "Crea 3 bodegas por defecto: Central, Norte y Sur"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Todas las Bodegas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Lista de bodegas obtenida exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.length).to.be.greaterThan(0);",
+									"    pm.collectionVariables.set('bodega_id', response[0].id);",
+									"    console.log('Bodegas encontradas:', response.length);",
+									"    console.log('Primera bodega ID guardado:', response[0].id);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/bodegas/",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"bodegas",
+								""
+							]
+						},
+						"description": "Obtiene la lista de todas las bodegas disponibles en el sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Todos los Productos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Todos los productos obtenidos exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.length).to.be.greaterThan(0);",
+									"    console.log('Total productos encontrados:', response.length);",
+									"});",
+									"",
+									"pm.test('Estructura de productos válida', function () {",
+									"    const response = pm.response.json();",
+									"    const producto = response[0];",
+									"    pm.expect(producto).to.have.property('id');",
+									"    pm.expect(producto).to.have.property('nombre');",
+									"    pm.expect(producto).to.have.property('stock');",
+									"    pm.expect(producto).to.have.property('ubicaciones');",
+									"    pm.expect(producto.ubicaciones).to.be.an('array');",
+									"    pm.expect(producto.ubicaciones.length).to.be.greaterThan(0);",
+									"    console.log('Primer producto:', producto);",
+									"});",
+									"",
+									"pm.test('Estructura de ubicaciones válida', function () {",
+									"    const response = pm.response.json();",
+									"    const ubicacion = response[0].ubicaciones[0];",
+									"    pm.expect(ubicacion).to.have.property('nombre');",
+									"    pm.expect(ubicacion).to.have.property('pasillo');",
+									"    pm.expect(ubicacion).to.have.property('estante');",
+									"    pm.expect(ubicacion).to.have.property('stock_disponible');",
+									"    pm.expect(ubicacion).to.have.property('stock_reservado');",
+									"    pm.expect(ubicacion.stock_disponible).to.be.a('number');",
+									"    pm.expect(ubicacion.stock_reservado).to.be.a('number');",
+									"    pm.collectionVariables.set('bodega_id', ubicacion.bodega_id);",
+									"    console.log('Primera ubicación:', ubicacion);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/bodegas/productos",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"bodegas",
+								"productos"
+							]
+						},
+						"description": "Obtiene todos los productos de todas las bodegas con sus ubicaciones"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Productos en Bodega",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Productos en bodega obtenidos exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.length).to.be.greaterThan(0);",
+									"    console.log('Productos en bodega:', response.length);",
+									"});",
+									"",
+									"pm.test('Estructura de productos válida', function () {",
+									"    const response = pm.response.json();",
+									"    const producto = response[0];",
+									"    pm.expect(producto).to.have.property('producto_id');",
+									"    pm.expect(producto).to.have.property('cantidad_total');",
+									"    pm.expect(producto).to.have.property('ubicaciones');",
+									"    pm.expect(producto.ubicaciones).to.be.an('array');",
+									"    pm.expect(producto.ubicaciones.length).to.be.greaterThan(0);",
+									"    console.log('Primer producto:', producto);",
+									"});",
+									"",
+									"pm.test('Estructura de ubicaciones válida', function () {",
+									"    const response = pm.response.json();",
+									"    const ubicacion = response[0].ubicaciones[0];",
+									"    pm.expect(ubicacion).to.have.property('pasillo');",
+									"    pm.expect(ubicacion).to.have.property('estante');",
+									"    pm.expect(ubicacion).to.have.property('cantidad_disponible');",
+									"    pm.expect(ubicacion).to.have.property('cantidad_reservada');",
+									"    pm.expect(ubicacion.cantidad_disponible).to.be.a('number');",
+									"    pm.expect(ubicacion.cantidad_reservada).to.be.a('number');",
+									"    console.log('Primera ubicación:', ubicacion);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/bodegas/{{bodega_id}}/productos",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"bodegas",
+								"{{bodega_id}}",
+								"productos"
+							]
+						},
+						"description": "Obtiene todos los productos y sus cantidades en una bodega específica"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Ubicacion de Producto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Ubicación de producto obtenida exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('object');",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('nombre');",
+									"    pm.expect(response).to.have.property('ubicaciones');",
+									"    pm.expect(response.ubicaciones).to.be.an('array');",
+									"    console.log('🧾 Producto:', response.nombre, '| ID:', response.id);",
+									"    console.log('Ubicaciones encontradas:', response.ubicaciones.length);",
+									"});",
+									"",
+									"pm.test('Estructura de ubicaciones válida', function () {",
+									"    const response = pm.response.json();",
+									"    const ubicaciones = response.ubicaciones || [];",
+									"    pm.expect(ubicaciones.length).to.be.greaterThan(0);",
+									"",
+									"    const ubicacion = ubicaciones[0];",
+									"    pm.expect(ubicacion).to.have.property('id');",
+									"    pm.expect(ubicacion).to.have.property('nombre');",
+									"    pm.expect(ubicacion).to.have.property('pasillo');",
+									"    pm.expect(ubicacion).to.have.property('estante');",
+									"    pm.expect(ubicacion).to.have.property('stock_disponible');",
+									"    pm.expect(ubicacion).to.have.property('stock_reservado');",
+									"",
+									"    pm.expect(ubicacion.stock_disponible).to.be.a('number');",
+									"    pm.expect(ubicacion.stock_reservado).to.be.a('number');",
+									"",
+									"    console.log('🏠 Primera ubicación:', ubicacion.nombre);",
+									"    console.log('📦 Pasillo:', ubicacion.pasillo, '| Estante:', ubicacion.estante);",
+									"});",
+									"",
+									"pm.test('Datos de proveedor y categoría válidos', function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('proveedor');",
+									"    pm.expect(response.proveedor).to.have.property('nombre');",
+									"    pm.expect(response.proveedor).to.have.property('direccion');",
+									"    pm.expect(response).to.have.property('categoria');",
+									"    pm.expect(response.categoria).to.have.property('nombre');",
+									"    console.log('🏢 Proveedor:', response.proveedor.nombre);",
+									"    console.log('🩺 Categoría:', response.categoria.nombre);",
+									"});",
+									"",
+									"pm.test('Datos generales del producto válidos', function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('precio');",
+									"    pm.expect(response).to.have.property('stock');",
+									"    pm.expect(response).to.have.property('requiere_cadena_frio');",
+									"    pm.expect(response.precio).to.be.a('number');",
+									"    pm.expect(response.stock).to.be.a('number');",
+									"    pm.expect(response.requiere_cadena_frio).to.be.a('boolean');",
+									"    console.log('💲 Precio:', response.precio, '| Stock total:', response.stock);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_logistica}}/api/bodegas/producto/{{producto_inventario_id}}/ubicaciones",
+							"host": [
+								"{{base_url_logistica}}"
+							],
+							"path": [
+								"api",
+								"bodegas",
+								"producto",
+								"{{producto_inventario_id}}",
+								"ubicaciones"
+							]
+						},
+						"description": "Obtiene todas las ubicaciones de un producto específico en todas las bodegas"
+					},
+					"response": []
+				}
+			],
+			"description": "Gestionar bodegas y consultar ubicaciones de productos"
+		},
+		{
+			"name": "🚚 8. Consultar Entregas",
 			"item": [
 				{
 					"name": "Crear Entregas de Prueba",
@@ -933,13 +1401,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{base_url_logistica}}/api/logistica/entregas/creartemp",
+							"raw": "{{base_url_logistica}}/api/entregas/creartemp",
 							"host": [
 								"{{base_url_logistica}}"
 							],
 							"path": [
 								"api",
-								"logistica",
 								"entregas",
 								"creartemp"
 							]
@@ -970,13 +1437,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url_logistica}}/api/logistica/entregas/",
+							"raw": "{{base_url_logistica}}/api/entregas/",
 							"host": [
 								"{{base_url_logistica}}"
 							],
 							"path": [
 								"api",
-								"logistica",
 								"entregas",
 								""
 							]
@@ -999,7 +1465,9 @@
 									"    console.log('Entregas en el rango de fechas:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1007,13 +1475,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url_logistica}}/api/logistica/entregas?fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+							"raw": "{{base_url_logistica}}/api/entregas?fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
 							"host": [
 								"{{base_url_logistica}}"
 							],
 							"path": [
 								"api",
-								"logistica",
 								"entregas"
 							],
 							"query": [
@@ -1035,213 +1502,132 @@
 			"description": "Consultar entregas programadas y crear datos de prueba"
 		},
 		{
-			"name": "📊 8. Consultas Adicionales",
+			"name": "📊  9. Informes de ventas",
 			"item": [
 				{
-					"name": "Listar Todos los Proveedores",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Proveedores listados exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de proveedores:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
+					"name": "Listar datos informe de ventas",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url_usuarios}}/api/proveedores/",
-							"host": [
-								"{{base_url_usuarios}}"
-							],
-							"path": [
-								"api",
-								"proveedores",
-								""
-							]
-						},
-						"description": "Lista todos los proveedores registrados"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todos los Vendedores",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Vendedores listados exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de vendedores:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url_usuarios}}/api/vendedores/",
-							"host": [
-								"{{base_url_usuarios}}"
-							],
-							"path": [
-								"api",
-								"vendedores",
-								""
-							]
-						},
-						"description": "Lista todos los vendedores registrados"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todos los Clientes",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Clientes listados exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de clientes:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url_usuarios}}/api/clientes/",
-							"host": [
-								"{{base_url_usuarios}}"
-							],
-							"path": [
-								"api",
-								"clientes",
-								""
-							]
-						},
-						"description": "Lista todos los clientes registrados"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todas las Categorías",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Categorías listadas exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de categorías:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url_productos}}/api/productos/categorias/",
-							"host": [
-								"{{base_url_productos}}"
-							],
-							"path": [
-								"api",
-								"productos",
-								"categorias",
-								""
-							]
-						},
-						"description": "Lista todas las categorías de productos"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todos los Pedidos",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Pedidos listados exitosamente', function () {",
-									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de pedidos:', response.length);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url_ventas}}/api/pedidos/",
+							"raw": "{{base_url_ventas}}/api/informes/ventas",
 							"host": [
 								"{{base_url_ventas}}"
 							],
 							"path": [
 								"api",
-								"pedidos",
-								""
+								"informes",
+								"ventas"
 							]
-						},
-						"description": "Lista todos los pedidos del sistema"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar datos informe por vendedor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/informes/ventas?vendedor_id={{vendedor_id}",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"informes",
+								"ventas"
+							],
+							"query": [
+								{
+									"key": "vendedor_id",
+									"value": "{{vendedor_id}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar datos informe rango de fechas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/informes/ventas?vendedor_id={{vendedor_id}}&fecha_inicio=2025-09-01T00:00:00&fecha_fin=2025-10-31T23:59:59",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"informes",
+								"ventas"
+							],
+							"query": [
+								{
+									"key": "vendedor_id",
+									"value": "{{vendedor_id}}"
+								},
+								{
+									"key": "fecha_inicio",
+									"value": "2025-09-01T00:00:00"
+								},
+								{
+									"key": "fecha_fin",
+									"value": "2025-10-31T23:59:59"
+								}
+							]
+						}
 					},
 					"response": []
 				}
-			],
-			"description": "Consultas adicionales para verificar el estado del sistema"
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
+			"key": "base_url",
+			"value": "http://localhost"
+		},
+		{
 			"key": "base_url_usuarios",
-			"value": "http://localhost:5001",
-			"type": "string"
+			"value": "http://localhost:5001/usuarios"
 		},
 		{
 			"key": "base_url_productos",
-			"value": "http://localhost:5000",
-			"type": "string"
+			"value": "http://localhost:5000/productos"
 		},
 		{
 			"key": "base_url_ventas",
-			"value": "http://localhost:5002",
-			"type": "string"
+			"value": "http://localhost:5002/ventas"
 		},
 		{
 			"key": "base_url_logistica",
-			"value": "http://localhost:5003",
-			"type": "string"
+			"value": "http://localhost:5003/logistica"
 		},
 		{
 			"key": "proveedor_id",
@@ -1273,6 +1659,50 @@
 		},
 		{
 			"key": "pedido_id",
+			"value": ""
+		},
+		{
+			"key": "bodega_id",
+			"value": ""
+		},
+		{
+			"key": "pedido_completo_id",
+			"value": ""
+		},
+		{
+			"key": "bodega_0_id",
+			"value": ""
+		},
+		{
+			"key": "bodega_0_nombre",
+			"value": ""
+		},
+		{
+			"key": "bodega_1_id",
+			"value": ""
+		},
+		{
+			"key": "bodega_1_nombre",
+			"value": ""
+		},
+		{
+			"key": "bodega_2_id",
+			"value": ""
+		},
+		{
+			"key": "bodega_2_nombre",
+			"value": ""
+		},
+		{
+			"key": "bodega_id_ejemplo",
+			"value": ""
+		},
+		{
+			"key": "bodega_3_id",
+			"value": ""
+		},
+		{
+			"key": "bodega_3_nombre",
 			"value": ""
 		}
 	]

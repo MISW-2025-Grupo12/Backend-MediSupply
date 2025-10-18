@@ -104,7 +104,15 @@ class ConfirmarPedidoHandler:
                         'mensaje': 'El producto no existe en el inventario'
                     })
                 else:
-                    cantidad_disponible = inventario.get('total_disponible', 0)
+                    # Calcular cantidad total disponible sumando todas las bodegas
+                    cantidad_disponible = 0
+                    if 'bodegas' in inventario:
+                        for bodega in inventario['bodegas']:
+                            cantidad_disponible += bodega.get('total_disponible', 0)
+                    else:
+                        # Fallback para estructura antigua
+                        cantidad_disponible = inventario.get('total_disponible', 0)
+                    
                     if cantidad_disponible < cantidad_solicitada:
                         # Stock insuficiente
                         items_con_problemas.append({

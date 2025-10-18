@@ -7,12 +7,12 @@ logger = logging.getLogger(__name__)
 class ServicioProductos:
     def __init__(self, base_url=None):
         # Usar variable de entorno o fallback a localhost
-        self.base_url = base_url or os.getenv('PRODUCTOS_SERVICE_URL', 'http://localhost:5000')
+        self.base_url = base_url or os.getenv('PRODUCTOS_SERVICE_URL', 'http://localhost:5000/productos/api')
     
     def obtener_producto_por_id(self, producto_id: str) -> dict:
         """Obtiene un producto específico por ID"""
         try:
-            response = requests.get(f"{self.base_url}/api/productos/{producto_id}")
+            response = requests.get(f"{self.base_url}/productos/{producto_id}")
             if response.status_code == 200:
                 return response.json()
             elif response.status_code == 404:

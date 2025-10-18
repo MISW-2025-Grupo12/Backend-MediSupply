@@ -1,0 +1,44 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.*
+.terraform/
+.terraform.lock.hcl
+
+# Variables sensibles
+*.tfvars
+!*.tfvars.example
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+
+# Archivos de configuración generados
+terraform-config.env
+
+# Archivos de backup
+*.backup
+*.orig
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de clave de servicio
+*.json
+!*.json.example
+
+# Archivos de configuración local
+local.tfvars
+dev.tfvars
