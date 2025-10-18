@@ -175,10 +175,12 @@ function Deploy-Infrastructure {
     $clusterName = terraform output -raw cluster_name
     $zone = terraform output -raw cluster_location
     $connectionName = terraform output -raw db_connection_name
+    $staticIP = terraform output -raw static_ip_address
     
     Write-Success "Infraestructura desplegada correctamente"
     Write-Info "Cluster: $clusterName en zona: $zone"
     Write-Info "Connection name para Cloud SQL Proxy: $connectionName"
+    Write-Info "IP estática protegida: $staticIP"
     
     # Los deployments usarán Cloud SQL Proxy
     Write-Info "Los deployments de k8s están configurados para usar Cloud SQL Proxy (localhost:5432)"
@@ -480,7 +482,11 @@ function Clean-Resources {
     Write-Host "  • Cluster GKE y todos los nodos" -ForegroundColor $Colors.Yellow
     Write-Host "  • Cloud SQL y todas las bases de datos" -ForegroundColor $Colors.Yellow
     Write-Host "  • Todas las imágenes Docker en GCR" -ForegroundColor $Colors.Yellow
-    Write-Host "  • IP estática y otros recursos" -ForegroundColor $Colors.Yellow
+    Write-Host "  • Otros recursos de infraestructura" -ForegroundColor $Colors.Yellow
+    Write-Host "" -ForegroundColor $Colors.Green
+    Write-Host "✅ PROTEGIDO:" -ForegroundColor $Colors.Green
+    Write-Host "  • IP estática (medisupply-ip) - protegida con lifecycle" -ForegroundColor $Colors.Green
+    Write-Host "  • Tu dominio y DNS permanecen intactos" -ForegroundColor $Colors.Green
     Write-Host ""
     
     $confirmation = Read-Host "¿Estás seguro de que quieres continuar? Escribe 'ELIMINAR' para confirmar"
