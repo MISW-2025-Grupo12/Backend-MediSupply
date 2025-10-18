@@ -6,47 +6,45 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "gce"
     kubernetes.io/ingress.global-static-ip-name: "medisupply-ip"
+    networking.gke.io/managed-certificates: "medisupply-certificate"
+    kubernetes.io/ingress.allow-http: "true"
 spec:
   rules:
-  - http:
-      paths:
-      # Microservicio de Usuarios
-      - path: /usuarios
-        pathType: Prefix
-        backend:
-          service:
-            name: usuarios-service
-            port:
-              number: 5001
-      # Microservicio de Productos  
-      - path: /productos
-        pathType: Prefix
-        backend:
-          service:
-            name: productos-service
-            port:
-              number: 5000
-      # Microservicio de Ventas
-      - path: /ventas
-        pathType: Prefix
-        backend:
-          service:
-            name: ventas-service
-            port:
-              number: 5002
-      # Microservicio de Logística
-      - path: /logistica
-        pathType: Prefix
-        backend:
-          service:
-            name: logistica-service
-            port:
-              number: 5003
-      # Ruta raíz
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: usuarios-service
-            port:
-              number: 5001
+    - host: api.medisupplyg4.online
+      http:
+        paths:
+          - path: /usuarios
+            pathType: Prefix
+            backend:
+              service:
+                name: usuarios-service
+                port:
+                  number: 5001
+          - path: /productos
+            pathType: Prefix
+            backend:
+              service:
+                name: productos-service
+                port:
+                  number: 5000
+          - path: /ventas
+            pathType: Prefix
+            backend:
+              service:
+                name: ventas-service
+                port:
+                  number: 5002
+          - path: /logistica
+            pathType: Prefix
+            backend:
+              service:
+                name: logistica-service
+                port:
+                  number: 5003
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: usuarios-service
+                port:
+                  number: 5001

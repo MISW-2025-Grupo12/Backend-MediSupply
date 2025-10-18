@@ -218,6 +218,10 @@ resource "google_pubsub_subscription" "medisupply_subscription" {
 # IP estática global para el ingress
 resource "google_compute_global_address" "medisupply_static_ip" {
   name = "medisupply-ip"
+  
+  lifecycle {
+    prevent_destroy = true  # Proteger IP estática de terraform destroy
+  }
 }
 
 # Kubernetes Service Account para Workload Identity
