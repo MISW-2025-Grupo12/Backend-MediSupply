@@ -7,6 +7,8 @@ from flask import request, Response, Blueprint
 from aplicacion.comandos.registrar_proveedor import RegistrarProveedor
 from aplicacion.comandos.registrar_vendedor import RegistrarVendedor
 from aplicacion.comandos.registrar_cliente import RegistrarCliente
+from aplicacion.comandos.registrar_administrador import RegistrarAdministrador
+from aplicacion.comandos.registrar_repartidor import RegistrarRepartidor
 from aplicacion.comandos.login import Login
 from seedwork.aplicacion.comandos import ejecutar_comando
 from dominio.excepciones import (
@@ -432,6 +434,247 @@ def registro_cliente():
         
     except Exception as e:
         logger.error(f"Error en registro de cliente: {e}")
+        return Response(
+            json.dumps({'error': f'Error interno del servidor: {str(e)}'}),
+            status=500,
+            mimetype='application/json'
+        )
+
+
+@bp.route('/registro-administrador', methods=['POST'])
+def registro_administrador():
+    """
+    Endpoint para registrar un administrador con autenticación
+    
+    Request Body:
+        {
+            "nombre": "string",
+            "email": "string",
+            "password": "string"
+        }
+    
+    Responses:
+        201: Administrador registrado exitosamente
+        400: Errores de validación
+        409: Email ya registrado
+        500: Error interno del servidor
+    """
+    try:
+        # Obtener datos del request
+        datos = request.json
+        
+        # Validación básica de HTTP
+        if not datos:
+            return Response(
+                json.dumps({'error': 'Se requiere un JSON válido'}),
+                status=400,
+                mimetype='application/json'
+            )
+        
+        # Validar que todos los campos requeridos estén presentes
+        campos_requeridos = ['nombre', 'email', 'password']
+        campos_faltantes = [campo for campo in campos_requeridos if campo not in datos or not datos[campo]]
+        
+        if campos_faltantes:
+            return Response(
+                json.dumps({
+                    'error': 'Campos requeridos faltantes',
+                    'campos': campos_faltantes
+                }),
+                status=400,
+                mimetype='application/json'
+            )
+        
+        # Crear comando
+        comando = RegistrarAdministrador(
+            nombre=datos.get('nombre', ''),
+            email=datos.get('email', ''),
+            password=datos.get('password', '')
+        )
+        
+        # Ejecutar comando
+        administrador_dto = ejecutar_comando(comando)
+        
+        # Preparar respuesta (sin contraseña)
+        respuesta = {
+            'mensaje': 'Cuenta de administrador creada exitosamente',
+            'administrador': {
+                'id': str(administrador_dto.id),
+                'nombre': administrador_dto.nombre,
+                'email': administrador_dto.email
+            }
+        }
+        
+        return Response(
+            json.dumps(respuesta),
+            status=201,
+            mimetype='application/json'
+        )
+        
+    except EmailYaRegistradoError:
+        return Response(
+            json.dumps({'error': 'El correo ya está registrado'}),
+            status=409,
+            mimetype='application/json'
+        )
+        
+    except NombreInvalidoError as e:
+        return Response(
+            json.dumps({'error': str(e)}),
+            status=400,
+            mimetype='application/json'
+        )
+        
+    except EmailInvalidoError as e:
+        return Response(
+            json.dumps({'error': str(e)}),
+            status=400,
+            mimetype='application/json'
+        )
+        
+    except PasswordInvalidaError as e:
+        return Response(
+            json.dumps({'error': str(e)}),
+            status=400,
+            mimetype='application/json'
+        )
+        
+    except Exception as e:
+        logger.error(f"Error en registro de administrador: {e}")
+        return Response(
+            json.dumps({'error': f'Error interno del servidor: {str(e)}'}),
+            status=500,
+            mimetype='application/json'
+        )
+
+
+@bp.route('/registro-repartidor', methods=['POST'])
+def registro_repartidor():
+    """
+    Endpoint para registrar un repartidor con autenticación
+    
+    Request Body:
+        {
+            "nombre": "string",
+            "email": "string",
+            "identificacion": "string",
+            "telefono": "string",
+            "password": "string"
+        }
+    
+    Responses:
+        201: Repartidor registrado exitosamente
+        400: Errores de validación
+        409: Email o identificación ya registrados
+        500: Error interno del servidor
+    """
+    try:
+        # Obtener datos del request
+        datos = request.json
+        
+        # Validación básica de HTTP
+        if not datos:
+            return Response(
+                json.dumps({'error': 'Se requiere un JSON válido'}),
+                status=400,
+                mimetype='application/json'
+            )
+        
+        # Validar que todos los campos requeridos estén presentes
+        campos_requeridos = ['nombre', 'email', 'identificacion', 'telefono', 'password']
+        campos_faltantes = [campo for campo in campos_requeridos if campo not in datos or not datos[campo]]
+        
+        if campos_faltantes:
+            return Response(
+                json.dumps({
+                    'error': 'Campos requeridos faltantes',
+                    'campos': campos_faltantes
+                }),
+                status=400,
+                mimetype='application/json'
+            )
+        
+        # Crear comando
+        comando = RegistrarRepartidor(
+            nombre=datos.get('nombre', ''),
+            email=datos.get('email', ''),
+            identificacion=datos.get('identificacion', ''),
+            telefono=datos.get('telefono', ''),
+            password=datos.get('password', '')
+        )
+        
+        # Ejecutar comando
+        repartidor_dto = ejecutar_comando(comando)
+        
+        # Preparar respuesta (sin contraseña)
+        respuesta = {
+            'mensaje': 'Cuenta de repartidor creada exitosamente',
+            'repartidor': {
+                'id': str(repartidor_dto.id),
+                'nombre': repartidor_dto.nombre,
+                'email': repartidor_dto.email,
+                'identificacion': repartidor_dto.identificacion,
+                'telefono': repartidor_dto.telefono
+            }
+        }
+        
+        return Response(
+            json.dumps(respuesta),
+            status=201,
+            mimetype='application/json'
+        )
+        
+    except EmailYaRegistradoError:
+        return Response(
+            json.dumps({'error': 'El correo ya está registrado'}),
+            status=409,
+            mimetype='application/json'
+        )
+        
+    except IdentificacionYaRegistradaError:
+        return Response(
+            json.dumps({'error': 'La identificación ya está registrada'}),
+            status=409,
+            mimetype='application/json'
+        )
+        
+    except NombreInvalidoError as e:
+        return Response(
+            json.dumps({'error': str(e)}),
+            status=400,
+            mimetype='application/json'
+        )
+        
+    except EmailInvalidoError as e:
+        return Response(
+            json.dumps({'error': str(e)}),
+            status=400,
+            mimetype='application/json'
+        )
+        
+    except TelefonoInvalidoError as e:
+        return Response(
+            json.dumps({'error': str(e)}),
+            status=400,
+            mimetype='application/json'
+        )
+        
+    except IdentificacionInvalidaError as e:
+        return Response(
+            json.dumps({'error': str(e)}),
+            status=400,
+            mimetype='application/json'
+        )
+        
+    except PasswordInvalidaError as e:
+        return Response(
+            json.dumps({'error': str(e)}),
+            status=400,
+            mimetype='application/json'
+        )
+        
+    except Exception as e:
+        logger.error(f"Error en registro de repartidor: {e}")
         return Response(
             json.dumps({'error': f'Error interno del servidor: {str(e)}'}),
             status=500,

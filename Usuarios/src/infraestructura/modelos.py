@@ -76,12 +76,54 @@ class ClienteModel(db.Model):
             'updated_at': self.updated_at.isoformat()
         }
 
+class AdministradorModel(db.Model):
+    __tablename__ = 'administradores'
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    nombre = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nombre': self.nombre,
+            'email': self.email,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+
+class RepartidorModel(db.Model):
+    __tablename__ = 'repartidores'
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    nombre = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    identificacion = db.Column(db.String(20), nullable=False)
+    telefono = db.Column(db.String(20), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nombre': self.nombre,
+            'email': self.email,
+            'identificacion': self.identificacion,
+            'telefono': self.telefono,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+
 
 class TipoUsuario(str, Enum):
     """Enum para tipos de usuario"""
     VENDEDOR = 'VENDEDOR'
     CLIENTE = 'CLIENTE'
     PROVEEDOR = 'PROVEEDOR'
+    ADMINISTRADOR = 'ADMINISTRADOR'
+    REPARTIDOR = 'REPARTIDOR'
 
 
 class UsuarioModel(db.Model):
@@ -92,8 +134,8 @@ class UsuarioModel(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(255), nullable=False)
     tipo_usuario = db.Column(db.String(20), nullable=False)
-    identificacion = db.Column(db.String(20), unique=True, nullable=False, index=True)
-    entidad_id = db.Column(db.String(36), nullable=False)  # ID de Vendedor/Cliente/Proveedor
+    identificacion = db.Column(db.String(20), unique=True, nullable=True, index=True)  # Nullable para ADMINISTRADOR
+    entidad_id = db.Column(db.String(36), nullable=False)  # ID de Vendedor/Cliente/Proveedor/Administrador
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

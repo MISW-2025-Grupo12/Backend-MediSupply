@@ -1,6 +1,6 @@
 from config.db import db
-from infraestructura.modelos import ProveedorModel, VendedorModel, ClienteModel, UsuarioModel, TipoUsuario
-from aplicacion.dto import ProveedorDTO, VendedorDTO, ClienteDTO
+from infraestructura.modelos import ProveedorModel, VendedorModel, ClienteModel, AdministradorModel, RepartidorModel, UsuarioModel, TipoUsuario
+from aplicacion.dto import ProveedorDTO, VendedorDTO, ClienteDTO, AdministradorDTO, RepartidorDTO
 import uuid
 from typing import Optional
 
@@ -130,12 +130,84 @@ class RepositorioClienteSQLite:
             ) for c in clientes_model
         ]
 
+class RepositorioAdministradorSQLite:
+    def crear(self, administrador_dto: AdministradorDTO) -> AdministradorDTO:
+        administrador_model = AdministradorModel(
+            id=str(administrador_dto.id),
+            nombre=administrador_dto.nombre,
+            email=administrador_dto.email
+        )
+        db.session.add(administrador_model)
+        db.session.commit()
+        return administrador_dto
+    
+    def obtener_por_id(self, administrador_id: str) -> AdministradorDTO:
+        """Obtener un administrador por ID"""
+        administrador_model = AdministradorModel.query.get(administrador_id)
+        if not administrador_model:
+            return None
+            
+        return AdministradorDTO(
+            id=uuid.UUID(administrador_model.id),
+            nombre=administrador_model.nombre,
+            email=administrador_model.email
+        )
+    
+    def obtener_todos(self) -> list[AdministradorDTO]:
+        administradores_model = AdministradorModel.query.all()
+        return [
+            AdministradorDTO(
+                id=uuid.UUID(a.id),
+                nombre=a.nombre,
+                email=a.email
+            ) for a in administradores_model
+        ]
+
+class RepositorioRepartidorSQLite:
+    def crear(self, repartidor_dto: RepartidorDTO) -> RepartidorDTO:
+        repartidor_model = RepartidorModel(
+            id=str(repartidor_dto.id),
+            nombre=repartidor_dto.nombre,
+            email=repartidor_dto.email,
+            identificacion=repartidor_dto.identificacion,
+            telefono=repartidor_dto.telefono
+        )
+        db.session.add(repartidor_model)
+        db.session.commit()
+        return repartidor_dto
+    
+    def obtener_por_id(self, repartidor_id: str) -> RepartidorDTO:
+        """Obtener un repartidor por ID"""
+        repartidor_model = RepartidorModel.query.get(repartidor_id)
+        if not repartidor_model:
+            return None
+            
+        return RepartidorDTO(
+            id=uuid.UUID(repartidor_model.id),
+            nombre=repartidor_model.nombre,
+            email=repartidor_model.email,
+            identificacion=repartidor_model.identificacion,
+            telefono=repartidor_model.telefono
+        )
+    
+    def obtener_todos(self) -> list[RepartidorDTO]:
+        repartidores_model = RepartidorModel.query.all()
+        return [
+            RepartidorDTO(
+                id=uuid.UUID(r.id),
+                nombre=r.nombre,
+                email=r.email,
+                identificacion=r.identificacion,
+                telefono=r.telefono
+            ) for r in repartidores_model
+        ]
+
 
 class RepositorioUsuario:
     """Repositorio para el manejo de usuarios (autenticación)"""
     
-    def crear(self, email: str, password: str, tipo_usuario: str, identificacion: str, entidad_id: str) -> UsuarioModel:
-        """Crea un nuevo usuario con autenticación"""
+    def crear(self, email: str, password: str, tipo_usuario: str, entidad_id: str, identificacion: Optional[str] = None) -> UsuarioModel:
+        """Crea un nuevo usuario con autenticación. identificacion es opcional para ADMINISTRADOR"""
         usuario = UsuarioModel(
             email=email,
             tipo_usuario=tipo_usuario,

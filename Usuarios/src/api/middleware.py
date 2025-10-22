@@ -62,7 +62,8 @@ def require_role(*roles_permitidos):
     DEBE usarse después de @require_auth
     
     Args:
-        roles_permitidos: Uno o más roles que tienen acceso (ej: 'VENDEDOR', 'ADMIN')
+        roles_permitidos: Uno o más roles que tienen acceso
+            Roles válidos: 'VENDEDOR', 'CLIENTE', 'PROVEEDOR', 'ADMINISTRADOR', 'REPARTIDOR'
     
     Uso:
         @bp.route('/solo-vendedores')
@@ -76,6 +77,18 @@ def require_role(*roles_permitidos):
         @require_role('VENDEDOR', 'CLIENTE')
         def endpoint_multiple():
             return {'mensaje': 'Vendedores o clientes'}
+        
+        @bp.route('/solo-administradores')
+        @require_auth
+        @require_role('ADMINISTRADOR')
+        def endpoint_administradores():
+            return {'mensaje': 'Solo administradores'}
+        
+        @bp.route('/solo-repartidores')
+        @require_auth
+        @require_role('REPARTIDOR')
+        def endpoint_repartidores():
+            return {'mensaje': 'Solo repartidores'}
     """
     def decorator(f):
         @wraps(f)

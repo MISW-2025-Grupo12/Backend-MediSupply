@@ -50,3 +50,33 @@ class ClienteCreado(EventoDominio):
             'telefono': self.telefono,
             'direccion': self.direccion
         }
+
+@dataclass
+class AdministradorCreado(EventoDominio):
+    administrador_id: uuid.UUID = None
+    nombre: str = ""
+    email: str = ""
+    
+    def _get_datos_evento(self) -> dict:
+        return {
+            'administrador_id': str(self.administrador_id),
+            'nombre': self.nombre,
+            'email': self.email
+        }
+
+@dataclass
+class RepartidorCreado(EventoDominio):
+    repartidor_id: uuid.UUID = None
+    nombre: str = ""
+    email: str = ""
+    identificacion: str = ""
+    telefono: str = ""
+    
+    def _get_datos_evento(self) -> dict:
+        return {
+            'repartidor_id': str(self.repartidor_id),
+            'nombre': self.nombre,
+            'email': self.email,
+            'identificacion': self.identificacion,
+            'telefono': self.telefono
+        }
