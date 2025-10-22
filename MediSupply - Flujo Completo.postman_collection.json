@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "0b0ad8ee-1522-4c83-b92b-7bc5894bef5b",
+		"_postman_id": "6c3c678c-f124-426b-8ba0-b94e20f48f7d",
 		"name": "MediSupply - Flujo Completo",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n3. **Crear Productos** - Con y sin inventario\n    \n4. **Crear Visitas** - Programar visitas de venta\n    \n5. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n6. **Gestionar Inventario** - Reservas y descuentos\n    \n7. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n8. **Consultar Entregas** - Ver entregas programadas",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes con autenticación JWT\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Autenticación JWT** - Registrar usuarios y obtener tokens (vendedores, clientes, proveedores)\n    \n3. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n4. **Crear Productos** - Con y sin inventario\n    \n5. **Crear Visitas** - Programar visitas de venta\n    \n6. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n7. **Gestionar Inventario** - Reservas y descuentos\n    \n8. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n9. **Consultar Entregas** - Ver entregas programadas\n    \n10. **Informes de Ventas** - Consultar datos de ventas por vendedor y fechas",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-0b0ad8ee-1522-4c83-b92b-7bc5894bef5b?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-6c3c678c-f124-426b-8ba0-b94e20f48f7d?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -147,7 +147,228 @@
 			"description": "Verificar que todos los servicios estén funcionando correctamente"
 		},
 		{
-			"name": "👥 2. Crear Entidades Base",
+			"name": "🔐 2. Autenticación JWT",
+			"item": [
+				{
+					"name": "Registro de Vendedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Vendedor registrado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('mensaje');",
+									"    pm.expect(response).to.have.property('vendedor');",
+									"    pm.expect(response.vendedor).to.have.property('id');",
+									"    pm.collectionVariables.set('vendedor_auth_id', response.vendedor.id);",
+									"    console.log('Vendedor registrado con ID:', response.vendedor.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"María García\",\n    \"email\": \"maria.garcia@empresa.com\",\n    \"identificacion\": \"9876543210\",\n    \"telefono\": \"3009876543\",\n    \"direccion\": \"Calle 45 #67-89\",\n    \"password\": \"MiPassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/registro-vendedor",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"registro-vendedor"
+							]
+						},
+						"description": "Registra un nuevo vendedor con autenticación JWT"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro de Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Cliente registrado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('mensaje');",
+									"    pm.expect(response).to.have.property('cliente');",
+									"    pm.expect(response.cliente).to.have.property('id');",
+									"    pm.collectionVariables.set('cliente_auth_id', response.cliente.id);",
+									"    console.log('Cliente registrado con ID:', response.cliente.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Clínica Los Olivos\",\n    \"email\": \"contacto@losolivos.com\",\n    \"identificacion\": \"8609876543\",\n    \"telefono\": \"6014567890\",\n    \"direccion\": \"Avenida 15 #23-45\",\n    \"password\": \"ClinicaPass456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/registro-cliente",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"registro-cliente"
+							]
+						},
+						"description": "Registra un nuevo cliente con autenticación JWT"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro de Proveedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Proveedor registrado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('mensaje');",
+									"    pm.expect(response).to.have.property('proveedor');",
+									"    pm.expect(response.proveedor).to.have.property('id');",
+									"    pm.collectionVariables.set('proveedor_auth_id', response.proveedor.id);",
+									"    console.log('Proveedor registrado con ID:', response.proveedor.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Pfizer Colombia\",\n    \"email\": \"contacto@pfizer.com.co\",\n    \"identificacion\": \"9005678901\",\n    \"telefono\": \"6017654321\",\n    \"direccion\": \"Carrera 9 #50-30, Bogotá\",\n    \"password\": \"PfizerSecure789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/registro-proveedor",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"registro-proveedor"
+							]
+						},
+						"description": "Registra un nuevo proveedor con autenticación JWT"
+					},
+					"response": []
+				},
+				{
+					"name": "Login de Vendedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Login exitoso', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('access_token');",
+									"    pm.expect(response).to.have.property('user_info');",
+									"    pm.expect(response.user_info).to.have.property('tipo_usuario');",
+									"    pm.expect(response.user_info.tipo_usuario).to.eql('VENDEDOR');",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"    console.log('Token JWT guardado');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"maria.garcia@empresa.com\",\n    \"password\": \"MiPassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/login",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Autentica un vendedor y obtiene token JWT"
+					},
+					"response": []
+				}
+			],
+			"description": "Registrar usuarios y obtener tokens JWT para autenticación"
+		},
+		{
+			"name": "👥 3. Crear Entidades Base",
 			"item": [
 				{
 					"name": "Crear Proveedor",
@@ -178,7 +399,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
+							"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"identificacion\": \"9001234567\",\n    \"telefono\": \"6013456789\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -280,7 +501,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
+							"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"identificacion\": \"1234567890\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -331,7 +552,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
+							"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"identificacion\": \"8601234567\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -357,7 +578,7 @@
 			"description": "Crear proveedores, categorías, vendedores y clientes necesarios para el flujo"
 		},
 		{
-			"name": "📦 3. Crear Productos",
+			"name": "📦 4. Crear Productos",
 			"item": [
 				{
 					"name": "Crear Producto Básico",
@@ -501,7 +722,7 @@
 			"description": "Crear productos con y sin inventario usando las entidades base creadas"
 		},
 		{
-			"name": "📅 4. Crear Visitas",
+			"name": "📅 5. Crear Visitas",
 			"item": [
 				{
 					"name": "Crear Visita de Venta",
@@ -709,7 +930,7 @@
 			"description": "Crear visitas de venta programadas"
 		},
 		{
-			"name": "🛒 5. Crear Pedidos",
+			"name": "🛒 6. Crear Pedidos",
 			"item": [
 				{
 					"name": "Crear Pedido",
@@ -949,7 +1170,7 @@
 			"description": "Crear pedidos con items y confirmarlos"
 		},
 		{
-			"name": "📦 6. Gestionar Inventario",
+			"name": "📦 7. Gestionar Inventario",
 			"item": [
 				{
 					"name": "Buscar Productos con Inventario",
@@ -1074,7 +1295,7 @@
 			"description": "Consultar y gestionar el inventario de productos"
 		},
 		{
-			"name": "🏢 7. Gestionar Bodegas",
+			"name": "🏢 8. Gestionar Bodegas",
 			"item": [
 				{
 					"name": "Inicializar Bodegas por Defecto",
@@ -1377,7 +1598,7 @@
 			"description": "Gestionar bodegas y consultar ubicaciones de productos"
 		},
 		{
-			"name": "🚚 8. Consultar Entregas",
+			"name": "🚚 9. Consultar Entregas",
 			"item": [
 				{
 					"name": "Crear Entregas de Prueba",
@@ -1502,7 +1723,7 @@
 			"description": "Consultar entregas programadas y crear datos de prueba"
 		},
 		{
-			"name": "📊  9. Informes de ventas",
+			"name": "📊 10. Informes de ventas",
 			"item": [
 				{
 					"name": "Listar datos informe de ventas",
@@ -1703,6 +1924,22 @@
 		},
 		{
 			"key": "bodega_3_nombre",
+			"value": ""
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "vendedor_auth_id",
+			"value": ""
+		},
+		{
+			"key": "cliente_auth_id",
+			"value": ""
+		},
+		{
+			"key": "proveedor_auth_id",
 			"value": ""
 		}
 	]

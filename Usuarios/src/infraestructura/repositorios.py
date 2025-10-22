@@ -1,7 +1,8 @@
 from config.db import db
-from infraestructura.modelos import ProveedorModel, VendedorModel, ClienteModel
+from infraestructura.modelos import ProveedorModel, VendedorModel, ClienteModel, UsuarioModel, TipoUsuario
 from aplicacion.dto import ProveedorDTO, VendedorDTO, ClienteDTO
 import uuid
+from typing import Optional
 
 class RepositorioProveedorSQLite:
     def crear(self, proveedor_dto: ProveedorDTO) -> ProveedorDTO:
@@ -9,6 +10,8 @@ class RepositorioProveedorSQLite:
             id=str(proveedor_dto.id),
             nombre=proveedor_dto.nombre,
             email=proveedor_dto.email,
+            identificacion=proveedor_dto.identificacion,
+            telefono=proveedor_dto.telefono,
             direccion=proveedor_dto.direccion
         )
         db.session.add(proveedor_model)
@@ -25,6 +28,8 @@ class RepositorioProveedorSQLite:
             id=uuid.UUID(proveedor_model.id),
             nombre=proveedor_model.nombre,
             email=proveedor_model.email,
+            identificacion=proveedor_model.identificacion,
+            telefono=proveedor_model.telefono,
             direccion=proveedor_model.direccion
         )
     
@@ -35,6 +40,8 @@ class RepositorioProveedorSQLite:
                 id=uuid.UUID(p.id),
                 nombre=p.nombre,
                 email=p.email,
+                identificacion=p.identificacion,
+                telefono=p.telefono,
                 direccion=p.direccion
             ) for p in proveedores_model
         ]
@@ -45,6 +52,7 @@ class RepositorioVendedorSQLite:
             id=str(vendedor_dto.id),
             nombre=vendedor_dto.nombre,
             email=vendedor_dto.email,
+            identificacion=vendedor_dto.identificacion,
             telefono=vendedor_dto.telefono,
             direccion=vendedor_dto.direccion
         )
@@ -62,6 +70,7 @@ class RepositorioVendedorSQLite:
             id=uuid.UUID(vendedor_model.id),
             nombre=vendedor_model.nombre,
             email=vendedor_model.email,
+            identificacion=vendedor_model.identificacion,
             telefono=vendedor_model.telefono,
             direccion=vendedor_model.direccion
         )
@@ -73,6 +82,7 @@ class RepositorioVendedorSQLite:
                 id=uuid.UUID(v.id),
                 nombre=v.nombre,
                 email=v.email,
+                identificacion=v.identificacion,
                 telefono=v.telefono,
                 direccion=v.direccion
             ) for v in vendedores_model
@@ -84,6 +94,7 @@ class RepositorioClienteSQLite:
             id=str(cliente_dto.id),
             nombre=cliente_dto.nombre,
             email=cliente_dto.email,
+            identificacion=cliente_dto.identificacion,
             telefono=cliente_dto.telefono,
             direccion=cliente_dto.direccion
         )
@@ -101,6 +112,7 @@ class RepositorioClienteSQLite:
             id=uuid.UUID(cliente_model.id),
             nombre=cliente_model.nombre,
             email=cliente_model.email,
+            identificacion=cliente_model.identificacion,
             telefono=cliente_model.telefono,
             direccion=cliente_model.direccion
         )
@@ -112,7 +124,59 @@ class RepositorioClienteSQLite:
                 id=uuid.UUID(c.id),
                 nombre=c.nombre,
                 email=c.email,
+                identificacion=c.identificacion,
                 telefono=c.telefono,
                 direccion=c.direccion
             ) for c in clientes_model
         ]
+
+
+class RepositorioUsuario:
+    """Repositorio para el manejo de usuarios (autenticación)"""
+    
+    def crear(self, email: str, password: str, tipo_usuario: str, identificacion: str, entidad_id: str) -> UsuarioModel:
+        """Crea un nuevo usuario con autenticación"""
+        usuario = UsuarioModel(
+            email=email,
+            tipo_usuario=tipo_usuario,
+            identificacion=identificacion,
+            entidad_id=entidad_id,
+            is_active=True
+        )
+        usuario.set_password(password)
+        
+        db.session.add(usuario)
+        db.session.commit()
+        
+        return usuario
+    
+    def obtener_por_email(self, email: str) -> Optional[UsuarioModel]:
+        """Obtiene un usuario por su email"""
+        return UsuarioModel.query.filter_by(email=email).first()
+    
+    def obtener_por_identificacion(self, identificacion: str) -> Optional[UsuarioModel]:
+        """Obtiene un usuario por su identificación"""
+        return UsuarioModel.query.filter_by(identificacion=identificacion).first()
+    
+    def obtener_por_id(self, usuario_id: str) -> Optional[UsuarioModel]:
+        """Obtiene un usuario por su ID"""
+        return UsuarioModel.query.get(usuario_id)
+    
+    def existe_email(self, email: str) -> bool:
+        """Verifica si un email ya está registrado"""
+        return UsuarioModel.query.filter_by(email=email).first() is not None
+    
+    def existe_identificacion(self, identificacion: str) -> bool:
+        """Verifica si una identificación ya está registrada"""
+        return UsuarioModel.query.filter_by(identificacion=identificacion).first() is not None
+    
+    def actualizar(self, usuario: UsuarioModel):
+        """Actualiza un usuario existente"""
+        db.session.commit()
+    
+    def desactivar(self, usuario_id: str):
+        """Desactiva un usuario"""
+        usuario = self.obtener_por_id(usuario_id)
+        if usuario:
+            usuario.is_active = False
+            db.session.commit()

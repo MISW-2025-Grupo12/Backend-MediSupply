@@ -40,7 +40,8 @@ class TestRepositorioVendedor:
             nombre="María García",
             email="maria@email.com",
             telefono="0987654321",
-            direccion="Avenida 456 #78-90"
+            direccion="Avenida 456 #78-90",
+            identificacion="1001234567"
         )
         
         repositorio = RepositorioVendedorSQLite()
@@ -63,7 +64,8 @@ class TestRepositorioVendedor:
             nombre="María García",
             email="maria@email.com",
             telefono="0987654321",
-            direccion="Avenida 456 #78-90"
+            direccion="Avenida 456 #78-90",
+            identificacion="1001234567"
         )
         
         repositorio = RepositorioVendedorSQLite()
@@ -102,14 +104,16 @@ class TestRepositorioVendedor:
                 nombre="María García",
                 email="maria@email.com",
                 telefono="0987654321",
-                direccion="Avenida 456 #78-90"
+                direccion="Avenida 456 #78-90",
+                identificacion="1001234567"
             ),
             VendedorDTO(
                 id=uuid.uuid4(),
                 nombre="Carlos Ruiz",
                 email="carlos@email.com",
                 telefono="1122334455",
-                direccion="Carrera 789 #12-34"
+                direccion="Carrera 789 #12-34",
+                identificacion="1009876543"
             )
         ]
         

@@ -13,6 +13,7 @@ class TestAPICliente:
         cliente_data = {
             'nombre': 'Juan Pérez',
             'email': 'juan@email.com',
+            'identificacion': '1234567890',
             'telefono': '1234567890',
             'direccion': 'Calle 123 #45-67'
         }
@@ -23,6 +24,7 @@ class TestAPICliente:
             mock_cliente.id = str(uuid.uuid4())
             mock_cliente.nombre = 'Juan Pérez'
             mock_cliente.email = 'juan@email.com'
+            mock_cliente.identificacion = '1234567890'
             mock_cliente.telefono = '1234567890'
             mock_cliente.direccion = 'Calle 123 #45-67'
             mock_ejecutar.return_value = mock_cliente
@@ -39,6 +41,7 @@ class TestAPICliente:
             response_data = json.loads(response.data.decode())
             assert response_data['nombre'] == 'Juan Pérez'
             assert response_data['email'] == 'juan@email.com'
+            assert response_data['identificacion'] == '1234567890'
             assert response_data['telefono'] == '1234567890'
             assert response_data['direccion'] == 'Calle 123 #45-67'
     
@@ -97,9 +100,9 @@ class TestAPICliente:
         with patch('aplicacion.consultas.obtener_clientes.ObtenerClientesHandler.handle') as mock_ejecutar:
             mock_clientes = [
                 Mock(id=str(uuid.uuid4()), nombre='Juan Pérez',
-                     email='juan@email.com', telefono='1234567890', direccion='Calle 123 #45-67'),
+                     email='juan@email.com', identificacion='1234567890', telefono='1234567890', direccion='Calle 123 #45-67'),
                 Mock(id=str(uuid.uuid4()), nombre='María García',
-                     email='maria@email.com', telefono='0987654321', direccion='Avenida 456 #78-90')
+                     email='maria@email.com', identificacion='0987654321', telefono='0987654321', direccion='Avenida 456 #78-90')
             ]
             mock_ejecutar.return_value = mock_clientes
             
@@ -118,7 +121,7 @@ class TestAPICliente:
     def test_obtener_clientes_lista_vacia(self, client):
         """Test obtener clientes con lista vacía"""
         # Arrange
-        with patch('aplicacion.consultas.obtener_cliente_por_id.ObtenerClientePorIdHandler.handle') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_clientes.ObtenerClientesHandler.handle') as mock_ejecutar:
             mock_ejecutar.return_value = []
             
             # Act
@@ -153,6 +156,7 @@ class TestAPICliente:
             mock_cliente.id = cliente_id
             mock_cliente.nombre = 'Juan Pérez'
             mock_cliente.email = 'juan@email.com'
+            mock_cliente.identificacion = '1234567890'
             mock_cliente.telefono = '1234567890'
             mock_cliente.direccion = 'Calle 123 #45-67'
             mock_ejecutar.return_value = mock_cliente
@@ -168,6 +172,7 @@ class TestAPICliente:
             assert response_data['id'] == cliente_id
             assert response_data['nombre'] == 'Juan Pérez'
             assert response_data['email'] == 'juan@email.com'
+            assert response_data['identificacion'] == '1234567890'
             assert response_data['telefono'] == '1234567890'
             assert response_data['direccion'] == 'Calle 123 #45-67'
     

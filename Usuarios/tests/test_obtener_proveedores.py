@@ -34,13 +34,17 @@ class TestObtenerProveedores:
                 id=uuid.uuid4(),
                 nombre="Farmacia Central",
                 email="contacto@farmacia.com",
-                direccion="Calle 123 #45-67"
+                direccion="Calle 123 #45-67",
+                identificacion="9001234567",
+                telefono="3001234567"
             ),
             ProveedorDTO(
                 id=uuid.uuid4(),
                 nombre="Droguería Norte",
                 email="info@drogueria.com",
-                direccion="Avenida 456 #78-90"
+                direccion="Avenida 456 #78-90",
+                identificacion="9009876543",
+                telefono="3009876543"
             )
         ]
         

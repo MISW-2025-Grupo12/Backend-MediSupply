@@ -23,6 +23,8 @@ def crear_proveedor():
         comando = CrearProveedor(
             nombre=proveedor_dict.get('nombre', ''),
             email=proveedor_dict.get('email', ''),
+            identificacion=proveedor_dict.get('identificacion', ''),
+            telefono=proveedor_dict.get('telefono', ''),
             direccion=proveedor_dict.get('direccion', '')
         )
         
