@@ -38,6 +38,7 @@ class TestCrearVendedor:
         comando = CrearVendedor(
             nombre="María García",
             email="maria@email.com",
+            identificacion="1234567890",
             telefono="0987654321",
             direccion="Avenida 456 #78-90"
         )
@@ -49,6 +50,7 @@ class TestCrearVendedor:
                 id=uuid.uuid4(),
                 nombre="María García",
                 email="maria@email.com",
+                identificacion="1234567890",
                 telefono="0987654321",
                 direccion="Avenida 456 #78-90"
             )
@@ -63,75 +65,46 @@ class TestCrearVendedor:
             assert resultado is not None
             assert resultado.nombre == "María García"
             assert resultado.email == "maria@email.com"
+            assert resultado.identificacion == "1234567890"
             assert resultado.telefono == "0987654321"
             assert resultado.direccion == "Avenida 456 #78-90"
             mock_repo.crear.assert_called_once()
     
     def test_crear_vendedor_nombre_vacio(self):
-        """Test crear vendedor con nombre vacío"""
+        """Test crear vendedor con nombre vacío lanza excepción"""
         # Arrange
+        from dominio.excepciones import NombreInvalidoError
         comando = CrearVendedor(
             nombre="",
             email="maria@email.com",
+            identificacion="1234567890",
             telefono="0987654321",
             direccion="Avenida 456 #78-90"
         )
         
-        with patch('aplicacion.comandos.crear_vendedor.RepositorioVendedorSQLite') as mock_repo_class:
-            mock_repo = Mock()
-            mock_repo_class.return_value = mock_repo
-            mock_vendedor = VendedorDTO(
-                id=uuid.uuid4(),
-                nombre="",
-                email="maria@email.com",
-                telefono="0987654321",
-                direccion="Avenida 456 #78-90"
-            )
-            mock_repo.crear.return_value = mock_vendedor
-            
-            handler = CrearVendedorHandler()
-            
-            # Act
-            with self.app.app_context():
-                resultado = handler.handle(comando)
-            
-            # Assert
-            assert resultado is not None
-            assert resultado.nombre == ""
-            mock_repo.crear.assert_called_once()
+        handler = CrearVendedorHandler()
+        
+        # Act & Assert
+        with pytest.raises(NombreInvalidoError):
+            handler.handle(comando)
     
     def test_crear_vendedor_email_invalido(self):
-        """Test crear vendedor con email inválido"""
+        """Test crear vendedor con email inválido lanza excepción"""
         # Arrange
+        from dominio.excepciones import EmailInvalidoError
         comando = CrearVendedor(
             nombre="María García",
             email="email_invalido",
+            identificacion="1234567890",
             telefono="0987654321",
             direccion="Avenida 456 #78-90"
         )
         
-        with patch('aplicacion.comandos.crear_vendedor.RepositorioVendedorSQLite') as mock_repo_class:
-            mock_repo = Mock()
-            mock_repo_class.return_value = mock_repo
-            mock_vendedor = VendedorDTO(
-                id=uuid.uuid4(),
-                nombre="María García",
-                email="email_invalido",
-                telefono="0987654321",
-                direccion="Avenida 456 #78-90"
-            )
-            mock_repo.crear.return_value = mock_vendedor
-            
-            handler = CrearVendedorHandler()
-            
-            # Act
-            with self.app.app_context():
-                resultado = handler.handle(comando)
-            
-            # Assert
-            assert resultado is not None
-            assert resultado.email == "email_invalido"
-            mock_repo.crear.assert_called_once()
+        handler = CrearVendedorHandler()
+        
+        # Act & Assert
+        with pytest.raises(EmailInvalidoError):
+            handler.handle(comando)
     
     def test_crear_vendedor_error_repositorio(self):
         """Test crear vendedor con error en repositorio"""
@@ -139,6 +112,7 @@ class TestCrearVendedor:
         comando = CrearVendedor(
             nombre="María García",
             email="maria@email.com",
+            identificacion="1234567890",
             telefono="0987654321",
             direccion="Avenida 456 #78-90"
         )
@@ -160,6 +134,7 @@ class TestCrearVendedor:
         comando = CrearVendedor(
             nombre="María García",
             email="maria@email.com",
+            identificacion="1234567890",
             telefono="0987654321",
             direccion="Avenida 456 #78-90"
         )
@@ -169,6 +144,7 @@ class TestCrearVendedor:
             id=uuid.uuid4(),
             nombre="María García",
             email="maria@email.com",
+            identificacion="1234567890",
             telefono="0987654321",
             direccion="Avenida 456 #78-90"
         )

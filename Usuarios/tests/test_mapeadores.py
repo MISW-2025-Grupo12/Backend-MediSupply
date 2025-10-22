@@ -14,7 +14,7 @@ from aplicacion.mapeadores import (
 )
 from aplicacion.dto import ProveedorDTO, VendedorDTO, ClienteDTO
 from dominio.entidades import Proveedor, Vendedor, Cliente
-from dominio.objetos_valor import Nombre, Email, Direccion, Telefono
+from dominio.objetos_valor import Nombre, Email, Direccion, Telefono, Identificacion
 
 
 class TestMapeadores:
@@ -28,7 +28,9 @@ class TestMapeadores:
             id=proveedor_id,
             nombre="Farmacia Central",
             email="contacto@farmacia.com",
-            direccion="Calle 123 #45-67"
+            direccion="Calle 123 #45-67",
+            identificacion="9001234567",
+            telefono="3001234567"
         )
         
         mapeador = MapeadorProveedorDTOJson()
@@ -41,6 +43,8 @@ class TestMapeadores:
         assert json_result['nombre'] == "Farmacia Central"
         assert json_result['email'] == "contacto@farmacia.com"
         assert json_result['direccion'] == "Calle 123 #45-67"
+        assert json_result['identificacion'] == "9001234567"
+        assert json_result['telefono'] == "3001234567"
     
     def test_mapeador_proveedor_dto_json_a_dto(self):
         """Test convertir JSON a ProveedorDTO"""
@@ -77,7 +81,9 @@ class TestMapeadorProveedorDTOJson:
             id=proveedor_id,
             nombre="Farmacia Central",
             email="contacto@farmacia.com",
-            direccion="Calle 123 #45-67"
+            direccion="Calle 123 #45-67",
+            identificacion="9001234567",
+            telefono="3001234567"
         )
         mapeador = MapeadorProveedorDTOJson()
         
@@ -89,6 +95,8 @@ class TestMapeadorProveedorDTOJson:
         assert resultado['nombre'] == "Farmacia Central"
         assert resultado['email'] == "contacto@farmacia.com"
         assert resultado['direccion'] == "Calle 123 #45-67"
+        assert resultado['identificacion'] == "9001234567"
+        assert resultado['telefono'] == "3001234567"
     
     def test_externo_a_dto(self):
         """Test conversión de formato externo a DTO"""
@@ -139,7 +147,9 @@ class TestMapeadorProveedor:
             id=proveedor_id,
             nombre=Nombre("Farmacia Central"),
             email=Email("contacto@farmacia.com"),
-            direccion=Direccion("Calle 123 #45-67")
+            direccion=Direccion("Calle 123 #45-67"),
+            telefono=Telefono("3001234567"),
+            identificacion=Identificacion("9001234567")
         )
         mapeador = MapeadorProveedor()
         
@@ -178,7 +188,8 @@ class TestMapeadorVendedorDTOJsonCoverage:
             nombre="Vendedor 1",
             email="vendedor1@test.com",
             telefono="1234567890",
-            direccion="Dirección 1"
+            direccion="Dirección 1",
+            identificacion="1001234567"
         )
         
         dto2 = VendedorDTO(
@@ -186,7 +197,8 @@ class TestMapeadorVendedorDTOJsonCoverage:
             nombre="Vendedor 2",
             email="vendedor2@test.com",
             telefono="0987654321",
-            direccion="Dirección 2"
+            direccion="Dirección 2",
+            identificacion="1009876543"
         )
         
         mapeador = MapeadorVendedorDTOJson()
@@ -227,7 +239,8 @@ class TestMapeadorClienteDTOJsonCoverage:
             nombre="Cliente 1",
             email="cliente1@test.com",
             telefono="1234567890",
-            direccion="Dirección 1"
+            direccion="Dirección 1",
+            identificacion="1001234567"
         )
         
         dto2 = ClienteDTO(
@@ -235,7 +248,8 @@ class TestMapeadorClienteDTOJsonCoverage:
             nombre="Cliente 2",
             email="cliente2@test.com",
             telefono="0987654321",
-            direccion="Dirección 2"
+            direccion="Dirección 2",
+            identificacion="1009876543"
         )
         
         mapeador = MapeadorClienteDTOJson()

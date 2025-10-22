@@ -14,6 +14,8 @@ class TestAPIProveedor:
         proveedor_data = {
             'nombre': 'Farmacia Central',
             'email': 'contacto@farmacia.com',
+            'identificacion': '9005678901',
+            'telefono': '6017654321',
             'direccion': 'Calle 123 #45-67'
         }
         
@@ -23,6 +25,8 @@ class TestAPIProveedor:
             mock_proveedor.id = str(uuid.uuid4())
             mock_proveedor.nombre = 'Farmacia Central'
             mock_proveedor.email = 'contacto@farmacia.com'
+            mock_proveedor.identificacion = '9005678901'
+            mock_proveedor.telefono = '6017654321'
             mock_proveedor.direccion = 'Calle 123 #45-67'
             mock_ejecutar.return_value = mock_proveedor
             
@@ -38,6 +42,8 @@ class TestAPIProveedor:
             response_data = json.loads(response.data.decode())
             assert response_data['nombre'] == 'Farmacia Central'
             assert response_data['email'] == 'contacto@farmacia.com'
+            assert response_data['identificacion'] == '9005678901'
+            assert response_data['telefono'] == '6017654321'
             assert response_data['direccion'] == 'Calle 123 #45-67'
     
     def test_crear_proveedor_sin_json(self, client):
@@ -94,6 +100,8 @@ class TestAPIProveedor:
         proveedor_data = {
             'nombre': 'Farmacia Central',
             'email': 'contacto@farmacia.com',
+            'identificacion': '9005678901',
+            'telefono': '6017654321',
             'direccion': 'Calle 123 #45-67'
         }
         
@@ -117,9 +125,9 @@ class TestAPIProveedor:
         with patch('aplicacion.consultas.obtener_proveedores.ObtenerProveedoresHandler.handle') as mock_ejecutar:
             mock_proveedores = [
                 Mock(id=str(uuid.uuid4()), nombre='Farmacia Central', 
-                     email='contacto@farmacia.com', direccion='Calle 123 #45-67'),
+                     email='contacto@farmacia.com', identificacion='9005678901', telefono='6017654321', direccion='Calle 123 #45-67'),
                 Mock(id=str(uuid.uuid4()), nombre='Farmacia Norte', 
-                     email='norte@farmacia.com', direccion='Avenida 456 #78-90')
+                     email='norte@farmacia.com', identificacion='9005678902', telefono='6017654322', direccion='Avenida 456 #78-90')
             ]
             mock_ejecutar.return_value = mock_proveedores
             
@@ -173,6 +181,8 @@ class TestAPIProveedor:
             mock_proveedor.id = proveedor_id
             mock_proveedor.nombre = 'Farmacia Central'
             mock_proveedor.email = 'contacto@farmacia.com'
+            mock_proveedor.identificacion = '9005678901'
+            mock_proveedor.telefono = '6017654321'
             mock_proveedor.direccion = 'Calle 123 #45-67'
             mock_ejecutar.return_value = mock_proveedor
             
@@ -187,6 +197,8 @@ class TestAPIProveedor:
             assert response_data['id'] == proveedor_id
             assert response_data['nombre'] == 'Farmacia Central'
             assert response_data['email'] == 'contacto@farmacia.com'
+            assert response_data['identificacion'] == '9005678901'
+            assert response_data['telefono'] == '6017654321'
             assert response_data['direccion'] == 'Calle 123 #45-67'
     
     def test_obtener_proveedor_por_id_no_encontrado(self, client):

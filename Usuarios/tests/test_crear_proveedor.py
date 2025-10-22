@@ -29,6 +29,8 @@ class TestCrearProveedor:
         comando = CrearProveedor(
             nombre="Farmacia Central",
             email="contacto@farmacia.com",
+            identificacion="9005678901",
+            telefono="6017654321",
             direccion="Calle 123 #45-67"
         )
         
@@ -37,6 +39,8 @@ class TestCrearProveedor:
             id=uuid.uuid4(),
             nombre="Farmacia Central",
             email="contacto@farmacia.com",
+            identificacion="9005678901",
+            telefono="6017654321",
             direccion="Calle 123 #45-67"
         )
         
@@ -56,50 +60,55 @@ class TestCrearProveedor:
         assert isinstance(resultado, ProveedorDTO)
         assert resultado.nombre == "Farmacia Central"
         assert resultado.email == "contacto@farmacia.com"
+        assert resultado.identificacion == "9005678901"
+        assert resultado.telefono == "6017654321"
         assert resultado.direccion == "Calle 123 #45-67"
         mock_repo.crear.assert_called_once()
     
     def test_crear_proveedor_nombre_vacio(self):
-        """Test validación de nombre vacío"""
+        """Test validación de nombre vacío lanza excepción"""
         # Arrange
+        from dominio.excepciones import NombreInvalidoError
         comando = CrearProveedor(
             nombre="",  # Nombre vacío
             email="contacto@farmacia.com",
+            identificacion="9005678901",
+            telefono="6017654321",
             direccion="Calle 123 #45-67"
         )
         
         # Act & Assert
-        with self.app.app_context():
-            db.create_all()
-            with pytest.raises(Exception):  # Debería fallar en validación de reglas
-                self.handler.handle(comando)
+        with pytest.raises(NombreInvalidoError):
+            self.handler.handle(comando)
     
     def test_crear_proveedor_email_vacio(self):
-        """Test validación de email vacío"""
+        """Test validación de email vacío lanza excepción"""
         # Arrange
+        from dominio.excepciones import EmailInvalidoError
         comando = CrearProveedor(
             nombre="Farmacia Central",
             email="",  # Email vacío
+            identificacion="9005678901",
+            telefono="6017654321",
             direccion="Calle 123 #45-67"
         )
         
         # Act & Assert
-        with self.app.app_context():
-            db.create_all()
-            with pytest.raises(Exception):  # Debería fallar en validación de reglas
-                self.handler.handle(comando)
+        with pytest.raises(EmailInvalidoError):
+            self.handler.handle(comando)
     
     def test_crear_proveedor_direccion_vacia(self):
-        """Test validación de dirección vacía"""
+        """Test validación de dirección vacía lanza excepción"""
         # Arrange
+        from seedwork.dominio.excepciones import ReglaNegocioExcepcion
         comando = CrearProveedor(
             nombre="Farmacia Central",
             email="contacto@farmacia.com",
+            identificacion="9005678901",
+            telefono="6017654321",
             direccion=""  # Dirección vacía
         )
         
         # Act & Assert
-        with self.app.app_context():
-            db.create_all()
-            with pytest.raises(Exception):  # Debería fallar en validación de reglas
-                self.handler.handle(comando)
+        with pytest.raises(ReglaNegocioExcepcion):
+            self.handler.handle(comando)

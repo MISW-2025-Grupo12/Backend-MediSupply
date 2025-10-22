@@ -13,6 +13,7 @@ class TestAPIVendedor:
         vendedor_data = {
             'nombre': 'Carlos López',
             'email': 'carlos@empresa.com',
+            'identificacion': '1234567890',
             'telefono': '1234567890',
             'direccion': 'Calle 123 #45-67'
         }
@@ -24,6 +25,7 @@ class TestAPIVendedor:
             mock_vendedor.id = vendedor_id
             mock_vendedor.nombre = 'Carlos López'
             mock_vendedor.email = 'carlos@empresa.com'
+            mock_vendedor.identificacion = '1234567890'
             mock_vendedor.telefono = '1234567890'
             mock_vendedor.direccion = 'Calle 123 #45-67'
             mock_ejecutar.return_value = mock_vendedor
@@ -40,6 +42,7 @@ class TestAPIVendedor:
             response_data = json.loads(response.data.decode())
             assert response_data['nombre'] == 'Carlos López'
             assert response_data['email'] == 'carlos@empresa.com'
+            assert response_data['identificacion'] == '1234567890'
             assert response_data['telefono'] == '1234567890'
             assert response_data['direccion'] == 'Calle 123 #45-67'
     
@@ -97,9 +100,9 @@ class TestAPIVendedor:
         with patch('aplicacion.consultas.obtener_vendedores.ObtenerVendedoresHandler.handle') as mock_ejecutar:
             mock_vendedores = [
                 Mock(id=str(uuid.uuid4()), nombre='Carlos López', 
-                     email='carlos@empresa.com', telefono='1234567890', direccion='Calle 123 #45-67'),
+                     email='carlos@empresa.com', identificacion='1234567890', telefono='1234567890', direccion='Calle 123 #45-67'),
                 Mock(id=str(uuid.uuid4()), nombre='Ana Martínez', 
-                     email='ana@empresa.com', telefono='0987654321', direccion='Calle 456 #78-90')
+                     email='ana@empresa.com', identificacion='0987654321', telefono='0987654321', direccion='Calle 456 #78-90')
             ]
             mock_ejecutar.return_value = mock_vendedores
             
@@ -153,6 +156,7 @@ class TestAPIVendedor:
             mock_vendedor.id = vendedor_id
             mock_vendedor.nombre = 'Carlos López'
             mock_vendedor.email = 'carlos@empresa.com'
+            mock_vendedor.identificacion = '1234567890'
             mock_vendedor.telefono = '1234567890'
             mock_vendedor.direccion = 'Calle 123 #45-67'
             mock_ejecutar.return_value = mock_vendedor
@@ -168,6 +172,7 @@ class TestAPIVendedor:
             assert response_data['id'] == vendedor_id
             assert response_data['nombre'] == 'Carlos López'
             assert response_data['email'] == 'carlos@empresa.com'
+            assert response_data['identificacion'] == '1234567890'
             assert response_data['telefono'] == '1234567890'
             assert response_data['direccion'] == 'Calle 123 #45-67'
     

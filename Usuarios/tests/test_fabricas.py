@@ -47,7 +47,9 @@ class TestFabricaProveedor:
         proveedor_dto = ProveedorDTO(
             nombre="Farmacia Central",
             email="contacto@farmacia.com",
-            direccion="Calle 123 #45-67"
+            direccion="Calle 123 #45-67",
+            identificacion="9001234567",
+            telefono="3001234567"
         )
         
         mapeador = MapeadorProveedor()
@@ -70,7 +72,9 @@ class TestFabricaProveedor:
         proveedor_dto = ProveedorDTO(
             nombre="",  # Nombre vacío
             email="contacto@farmacia.com",
-            direccion="Calle 123 #45-67"
+            direccion="Calle 123 #45-67",
+            identificacion="9001234567",
+            telefono="3001234567"
         )
         
         mapeador = MapeadorProveedor()
@@ -88,7 +92,9 @@ class TestFabricaProveedor:
         proveedor_dto = ProveedorDTO(
             nombre="Farmacia Central",
             email="",  # Email vacío
-            direccion="Calle 123 #45-67"
+            direccion="Calle 123 #45-67",
+            identificacion="9001234567",
+            telefono="3001234567"
         )
         
         mapeador = MapeadorProveedor()
