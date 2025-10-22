@@ -33,6 +33,7 @@ def crear_cliente():
         comando = CrearCliente(
             nombre=cliente_dict.get('nombre', ''),
             email=cliente_dict.get('email', ''),
+            identificacion=cliente_dict.get('identificacion', ''),
             telefono=cliente_dict.get('telefono', ''),
             direccion=cliente_dict.get('direccion', '')
         )

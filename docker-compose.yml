@@ -72,6 +72,8 @@ services:
       - DB_USER=usuarios_user
       - DB_PASSWORD=usuarios_pass
       - SQLALCHEMY_DATABASE_URI=postgresql://usuarios_user:usuarios_pass@usuarios-db:5432/usuarios_db
+      - JWT_SECRET_KEY=medisupply-jwt-secret-key-production-2024
+      - TOKEN_EXPIRATION_HOURS=24
     networks:
       - medi-supply-network
     depends_on:

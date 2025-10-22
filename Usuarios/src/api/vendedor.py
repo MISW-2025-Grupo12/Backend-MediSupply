@@ -33,6 +33,7 @@ def crear_vendedor():
         comando = CrearVendedor(
             nombre=vendedor_dict.get('nombre', ''),
             email=vendedor_dict.get('email', ''),
+            identificacion=vendedor_dict.get('identificacion', ''),
             telefono=vendedor_dict.get('telefono', ''),
             direccion=vendedor_dict.get('direccion', '')
         )

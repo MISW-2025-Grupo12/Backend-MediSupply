@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "f04d32ee-738b-47c3-96ef-97dbdb063dce",
 		"name": "MediSupply - Colección",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes con autenticación JWT\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n- **Autenticación**: POST /registro-vendedor, POST /registro-cliente, POST /registro-proveedor, POST /login\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
 		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-f04d32ee-738b-47c3-96ef-97dbdb063dce?action=share&source=collection_link&creator=30409960"
@@ -24,9 +24,9 @@
 										"value": "application/json"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
+							"body": {
+								"mode": "raw",
+								"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"identificacion\": \"9001234567\",\n    \"telefono\": \"6013456789\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -103,9 +103,9 @@
 										"value": "application/json"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
+							"body": {
+								"mode": "raw",
+								"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"identificacion\": \"1234567890\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -182,9 +182,9 @@
 										"value": "application/json"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
+							"body": {
+								"mode": "raw",
+								"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"identificacion\": \"8601234567\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -243,6 +243,147 @@
 									]
 								},
 								"description": "Obtiene los detalles de un cliente específico por su ID"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Autenticación",
+					"item": [
+						{
+							"name": "Registro de Vendedor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"María García\",\n    \"email\": \"maria.garcia@empresa.com\",\n    \"identificacion\": \"9876543210\",\n    \"telefono\": \"3009876543\",\n    \"direccion\": \"Calle 45 #67-89\",\n    \"password\": \"MiPassword123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/auth/registro-vendedor",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"registro-vendedor"
+									]
+								},
+								"description": "Registra un nuevo vendedor con autenticación JWT. Crea cuenta y credenciales."
+							},
+							"response": []
+						},
+						{
+							"name": "Registro de Cliente",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Clínica Los Olivos\",\n    \"email\": \"contacto@losolivos.com\",\n    \"identificacion\": \"8609876543\",\n    \"telefono\": \"6014567890\",\n    \"direccion\": \"Avenida 15 #23-45\",\n    \"password\": \"ClinicaPass456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/auth/registro-cliente",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"registro-cliente"
+									]
+								},
+								"description": "Registra un nuevo cliente con autenticación JWT. Crea cuenta y credenciales."
+							},
+							"response": []
+						},
+						{
+							"name": "Registro de Proveedor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Pfizer Colombia\",\n    \"email\": \"contacto@pfizer.com.co\",\n    \"identificacion\": \"9005678901\",\n    \"telefono\": \"6017654321\",\n    \"direccion\": \"Carrera 9 #50-30, Bogotá\",\n    \"password\": \"PfizerSecure789\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/auth/registro-proveedor",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"registro-proveedor"
+									]
+								},
+								"description": "Registra un nuevo proveedor con autenticación JWT. Crea cuenta y credenciales."
+							},
+							"response": []
+						},
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"maria.garcia@empresa.com\",\n    \"password\": \"MiPassword123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/auth/login",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								},
+								"description": "Autentica un usuario (vendedor, cliente o proveedor) y devuelve un token JWT válido por 24 horas."
 							},
 							"response": []
 						}
