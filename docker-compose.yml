@@ -216,6 +216,9 @@ services:
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
+      - GCP_CREDENTIALS_PATH=/run/secrets/gcp_credentials
+    secrets:
+      - gcp_credentials
     networks:
       - medi-supply-network
     depends_on:
@@ -247,3 +250,8 @@ volumes:
 networks:
   medi-supply-network:
     driver: bridge
+
+# Secrets para manejo seguro de credenciales
+secrets:
+  gcp_credentials:
+    file: ./Ventas/gcp-credentials.json

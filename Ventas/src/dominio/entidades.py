@@ -170,3 +170,26 @@ class Pedido(AgregacionRaiz):
             total=self.total.valor
         )
         return evento
+
+@dataclass
+class EvidenciaVisita(AgregacionRaiz):
+    visita_id: str = field(default="")
+    archivo_url: str = field(default="")
+    nombre_archivo: str = field(default="")
+    formato: str = field(default="")
+    tamaño_bytes: int = field(default=0)
+    comentarios: str = field(default="")
+    vendedor_id: str = field(default="")
+    
+    def __post_init__(self):
+        super().__post_init__()
+    
+    def disparar_evento_creacion(self):
+        from .eventos import EvidenciaSubida
+        evento = EvidenciaSubida(
+            evidencia_id=self.id,
+            visita_id=self.visita_id,
+            vendedor_id=self.vendedor_id,
+            archivo_url=self.archivo_url
+        )
+        return evento

@@ -35,6 +35,22 @@ class ClienteDTO(DTO):
 
 
 @dataclass(frozen=True)
+class AdministradorDTO(DTO):
+    nombre: str
+    email: str
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+
+@dataclass(frozen=True)
+class RepartidorDTO(DTO):
+    nombre: str
+    email: str
+    identificacion: str
+    telefono: str
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+
+@dataclass(frozen=True)
 class UsuarioDTO(DTO):
     """DTO para usuario autenticado"""
     email: str
@@ -75,6 +91,24 @@ class RegistroClienteDTO(DTO):
     identificacion: str
     telefono: str
     direccion: str
+    password: str
+
+
+@dataclass(frozen=True)
+class RegistroAdministradorDTO(DTO):
+    """DTO para registro de administrador con autenticación"""
+    nombre: str
+    email: str
+    password: str
+
+
+@dataclass(frozen=True)
+class RegistroRepartidorDTO(DTO):
+    """DTO para registro de repartidor con autenticación"""
+    nombre: str
+    email: str
+    identificacion: str
+    telefono: str
     password: str
 
 

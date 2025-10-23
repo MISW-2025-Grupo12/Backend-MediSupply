@@ -4,8 +4,10 @@ from datetime import datetime
 from flask import request, Response, Blueprint
 from aplicacion.comandos.crear_visita import CrearVisita
 from aplicacion.comandos.registrar_visita import RegistrarVisita
+from aplicacion.comandos.subir_evidencia import SubirEvidencia
 from aplicacion.consultas.obtener_visitas import ObtenerVisitas
 from aplicacion.consultas.obtener_visitas_por_vendedor import ObtenerVisitasPorVendedor
+from aplicacion.consultas.obtener_evidencias_visita import ObtenerEvidenciasVisita
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from aplicacion.mapeadores import MapeadorVisitaAgregacionDTOJson
@@ -222,5 +224,125 @@ def registrar_visita(visita_id):
         return Response(
             json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
             status=500, 
+            mimetype='application/json'
+        )
+
+@bp.route('/<visita_id>/evidencias', methods=['POST'])
+def subir_evidencia(visita_id):
+    """
+    Endpoint para subir evidencia visual (fotos/videos) de una visita
+    Solo accesible para vendedores
+    """
+    try:
+        # Validar archivo
+        if 'archivo' not in request.files:
+            return Response(
+                json.dumps({'error': 'No se proporcionó ningún archivo'}),
+                status=400,
+                mimetype='application/json'
+            )
+        
+        file = request.files['archivo']
+        if file.filename == '':
+            return Response(
+                json.dumps({'error': 'Nombre de archivo vacío'}),
+                status=400,
+                mimetype='application/json'
+            )
+        
+        # Obtener comentarios
+        comentarios = request.form.get('comentarios', '')
+        
+        # Leer datos del archivo
+        file_data = file.read()
+        
+        # Ejecutar comando (vendedor_id debería venir del token JWT)
+        # Por ahora usamos un ID de ejemplo
+        vendedor_id = request.form.get('vendedor_id', 'vendedor-test-id')
+        
+        comando = SubirEvidencia(
+            visita_id=visita_id,
+            archivo_data=file_data,
+            nombre_archivo=file.filename,
+            content_type=file.content_type or 'application/octet-stream',
+            comentarios=comentarios,
+            vendedor_id=vendedor_id
+        )
+        
+        evidencia_dto = ejecutar_comando(comando)
+        
+        respuesta = {
+            'mensaje': 'Evidencia subida exitosamente',
+            'evidencia': {
+                'id': str(evidencia_dto.id),
+                'visita_id': evidencia_dto.visita_id,
+                'archivo_url': evidencia_dto.archivo_url,
+                'nombre_archivo': evidencia_dto.nombre_archivo,
+                'formato': evidencia_dto.formato,
+                'tamaño_mb': round(evidencia_dto.tamaño_bytes / 1024 / 1024, 2),
+                'comentarios': evidencia_dto.comentarios,
+                'created_at': evidencia_dto.created_at.isoformat()
+            }
+        }
+        
+        return Response(
+            json.dumps(respuesta),
+            status=201,
+            mimetype='application/json'
+        )
+    
+    except ValueError as e:
+        return Response(
+            json.dumps({'error': str(e)}),
+            status=400,
+            mimetype='application/json'
+        )
+    except Exception as e:
+        logger.error(f"Error subiendo evidencia: {e}")
+        return Response(
+            json.dumps({'error': f'Error interno: {str(e)}'}),
+            status=500,
+            mimetype='application/json'
+        )
+
+@bp.route('/<visita_id>/evidencias', methods=['GET'])
+def obtener_evidencias(visita_id):
+    """
+    Endpoint para obtener todas las evidencias de una visita
+    Accesible para vendedores y administradores
+    """
+    try:
+        consulta = ObtenerEvidenciasVisita(visita_id=visita_id)
+        evidencias = ejecutar_consulta(consulta)
+        
+        respuesta = {
+            'visita_id': visita_id,
+            'total': len(evidencias),
+            'evidencias': [
+                {
+                    'id': str(e.id),
+                    'archivo_url': e.archivo_url,
+                    'nombre_archivo': e.nombre_archivo,
+                    'formato': e.formato,
+                    'tamaño_mb': round(e.tamaño_bytes / 1024 / 1024, 2),
+                    'comentarios': e.comentarios,
+                    'vendedor_id': e.vendedor_id,
+                    'created_at': e.created_at.isoformat()
+                }
+                for e in evidencias
+            ]
+        }
+        
+        return Response(
+            json.dumps(respuesta),
+            status=200,
+            mimetype='application/json'
+        )
+    
+    except Exception as e:
+        logger.error(f"Error obteniendo evidencias: {e}")
+        return Response(
+            json.dumps({'error': f'Error interno: {str(e)}'}),
+            status=500,
             mimetype='application/json'
         )

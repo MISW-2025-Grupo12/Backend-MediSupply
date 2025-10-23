@@ -35,3 +35,15 @@ class PedidoDTO(DTO):
     total: float
     items: list = field(default_factory=list)
     id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+@dataclass(frozen=True)
+class EvidenciaVisitaDTO(DTO):
+    visita_id: str
+    archivo_url: str
+    nombre_archivo: str
+    formato: str
+    tamaño_bytes: int
+    comentarios: str
+    vendedor_id: str
+    created_at: datetime
+    id: uuid.UUID = field(default_factory=uuid.uuid4)

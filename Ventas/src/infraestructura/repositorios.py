@@ -1,6 +1,6 @@
 from config.db import db
-from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel
-from aplicacion.dto import VisitaDTO, PedidoDTO, ItemPedidoDTO
+from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel, EvidenciaVisitaModel
+from aplicacion.dto import VisitaDTO, PedidoDTO, ItemPedidoDTO, EvidenciaVisitaDTO
 from dominio.entidades import Pedido, ItemPedido
 from dominio.objetos_valor import EstadoPedido, Cantidad, Precio
 import uuid
@@ -347,3 +347,52 @@ class RepositorioPedidoSQLite:
 
         logger.info(f"✅ Pedidos CONFIRMADOS encontrados: {len(pedidos)}")
         return pedidos
+
+class RepositorioEvidenciaVisita:
+    def crear(self, evidencia_dto: EvidenciaVisitaDTO) -> EvidenciaVisitaDTO:
+        """Crear una nueva evidencia de visita"""
+        evidencia_model = EvidenciaVisitaModel(
+            id=str(evidencia_dto.id),
+            visita_id=evidencia_dto.visita_id,
+            archivo_url=evidencia_dto.archivo_url,
+            nombre_archivo=evidencia_dto.nombre_archivo,
+            formato=evidencia_dto.formato,
+            tamaño_bytes=evidencia_dto.tamaño_bytes,
+            comentarios=evidencia_dto.comentarios,
+            vendedor_id=evidencia_dto.vendedor_id
+        )
+        db.session.add(evidencia_model)
+        db.session.commit()
+        return evidencia_dto
+    
+    def obtener_por_visita(self, visita_id: str) -> list[EvidenciaVisitaDTO]:
+        """Obtener todas las evidencias de una visita"""
+        evidencias_model = EvidenciaVisitaModel.query.filter_by(visita_id=visita_id).all()
+        return [
+            EvidenciaVisitaDTO(
+                id=uuid.UUID(e.id),
+                visita_id=e.visita_id,
+                archivo_url=e.archivo_url,
+                nombre_archivo=e.nombre_archivo,
+                formato=e.formato,
+                tamaño_bytes=e.tamaño_bytes,
+                comentarios=e.comentarios,
+                vendedor_id=e.vendedor_id,
+                created_at=e.created_at
+            )
+            for e in evidencias_model
+        ]
+    
+    def eliminar(self, evidencia_id: str, storage_service) -> bool:
+        """Eliminar una evidencia y su archivo del storage"""
+        evidencia = EvidenciaVisitaModel.query.get(evidencia_id)
+        if evidencia:
+            storage_service.eliminar_archivo(evidencia.archivo_url)
+            db.session.delete(evidencia)
+            db.session.commit()
+            return True
+        return False
+
+# Alias para compatibilidad
+RepositorioVisita = RepositorioVisitaSQLite
+RepositorioPedido = RepositorioPedidoSQLite
