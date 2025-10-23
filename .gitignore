@@ -204,6 +204,12 @@ Logistica/.env.local
 Usuarios/.env
 Usuarios/.env.local
 
+# Credenciales de GCP
+**/gcp-credentials.json
+**/desarrolloswcloud-*.json
+**/*service-account*.json
+**/*-key.json
+
 # Logs de microservicios
 Productos/logs/
 Productos/*.log

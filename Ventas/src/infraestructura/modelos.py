@@ -85,3 +85,30 @@ class ItemPedidoModel(db.Model):
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
+
+class EvidenciaVisitaModel(db.Model):
+    __tablename__ = 'evidencias_visitas'
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visita_id = db.Column(db.String(36), db.ForeignKey('visitas.id'), nullable=False)
+    archivo_url = db.Column(db.Text, nullable=False)
+    nombre_archivo = db.Column(db.String(255), nullable=False)
+    formato = db.Column(db.String(10), nullable=False)
+    tamaño_bytes = db.Column(db.Integer, nullable=False)
+    comentarios = db.Column(db.Text, nullable=True)
+    vendedor_id = db.Column(db.String(36), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'visita_id': self.visita_id,
+            'archivo_url': self.archivo_url,
+            'nombre_archivo': self.nombre_archivo,
+            'formato': self.formato,
+            'tamaño_bytes': self.tamaño_bytes,
+            'tamaño_mb': round(self.tamaño_bytes / 1024 / 1024, 2),
+            'comentarios': self.comentarios,
+            'vendedor_id': self.vendedor_id,
+            'created_at': self.created_at.isoformat()
+        }

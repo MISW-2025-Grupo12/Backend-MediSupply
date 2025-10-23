@@ -969,6 +969,68 @@
 								"description": "Registra una visita como realizada con sus detalles"
 							},
 							"response": []
+						},
+						{
+							"name": "Subir Evidencia a Visita",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "archivo",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "comentarios",
+											"value": "Equipo en buen estado, ubicado en sala 203",
+											"type": "text"
+										},
+										{
+											"key": "vendedor_id",
+											"value": "{{vendedor_id}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/{{visita_id}}/evidencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										"{{visita_id}}",
+										"evidencias"
+									]
+								},
+								"description": "Sube evidencia visual (fotos/videos) del estado de equipos médicos durante una visita. Acepta formatos: jpg, png, mp4, mov (máx 100MB)"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Evidencias de Visita",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/{{visita_id}}/evidencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										"{{visita_id}}",
+										"evidencias"
+									]
+								},
+								"description": "Obtiene todas las evidencias visuales (fotos/videos) asociadas a una visita específica"
+							},
+							"response": []
 						}
 					]
 				},

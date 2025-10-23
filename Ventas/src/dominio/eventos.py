@@ -91,3 +91,18 @@ class ItemQuitado(EventoDominio):
             'item_id': str(self.item_id),
             'producto_id': self.producto_id
         }
+
+@dataclass
+class EvidenciaSubida(EventoDominio):
+    evidencia_id: uuid.UUID = None
+    visita_id: str = ""
+    vendedor_id: str = ""
+    archivo_url: str = ""
+    
+    def _get_datos_evento(self) -> dict:
+        return {
+            'evidencia_id': str(self.evidencia_id),
+            'visita_id': self.visita_id,
+            'vendedor_id': self.vendedor_id,
+            'archivo_url': self.archivo_url
+        }
