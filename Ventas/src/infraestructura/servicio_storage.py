@@ -1,21 +1,13 @@
 import os
 import uuid
-from abc import ABC, abstractmethod
 from google.cloud import storage
 import logging
 
 logger = logging.getLogger(__name__)
 
-class StorageService(ABC):
-    @abstractmethod
-    def guardar_archivo(self, file_data: bytes, filename: str, content_type: str) -> str:
-        pass
+class GCPStorageService:
+    """Servicio de almacenamiento en Google Cloud Storage"""
     
-    @abstractmethod
-    def eliminar_archivo(self, url: str) -> bool:
-        pass
-
-class GCPStorageService(StorageService):
     def __init__(self, bucket_name='evidencias-g12', credentials_path=None):
         try:
             if credentials_path and os.path.exists(credentials_path):
@@ -33,6 +25,7 @@ class GCPStorageService(StorageService):
             raise
     
     def guardar_archivo(self, file_data: bytes, filename: str, content_type: str) -> str:
+        """Guarda un archivo en GCP Storage y retorna la URL pública"""
         try:
             # Generar nombre único
             extension = filename.rsplit('.', 1)[-1] if '.' in filename else ''
@@ -42,7 +35,6 @@ class GCPStorageService(StorageService):
             blob = self.bucket.blob(blob_name)
             blob.upload_from_string(file_data, content_type=content_type)
             
-            
             logger.info(f"Archivo subido exitosamente: {blob_name}")
             return blob.public_url
         
@@ -51,6 +43,7 @@ class GCPStorageService(StorageService):
             raise
     
     def eliminar_archivo(self, url: str) -> bool:
+        """Elimina un archivo de GCP Storage"""
         try:
             # Extraer nombre del blob de la URL
             blob_name = url.split(f'/{self.bucket_name}/')[-1]
@@ -62,81 +55,41 @@ class GCPStorageService(StorageService):
             logger.error(f"Error eliminando archivo: {e}")
             return False
 
-class LocalStorageService(StorageService):
-    def __init__(self, upload_dir='uploads/evidencias'):
-        self.upload_dir = upload_dir
-        os.makedirs(upload_dir, exist_ok=True)
-        logger.info(f"Storage local configurado: {upload_dir}")
-    
-    def guardar_archivo(self, file_data: bytes, filename: str, content_type: str) -> str:
-        try:
-            unique_filename = f"{uuid.uuid4()}_{filename}"
-            filepath = os.path.join(self.upload_dir, unique_filename)
-            
-            with open(filepath, 'wb') as f:
-                f.write(file_data)
-            
-            logger.info(f"Archivo guardado localmente: {filepath}")
-            return f"/uploads/evidencias/{unique_filename}"
-        except Exception as e:
-            logger.error(f"Error guardando archivo localmente: {e}")
-            raise
-    
-    def eliminar_archivo(self, url: str) -> bool:
-        try:
-            filename = url.split('/')[-1]
-            filepath = os.path.join(self.upload_dir, filename)
-            if os.path.exists(filepath):
-                os.remove(filepath)
-                return True
-            return False
-        except Exception as e:
-            logger.error(f"Error eliminando archivo: {e}")
-            return False
-
 def get_storage_service():
-    mode = os.getenv('STORAGE_MODE', 'gcp')
+    """
+    Obtiene una instancia configurada del servicio de almacenamiento GCP.
     
-    if mode == 'local':
-        logger.info("Usando almacenamiento LOCAL")
-        return LocalStorageService()
+    Busca credenciales en orden de prioridad:
+    1. Variable de entorno GCP_CREDENTIALS_PATH
+    2. Docker Secrets: /run/secrets/gcp_credentials
+    3. Docker: /app/gcp-credentials.json
+    4. Local development: Ventas/gcp-credentials.json
+    """
+    bucket = os.getenv('GCP_BUCKET_NAME', 'evidencias-g12')
+    
+    # Determinar ruta de credenciales
+    if 'GCP_CREDENTIALS_PATH' in os.environ:
+        credentials_path = os.getenv('GCP_CREDENTIALS_PATH')
+        logger.info("Usando credenciales desde GCP_CREDENTIALS_PATH")
+    elif os.path.exists('/run/secrets/gcp_credentials'):
+        credentials_path = '/run/secrets/gcp_credentials'
+        logger.info("Usando Docker Secrets para credenciales")
+    elif os.path.exists('/app/gcp-credentials.json'):
+        credentials_path = '/app/gcp-credentials.json'
+        logger.info("Usando credenciales desde /app")
     else:
-        logger.info("Usando almacenamiento GCP")
-        bucket = os.getenv('GCP_BUCKET_NAME', 'evidencias-g12')
-        
-        # Determinar ruta de credenciales
-        # Prioridad:
-        # 1. Variable de entorno GCP_CREDENTIALS_PATH (puede ser Docker Secret)
-        # 2. Docker Secret: /run/secrets/gcp_credentials
-        # 3. Docker (legacy): /app/gcp-credentials.json
-        # 4. Local: Ventas/gcp-credentials.json (calculado desde este archivo)
-        
-        if 'GCP_CREDENTIALS_PATH' in os.environ:
-            credentials_path = os.getenv('GCP_CREDENTIALS_PATH')
-        elif os.path.exists('/run/secrets/gcp_credentials'):
-            # Docker Secrets (recomendado)
-            credentials_path = '/run/secrets/gcp_credentials'
-            logger.info("Usando Docker Secrets para credenciales")
-        elif os.path.exists('/app/gcp-credentials.json'):
-            # Docker legacy
-            credentials_path = '/app/gcp-credentials.json'
-            logger.warning("Usando credenciales desde /app (legacy). Considera usar Docker Secrets")
-        else:
-            # Local development
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            ventas_dir = os.path.dirname(os.path.dirname(current_dir))  # Subir dos niveles
-            credentials_path = os.path.join(ventas_dir, 'gcp-credentials.json')
-        
-        logger.info(f"Buscando credenciales en: {credentials_path}")
-        logger.info(f"¿Archivo existe? {os.path.exists(credentials_path)}")
-        
-        if not os.path.exists(credentials_path):
-            logger.error(f"Archivo de credenciales no encontrado en: {credentials_path}")
-            logger.error(f"Directorio actual: {os.getcwd()}")
-            if os.path.exists('/run/secrets'):
-                logger.error(f"Contenido de /run/secrets: {os.listdir('/run/secrets')}")
-            if os.path.exists('/app'):
-                logger.error(f"Contenido de /app: {os.listdir('/app')}")
-        
-        return GCPStorageService(bucket, credentials_path)
+        # Local development
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        ventas_dir = os.path.dirname(os.path.dirname(current_dir))
+        credentials_path = os.path.join(ventas_dir, 'gcp-credentials.json')
+        logger.info("Usando credenciales de desarrollo local")
+    
+    logger.info(f"Ruta de credenciales: {credentials_path}")
+    logger.info(f"Archivo existe: {os.path.exists(credentials_path)}")
+    
+    if not os.path.exists(credentials_path):
+        logger.error(f"⚠️ Archivo de credenciales no encontrado: {credentials_path}")
+        logger.error(f"Directorio actual: {os.getcwd()}")
+    
+    return GCPStorageService(bucket, credentials_path)
 
