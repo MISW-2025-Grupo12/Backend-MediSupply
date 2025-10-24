@@ -682,10 +682,11 @@ def registro_repartidor():
         )
 
 
-@bp.route('/login', methods=['POST'])
-def login():
+@bp.route('/validate-credentials', methods=['POST'])
+def validate_credentials():
     """
-    Endpoint para autenticación de usuarios
+    Endpoint interno para validar credenciales de usuario
+    Usado por Auth-Service para verificar email/password
     
     Request Body:
         {
@@ -694,8 +695,8 @@ def login():
         }
     
     Responses:
-        200: Login exitoso - retorna token JWT
-        401: Credenciales inválidas
+        200: Credenciales válidas - retorna información del usuario
+        401: Credenciales inválidas o usuario inactivo
         400: Datos inválidos
         500: Error interno del servidor
     """
@@ -726,22 +727,18 @@ def login():
                 mimetype='application/json'
             )
         
-        # Crear comando
+        # Crear comando de login (solo para validar credenciales)
         comando = Login(
             email=datos['email'],
             password=datos['password']
         )
         
-        # Ejecutar comando
+        # Ejecutar comando - esto valida las credenciales
         token_dto = ejecutar_comando(comando)
         
-        # Preparar respuesta
-        respuesta = {
-            'access_token': token_dto.access_token,
-            'token_type': token_dto.token_type,
-            'expires_in': token_dto.expires_in,
-            'user_info': token_dto.user_info
-        }
+        # Retornar solo la información del usuario (sin token)
+        # El Auth-Service generará su propio token
+        respuesta = token_dto.user_info
         
         return Response(
             json.dumps(respuesta),
@@ -764,7 +761,7 @@ def login():
         )
         
     except Exception as e:
-        logger.error(f"Error en login: {e}")
+        logger.error(f"Error validando credenciales: {e}")
         return Response(
             json.dumps({'error': f'Error interno del servidor: {str(e)}'}),
             status=500,

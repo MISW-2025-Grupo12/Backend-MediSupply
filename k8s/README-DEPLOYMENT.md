@@ -192,6 +192,7 @@ kubectl annotate serviceaccount medisupply-ksa \
 cd "C:\Users\Usuario\OneDrive\Documentos\Maestria Uniandes\Proyecto 2\Backend-MediSupply"
 
 # Construir todas las imágenes en paralelo (usar rutas absolutas)
+docker build -f "Auth-Service/Dockerfile" -t gcr.io/desarrolloswcloud/auth-service:latest "Auth-Service" &
 docker build -f "Productos/Dockerfile" -t gcr.io/desarrolloswcloud/productos:latest "Productos" &
 docker build -f "Usuarios/Dockerfile" -t gcr.io/desarrolloswcloud/usuarios:latest "Usuarios" &
 docker build -f "Ventas/Dockerfile" -t gcr.io/desarrolloswcloud/ventas:latest "Ventas" &
@@ -210,6 +211,7 @@ docker images | grep medisupply
 ### Subir Imágenes a GCR
 ```bash
 # Subir todas las imágenes en paralelo
+docker push gcr.io/desarrolloswcloud/auth-service:latest &
 docker push gcr.io/desarrolloswcloud/productos:latest &
 docker push gcr.io/desarrolloswcloud/usuarios:latest &
 docker push gcr.io/desarrolloswcloud/ventas:latest &
@@ -266,7 +268,11 @@ kubectl get secret db-credentials -n medisupply -o yaml
 
 ### 3. Desplegar Servicios
 ```bash
-# Desplegar todos los servicios
+# Desplegar Auth-Service (PRIMERO - requerido para autenticación)
+kubectl apply -f k8s/auth-configmap.yaml
+kubectl apply -f k8s/auth-deployment.yaml
+
+# Desplegar todos los microservicios
 kubectl apply -f k8s/productos-deployment.yaml
 kubectl apply -f k8s/usuarios-deployment.yaml
 kubectl apply -f k8s/ventas-deployment.yaml
@@ -331,7 +337,7 @@ kubectl get ingress -n medisupply
 INGRESS_IP=$(kubectl get ingress medisupply-ingress -n medisupply -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 # Probar endpoints básicos
-
+curl http://$INGRESS_IP/auth/health
 curl http://$INGRESS_IP/usuarios/health
 curl http://$INGRESS_IP/productos/health
 curl http://$INGRESS_IP/ventas/health
@@ -358,14 +364,18 @@ curl http://localhost:5003/
 
 ```
 k8s/
-├── namespace.yaml              # Namespace del proyecto
-├── configmap.yaml             # Configuración de la aplicación
-├── secret.yaml                # Credenciales de base de datos
-├── productos-deployment.yaml  # Deployment y Service de Productos
-├── usuarios-deployment.yaml   # Deployment y Service de Usuarios
-├── ventas-deployment.yaml     # Deployment y Service de Ventas
-├── logistica-deployment.yaml  # Deployment y Service de Logística
-└── ingress.yaml              # Configuración del Ingress
+├── namespace.yaml                 # Namespace del proyecto
+├── configmap.yaml                 # Configuración general de la aplicación
+├── secret.yaml                    # Credenciales de BD y JWT Secret
+├── auth-configmap.yaml            # ⭐ ConfigMap con permisos de autorización
+├── auth-deployment.yaml           # ⭐ Deployment y Service de Auth
+├── productos-deployment.yaml      # Deployment y Service de Productos
+├── usuarios-deployment.yaml       # Deployment y Service de Usuarios
+├── ventas-deployment.yaml         # Deployment y Service de Ventas
+├── logistica-deployment.yaml      # Deployment y Service de Logística
+├── ingress.yaml                   # Configuración del Ingress
+├── README-DEPLOYMENT.md           # Esta guía
+└── DEPLOYMENT-AUTH-GUIDE.md       # ⭐ Guía específica de Auth-Service
 ```
 
 ## 🔗 URLs de Acceso

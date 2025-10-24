@@ -13,6 +13,15 @@ spec:
     - host: api.medisupplyg4.online
       http:
         paths:
+          # Auth Service - Login y verificación (DEBE IR PRIMERO)
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 5004
+          # Usuarios
           - path: /usuarios
             pathType: Prefix
             backend:
@@ -20,6 +29,7 @@ spec:
                 name: usuarios-service
                 port:
                   number: 5001
+          # Productos
           - path: /productos
             pathType: Prefix
             backend:
@@ -27,6 +37,7 @@ spec:
                 name: productos-service
                 port:
                   number: 5000
+          # Ventas
           - path: /ventas
             pathType: Prefix
             backend:
@@ -34,6 +45,7 @@ spec:
                 name: ventas-service
                 port:
                   number: 5002
+          # Logística
           - path: /logistica
             pathType: Prefix
             backend:
@@ -41,10 +53,11 @@ spec:
                 name: logistica-service
                 port:
                   number: 5003
+          # Default (health checks)
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: usuarios-service
+                name: auth-service
                 port:
-                  number: 5001
+                  number: 5004

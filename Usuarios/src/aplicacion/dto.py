@@ -122,8 +122,23 @@ class LoginDTO(DTO):
 
 @dataclass(frozen=True)
 class TokenDTO(DTO):
-    """DTO para respuesta de token JWT"""
+    """
+    DTO para respuesta de token JWT
+    """
     access_token: str
     token_type: str
     expires_in: int
     user_info: Dict[str, any]
+
+
+@dataclass(frozen=True)
+class CredencialesValidasDTO(DTO):
+    """
+    DTO para credenciales validadas
+    Usado por Auth-Service para validar credenciales
+    """
+    id: str
+    email: str
+    tipo_usuario: str
+    identificacion: Optional[str]
+    entidad_id: str

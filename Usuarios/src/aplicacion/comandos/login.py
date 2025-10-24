@@ -7,7 +7,6 @@ import logging
 from aplicacion.dto import TokenDTO
 from dominio.excepciones import CredencialesInvalidasError, UsuarioInactivoError
 from infraestructura.repositorios import RepositorioUsuario
-from config.jwt_config import generar_token, TOKEN_EXPIRATION_HOURS
 
 logger = logging.getLogger(__name__)
 
@@ -27,14 +26,7 @@ class LoginHandler:
     
     def handle(self, comando: Login) -> TokenDTO:
         """
-        Maneja el login de un usuario
-        
-        Pasos:
-        1. Buscar Usuario por email
-        2. Verificar que existe y está activo
-        3. Verificar password
-        4. Generar token JWT
-        5. Retornar TokenDTO con información del usuario
+        Valida credenciales de un usuario
         """
         try:
             # 1. Buscar usuario por email
@@ -55,14 +47,7 @@ class LoginHandler:
                 logger.warning(f"Intento de login con contraseña incorrecta: {comando.email}")
                 raise CredencialesInvalidasError()
             
-            # 5. Generar token JWT
-            token = generar_token(
-                usuario_id=usuario.id,
-                tipo_usuario=usuario.tipo_usuario,
-                email=usuario.email
-            )
-            
-            # 6. Preparar información del usuario (sin datos sensibles)
+            # 5. Preparar información del usuario (sin datos sensibles)
             user_info = {
                 'id': usuario.id,
                 'email': usuario.email,
@@ -71,15 +56,16 @@ class LoginHandler:
                 'entidad_id': usuario.entidad_id
             }
             
-            # 7. Crear y retornar TokenDTO
+            # 6. Crear TokenDTO (sin token real - solo para compatibilidad)
+            # El Auth-Service generará el token JWT real
             token_dto = TokenDTO(
-                access_token=token,
+                access_token='',  # Token vacío - será generado por Auth-Service
                 token_type='Bearer',
-                expires_in=TOKEN_EXPIRATION_HOURS * 3600,  # Convertir horas a segundos
+                expires_in=0,  # Será definido por Auth-Service
                 user_info=user_info
             )
             
-            logger.info(f"Login exitoso para usuario: {usuario.email}")
+            logger.info(f"Credenciales validadas para usuario: {usuario.email}")
             
             return token_dto
             
@@ -88,7 +74,7 @@ class LoginHandler:
             raise
             
         except Exception as e:
-            logger.error(f"Error en login: {e}")
+            logger.error(f"Error en validación de credenciales: {e}")
             raise
 
 

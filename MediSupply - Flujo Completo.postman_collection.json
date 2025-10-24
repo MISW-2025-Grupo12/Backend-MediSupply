@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "6c3c678c-f124-426b-8ba0-b94e20f48f7d",
+		"_postman_id": "ff6a75fe-d181-42af-b814-df26deb8f6b9",
 		"name": "MediSupply - Flujo Completo",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes con autenticación JWT\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Autenticación JWT** - Registrar usuarios y obtener tokens (vendedores, clientes, proveedores)\n    \n3. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n4. **Crear Productos** - Con y sin inventario\n    \n5. **Crear Visitas** - Programar visitas de venta\n    \n6. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n7. **Gestionar Inventario** - Reservas y descuentos\n    \n8. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n9. **Consultar Entregas** - Ver entregas programadas\n    \n10. **Informes de Ventas** - Consultar datos de ventas por vendedor y fechas",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Autenticación JWT** - Registrar usuarios y obtener tokens (vendedores, clientes, proveedores)\n    \n3. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n4. **Crear Productos** - Con y sin inventario\n    \n5. **Crear Visitas** - Programar visitas de venta\n    \n6. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n7. **Gestionar Inventario** - Reservas y descuentos\n    \n8. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n9. **Consultar Entregas** - Ver entregas programadas\n    \n10. **Informes de Ventas** - Consultar datos de ventas por vendedor y fechas",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-6c3c678c-f124-426b-8ba0-b94e20f48f7d?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-ff6a75fe-d181-42af-b814-df26deb8f6b9?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -350,17 +350,124 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url_usuarios}}/api/auth/login",
+							"raw": "{{base_url_auth}}/login",
+							"host": [
+								"{{base_url_auth}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Autentica un vendedor a través del Auth-Service centralizado y obtiene token JWT válido por 24 horas"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro de Administrador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Administrador registrado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('mensaje');",
+									"    pm.expect(response).to.have.property('administrador');",
+									"    pm.expect(response.administrador).to.have.property('id');",
+									"    pm.collectionVariables.set('admin_id', response.administrador.id);",
+									"    console.log('Administrador registrado con ID:', response.administrador.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Admin Sistema\",\n    \"email\": \"admin@medisupply.com\",\n    \"password\": \"AdminPass123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/registro-administrador",
 							"host": [
 								"{{base_url_usuarios}}"
 							],
 							"path": [
 								"api",
 								"auth",
+								"registro-administrador"
+							]
+						},
+						"description": "Registra un nuevo administrador con permisos completos en el sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Login de Administrador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Login de administrador exitoso', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('access_token');",
+									"    pm.expect(response).to.have.property('user_info');",
+									"    pm.expect(response.user_info).to.have.property('tipo_usuario');",
+									"    pm.expect(response.user_info.tipo_usuario).to.eql('ADMINISTRADOR');",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"    pm.collectionVariables.set('admin_token', response.access_token);",
+									"    console.log('Token JWT de administrador guardado');",
+									"    console.log('NOTA: Este token se usará para el resto del flujo');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@medisupply.com\",\n    \"password\": \"AdminPass123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_auth}}/login",
+							"host": [
+								"{{base_url_auth}}"
+							],
+							"path": [
 								"login"
 							]
 						},
-						"description": "Autentica un vendedor y obtiene token JWT"
+						"description": "Autentica un administrador a través del Auth-Service. El token obtenido tiene permisos completos para todos los endpoints del sistema."
 					},
 					"response": []
 				}
@@ -385,11 +492,23 @@
 									"    console.log('Proveedor ID guardado:', response.id);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -441,6 +560,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -492,6 +621,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -543,6 +682,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -653,6 +802,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -704,6 +863,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -754,6 +923,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -799,6 +978,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -849,6 +1038,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -891,6 +1090,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -944,6 +1153,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1005,6 +1224,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -1062,6 +1291,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -1113,6 +1352,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -1164,6 +1413,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1201,6 +1460,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -1244,6 +1513,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1290,6 +1569,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1327,6 +1616,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1372,6 +1671,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -1413,6 +1722,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1541,6 +1860,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1628,6 +1957,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1672,6 +2011,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -1708,6 +2057,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1746,6 +2105,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1781,6 +2150,16 @@
 				{
 					"name": "Listar datos informe de ventas",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1800,6 +2179,16 @@
 				{
 					"name": "Listar datos informe por vendedor",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1825,6 +2214,16 @@
 				{
 					"name": "Listar datos informe rango de fechas",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1885,23 +2284,51 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost"
+			"value": "http://localhost:8080",
+			"description": {
+				"content": "Nginx Gateway - Punto de entrada principal",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "base_url_auth",
+			"value": "http://localhost:8080/auth",
+			"description": {
+				"content": "Auth-Service via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_usuarios",
-			"value": "http://localhost:5001/usuarios"
+			"value": "http://localhost:8080/usuarios",
+			"description": {
+				"content": "Usuarios via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_productos",
-			"value": "http://localhost:5000/productos"
+			"value": "http://localhost:8080/productos",
+			"description": {
+				"content": "Productos via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_ventas",
-			"value": "http://localhost:5002/ventas"
+			"value": "http://localhost:8080/ventas",
+			"description": {
+				"content": "Ventas via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_logistica",
-			"value": "http://localhost:5003/logistica"
+			"value": "http://localhost:8080/logistica",
+			"description": {
+				"content": "Logística via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "proveedor_id",
@@ -1993,6 +2420,14 @@
 		},
 		{
 			"key": "proveedor_auth_id",
+			"value": ""
+		},
+		{
+			"key": "admin_id",
+			"value": ""
+		},
+		{
+			"key": "admin_token",
 			"value": ""
 		}
 	]

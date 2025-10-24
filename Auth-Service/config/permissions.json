@@ -1,0 +1,55 @@
+{
+  
+  "GET:/health/?$": ["*"],
+  "GET:/usuarios/health/?$": ["*"],
+  "GET:/ventas/health/?$": ["*"],
+  "GET:/productos/health/?$": ["*"],
+  "GET:/logistica/health/?$": ["*"],
+  
+  "POST:/auth/login/?$": ["*"],
+  "POST:/usuarios/api/auth/registro-vendedor/?$": ["*"],
+  "POST:/usuarios/api/auth/registro-cliente/?$": ["*"],
+  "POST:/usuarios/api/auth/registro-proveedor/?$": ["*"],
+  "POST:/usuarios/api/auth/registro-administrador/?$": ["*"],
+  "POST:/usuarios/api/auth/registro-repartidor/?$": ["*"],
+  
+  "POST:/usuarios/api/auth/validate-credentials/?$": ["INTERNAL"],
+  
+  "GET:/usuarios/api/vendedores/?$": ["ADMINISTRADOR", "VENDEDOR"],
+  "GET:/usuarios/api/vendedores/[^/]+/?$": ["ADMINISTRADOR", "VENDEDOR"],
+  "POST:/usuarios/api/vendedores/?$": ["ADMINISTRADOR"],
+  "GET:/usuarios/api/clientes/?$": ["ADMINISTRADOR", "VENDEDOR"],
+  "GET:/usuarios/api/clientes/[^/]+/?$": ["ADMINISTRADOR", "VENDEDOR"],
+  "POST:/usuarios/api/clientes/?$": ["ADMINISTRADOR"],
+  "GET:/usuarios/api/proveedores/?$": ["ADMINISTRADOR"],
+  "GET:/usuarios/api/proveedores/[^/]+/?$": ["ADMINISTRADOR"],
+  "POST:/usuarios/api/proveedores/?$": ["ADMINISTRADOR"],
+  
+  "POST:/ventas/api/visitas/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "GET:/ventas/api/visitas/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "GET:/ventas/api/visitas/[^/]+/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "POST:/ventas/api/visitas/[^/]+/registrar/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "POST:/ventas/api/visitas/[^/]+/evidencias/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "GET:/ventas/api/visitas/[^/]+/evidencias/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "POST:/ventas/api/pedidos/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "GET:/ventas/api/pedidos/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "GET:/ventas/api/pedidos/[^/]+/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "POST:/ventas/api/pedidos/[^/]+/confirmar/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "GET:/ventas/api/informes/ventas/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  
+  "POST:/productos/api/productos/?$": ["PROVEEDOR", "ADMINISTRADOR"],
+  "PUT:/productos/api/productos/[^/]+/?$": ["PROVEEDOR", "ADMINISTRADOR"],
+  "DELETE:/productos/api/productos/[^/]+/?$": ["ADMINISTRADOR"],
+  "GET:/productos/api/productos/?$": ["*"],
+  "GET:/productos/api/productos/[^/]+/?$": ["*"],
+  "POST:/productos/api/categorias/?$": ["ADMINISTRADOR"],
+  "GET:/productos/api/categorias/?$": ["*"],
+  
+  "POST:/logistica/api/entregas/?$": ["REPARTIDOR", "ADMINISTRADOR"],
+  "GET:/logistica/api/entregas/?$": ["REPARTIDOR", "ADMINISTRADOR", "VENDEDOR"],
+  "GET:/logistica/api/entregas/[^/]+/?$": ["REPARTIDOR", "ADMINISTRADOR", "VENDEDOR"],
+  "PUT:/logistica/api/entregas/[^/]+/?$": ["REPARTIDOR", "ADMINISTRADOR"],
+  "GET:/logistica/api/bodegas/?$": ["REPARTIDOR", "ADMINISTRADOR", "VENDEDOR"],
+  "POST:/logistica/api/inventario/?$": ["ADMINISTRADOR"],
+  "GET:/logistica/api/inventario/?$": ["ADMINISTRADOR", "VENDEDOR"]
+}
