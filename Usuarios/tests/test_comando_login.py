@@ -1,5 +1,8 @@
 """
 Tests para el comando Login
+
+NOTA: El comando Login ahora solo VALIDA credenciales.
+NO genera tokens JWT - eso es responsabilidad del Auth-Service.
 """
 import pytest
 import uuid
@@ -24,7 +27,7 @@ class TestComandoLogin:
             db.session.commit()
     
     def test_login_exitoso(self, app_context):
-        """Test login exitoso con credenciales válidas"""
+        """Test validación de credenciales exitosa"""
         with app_context.app_context():
             # Arrange
             repositorio = RepositorioUsuario()
@@ -46,13 +49,14 @@ class TestComandoLogin:
             # Act
             token_dto = handler.handle(comando)
             
-            # Assert
+            # Assert - Verifica que las credenciales fueron validadas
             assert token_dto is not None
             assert isinstance(token_dto, TokenDTO)
-            assert token_dto.access_token is not None
-            assert len(token_dto.access_token) > 0
+            # El token está vacío - será generado por Auth-Service
+            assert token_dto.access_token == ''
             assert token_dto.token_type == 'Bearer'
-            assert token_dto.expires_in == 24 * 3600  # 24 horas en segundos
+            assert token_dto.expires_in == 0
+            # Verifica que la información del usuario está presente
             assert token_dto.user_info is not None
             assert token_dto.user_info['id'] == usuario.id
             assert token_dto.user_info['email'] == email
@@ -119,37 +123,6 @@ class TestComandoLogin:
             with pytest.raises(UsuarioInactivoError):
                 handler.handle(comando)
     
-    def test_login_genera_token_valido(self, app_context):
-        """Test que el login genera un token JWT válido"""
-        with app_context.app_context():
-            # Arrange
-            from config.jwt_config import verificar_token
-            
-            repositorio = RepositorioUsuario()
-            email = "test@example.com"
-            password = "password123"
-            
-            # Crear usuario
-            usuario = repositorio.crear(
-                email=email,
-                password=password,
-                tipo_usuario="cliente",
-                identificacion="1234567890",
-                entidad_id=str(uuid.uuid4())
-            )
-            
-            comando = Login(email=email, password=password)
-            handler = LoginHandler(repositorio)
-            
-            # Act
-            token_dto = handler.handle(comando)
-            
-            # Assert - Verificar que el token se puede decodificar
-            payload = verificar_token(token_dto.access_token)
-            assert payload is not None
-            assert payload['usuario_id'] == usuario.id
-            assert payload['email'] == email
-            assert payload['tipo_usuario'] == "cliente"
     
     def test_login_diferentes_tipos_usuario(self, app_context):
         """Test login para diferentes tipos de usuario"""

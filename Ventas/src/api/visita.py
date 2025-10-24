@@ -256,9 +256,8 @@ def subir_evidencia(visita_id):
         # Leer datos del archivo
         file_data = file.read()
         
-        # Ejecutar comando (vendedor_id debería venir del token JWT)
-        # Por ahora usamos un ID de ejemplo
-        vendedor_id = request.form.get('vendedor_id', 'vendedor-test-id')
+        # Obtener vendedor_id del header (inyectado por Nginx desde el token JWT)
+        vendedor_id = request.headers.get('X-User-Id', 'unknown-user')
         
         comando = SubirEvidencia(
             visita_id=visita_id,
