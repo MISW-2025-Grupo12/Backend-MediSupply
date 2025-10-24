@@ -1,6 +1,4 @@
 {
-  "_comment": "Formato: 'METODO:/path/completo/?$': ['ROL1', 'ROL2'] o ['*'] para público",
-  "_comment_regex": "El /?$ al final permite rutas con y sin slash final. [^/]+ captura IDs dinámicos",
   
   "GET:/health/?$": ["*"],
   "GET:/usuarios/health/?$": ["*"],
