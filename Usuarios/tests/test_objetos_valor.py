@@ -66,7 +66,7 @@ class TestObjetosValor:
     def test_email_muy_largo_lanza_excepcion(self):
         """Test que email muy largo lanza excepción"""
         # Arrange
-        email_largo = "e" * 90 + "@test.com"  # Más de 100 caracteres
+        email_largo = "e" * 92 + "@test.com"  # Más de 100 caracteres (92 + 9 = 101)
         
         # Act & Assert
         with pytest.raises(EmailInvalidoError):
