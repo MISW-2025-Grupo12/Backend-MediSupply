@@ -722,6 +722,59 @@
 						"description": "Crea un nuevo cliente y guarda su ID para uso posterior"
 					},
 					"response": []
+				},
+				{
+					"name": "Modificar Estado del Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Estado del cliente modificado exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('estado');",
+									"    pm.expect(response.estado).to.eql('INACTIVO');",
+									"    console.log('Estado del cliente modificado a:', response.estado);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"estado\": \"INACTIVO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/clientes/{{cliente_id}}/estado",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"clientes",
+								"{{cliente_id}}",
+								"estado"
+							]
+						},
+						"description": "Modifica el estado de un cliente específico. Estados válidos: ACTIVO, INACTIVO"
+					},
+					"response": []
 				}
 			],
 			"description": "Crear proveedores, categorías, vendedores y clientes necesarios para el flujo"

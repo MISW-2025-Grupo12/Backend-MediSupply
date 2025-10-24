@@ -2,6 +2,7 @@ import seedwork.presentacion.api as api
 import json
 from flask import request, Response, Blueprint
 from aplicacion.comandos.crear_cliente import CrearCliente
+from aplicacion.comandos.modificar_estado_cliente import ModificarEstadoCliente
 from aplicacion.consultas.obtener_clientes import ObtenerClientes
 from aplicacion.consultas.obtener_cliente_por_id import ObtenerClientePorId
 from seedwork.aplicacion.comandos import ejecutar_comando
@@ -116,6 +117,65 @@ def obtener_cliente_por_id(cliente_id):
         
     except Exception as e:
         logger.error(f"Error obteniendo cliente por ID: {e}")
+        return Response(
+            json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
+            status=500, 
+            mimetype='application/json'
+        )
+
+# Endpoint para modificar estado del cliente
+@bp.route('/<cliente_id>/estado', methods=['PUT'])
+def modificar_estado_cliente(cliente_id):
+    try:
+        # Obtener datos del request
+        estado_dict = request.json
+        
+        # Validación básica de HTTP
+        if not estado_dict:
+            return Response(
+                json.dumps({'error': 'Se requiere un JSON válido'}), 
+                status=400, 
+                mimetype='application/json'
+            )
+        
+        # Validar que se proporcione el estado
+        nuevo_estado = estado_dict.get('estado')
+        if not nuevo_estado:
+            return Response(
+                json.dumps({'error': 'Se requiere el campo "estado"'}), 
+                status=400, 
+                mimetype='application/json'
+            )
+        
+        # Crear comando
+        comando = ModificarEstadoCliente(
+            cliente_id=cliente_id,
+            nuevo_estado=nuevo_estado
+        )
+        
+        # Ejecutar comando
+        resultado = ejecutar_comando(comando)
+        
+        # Convertir DTO a JSON
+        mapeador = MapeadorClienteDTOJson()
+        cliente_json = mapeador.dto_a_externo(resultado)
+        
+        return Response(
+            json.dumps(cliente_json), 
+            status=200, 
+            mimetype='application/json'
+        )
+        
+    except ValueError as e:
+        logger.error(f"Error de validación: {e}")
+        return Response(
+            json.dumps({'error': str(e)}), 
+            status=400, 
+            mimetype='application/json'
+        )
+        
+    except Exception as e:
+        logger.error(f"Error modificando estado del cliente: {e}")
         return Response(
             json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
             status=500, 
