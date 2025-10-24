@@ -6,7 +6,8 @@ from .excepciones import (
     EmailInvalidoError, 
     TelefonoInvalidoError,
     IdentificacionInvalidaError,
-    PasswordInvalidaError
+    PasswordInvalidaError,
+    EstadoInvalidoError
 )
 
 
@@ -91,3 +92,16 @@ class Password(ObjetoValor):
         
         if len(self.password) > 50:
             raise PasswordInvalidaError("La contraseña excede los 50 caracteres")
+
+
+@dataclass(frozen=True)
+class Estado(ObjetoValor):
+    estado: str
+    
+    def __post_init__(self):
+        if not self.estado or not self.estado.strip():
+            raise EstadoInvalidoError("El estado no puede estar vacío")
+        
+        estados_validos = ['ACTIVO', 'INACTIVO']
+        if self.estado not in estados_validos:
+            raise EstadoInvalidoError(f"El estado '{self.estado}' no es válido. Estados válidos: {', '.join(estados_validos)}")

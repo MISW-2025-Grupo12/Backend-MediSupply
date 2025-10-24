@@ -77,7 +77,8 @@ class MapeadorClienteDTOJson:
             'email': dto.email,
             'identificacion': dto.identificacion,
             'telefono': dto.telefono,
-            'direccion': dto.direccion
+            'direccion': dto.direccion,
+            'estado': dto.estado
         }
     
     def externo_a_dto(self, externo: dict) -> ClienteDTO:
@@ -87,7 +88,8 @@ class MapeadorClienteDTOJson:
             email=externo.get('email', ''),
             identificacion=externo.get('identificacion', ''),
             telefono=externo.get('telefono', ''),
-            direccion=externo.get('direccion', '')
+            direccion=externo.get('direccion', ''),
+            estado=externo.get('estado', 'ACTIVO')
         )
     
     def dtos_a_externo(self, dtos: list[ClienteDTO]) -> list[dict]:
@@ -101,5 +103,6 @@ class MapeadorCliente:
             email=entidad.email.email,
             identificacion=entidad.identificacion.identificacion,
             telefono=entidad.telefono.telefono,
-            direccion=entidad.direccion.direccion
+            direccion=entidad.direccion.direccion,
+            estado=entidad.estado.estado
         )

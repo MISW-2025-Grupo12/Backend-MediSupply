@@ -4,7 +4,7 @@ import uuid
 import logging
 from aplicacion.dto import ClienteDTO
 from dominio.entidades import Cliente
-from dominio.objetos_valor import Nombre, Email, Telefono, Direccion, Identificacion
+from dominio.objetos_valor import Nombre, Email, Telefono, Direccion, Identificacion, Estado
 from infraestructura.repositorios import RepositorioClienteSQLite
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,8 @@ class CrearClienteHandler:
                 email=comando.email,
                 identificacion=comando.identificacion,
                 telefono=comando.telefono,
-                direccion=comando.direccion
+                direccion=comando.direccion,
+                estado="ACTIVO"  # Estado por defecto para clientes nuevos
             )
             
             # Crear entidad de dominio
@@ -38,7 +39,8 @@ class CrearClienteHandler:
                 email=Email(comando.email),
                 identificacion=Identificacion(comando.identificacion),
                 telefono=Telefono(comando.telefono),
-                direccion=Direccion(comando.direccion)
+                direccion=Direccion(comando.direccion),
+                estado=Estado("ACTIVO")  # Estado por defecto para clientes nuevos
             )
             
             # Disparar evento de creación

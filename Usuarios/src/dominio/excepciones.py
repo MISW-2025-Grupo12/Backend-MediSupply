@@ -69,3 +69,8 @@ class TelefonoInvalidoError(ErrorDominio):
     def __init__(self, mensaje: str):
         super().__init__(mensaje)
 
+
+class EstadoInvalidoError(ErrorDominio):
+    """Error cuando el estado no es válido"""
+    def __init__(self, mensaje: str):
+        super().__init__(mensaje)

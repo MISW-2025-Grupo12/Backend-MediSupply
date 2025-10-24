@@ -4,6 +4,12 @@ from datetime import datetime
 import bcrypt
 from enum import Enum
 
+
+class EstadoCliente(str, Enum):
+    """Enum para estados de cliente"""
+    ACTIVO = 'ACTIVO'
+    INACTIVO = 'INACTIVO'
+
 class ProveedorModel(db.Model):
     __tablename__ = 'proveedores'
     
@@ -61,6 +67,7 @@ class ClienteModel(db.Model):
     identificacion = db.Column(db.String(20), nullable=False)
     telefono = db.Column(db.String(20), nullable=False)
     direccion = db.Column(db.Text, nullable=False)
+    estado = db.Column(db.String(20), nullable=False, default=EstadoCliente.ACTIVO)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -72,6 +79,7 @@ class ClienteModel(db.Model):
             'identificacion': self.identificacion,
             'telefono': self.telefono,
             'direccion': self.direccion,
+            'estado': self.estado,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }

@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from seedwork.dominio.entidades import AgregacionRaiz
-from .objetos_valor import Nombre, Email, Direccion, Telefono, Identificacion
+from .objetos_valor import Nombre, Email, Direccion, Telefono, Identificacion, Estado
 from .eventos import ProveedorCreado, VendedorCreado, ClienteCreado, AdministradorCreado, RepartidorCreado
 
 @dataclass
@@ -45,6 +45,7 @@ class Cliente(AgregacionRaiz):
     identificacion: Identificacion = field(default_factory=lambda: Identificacion(""))
     telefono: Telefono = field(default_factory=lambda: Telefono(""))
     direccion: Direccion = field(default_factory=lambda: Direccion(""))
+    estado: Estado = field(default_factory=lambda: Estado("ACTIVO"))
     
     def disparar_evento_creacion(self):
         evento = ClienteCreado(
@@ -52,7 +53,8 @@ class Cliente(AgregacionRaiz):
             nombre=self.nombre.nombre,
             email=self.email.email,
             telefono=self.telefono.telefono,
-            direccion=self.direccion.direccion
+            direccion=self.direccion.direccion,
+            estado=self.estado.estado
         )
         return evento
 

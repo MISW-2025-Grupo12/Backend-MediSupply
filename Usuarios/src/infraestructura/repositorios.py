@@ -96,7 +96,8 @@ class RepositorioClienteSQLite:
             email=cliente_dto.email,
             identificacion=cliente_dto.identificacion,
             telefono=cliente_dto.telefono,
-            direccion=cliente_dto.direccion
+            direccion=cliente_dto.direccion,
+            estado=cliente_dto.estado
         )
         db.session.add(cliente_model)
         db.session.commit()
@@ -114,7 +115,8 @@ class RepositorioClienteSQLite:
             email=cliente_model.email,
             identificacion=cliente_model.identificacion,
             telefono=cliente_model.telefono,
-            direccion=cliente_model.direccion
+            direccion=cliente_model.direccion,
+            estado=cliente_model.estado
         )
     
     def obtener_todos(self) -> list[ClienteDTO]:
@@ -126,7 +128,8 @@ class RepositorioClienteSQLite:
                 email=c.email,
                 identificacion=c.identificacion,
                 telefono=c.telefono,
-                direccion=c.direccion
+                direccion=c.direccion,
+                estado=c.estado
             ) for c in clientes_model
         ]
 

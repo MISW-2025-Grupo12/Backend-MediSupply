@@ -31,6 +31,7 @@ class ClienteDTO(DTO):
     identificacion: str
     telefono: str
     direccion: str
+    estado: str = "ACTIVO"
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 

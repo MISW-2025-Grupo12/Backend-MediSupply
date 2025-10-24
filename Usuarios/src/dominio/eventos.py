@@ -41,6 +41,7 @@ class ClienteCreado(EventoDominio):
     email: str = ""
     telefono: str = ""
     direccion: str = ""
+    estado: str = "ACTIVO"
     
     def _get_datos_evento(self) -> dict:
         return {
@@ -48,7 +49,8 @@ class ClienteCreado(EventoDominio):
             'nombre': self.nombre,
             'email': self.email,
             'telefono': self.telefono,
-            'direccion': self.direccion
+            'direccion': self.direccion,
+            'estado': self.estado
         }
 
 @dataclass
