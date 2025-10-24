@@ -27,6 +27,7 @@ class TestAPICliente:
             mock_cliente.identificacion = '1234567890'
             mock_cliente.telefono = '1234567890'
             mock_cliente.direccion = 'Calle 123 #45-67'
+            mock_cliente.estado = 'ACTIVO'
             mock_ejecutar.return_value = mock_cliente
             
             # Act
@@ -100,9 +101,9 @@ class TestAPICliente:
         with patch('aplicacion.consultas.obtener_clientes.ObtenerClientesHandler.handle') as mock_ejecutar:
             mock_clientes = [
                 Mock(id=str(uuid.uuid4()), nombre='Juan Pérez',
-                     email='juan@email.com', identificacion='1234567890', telefono='1234567890', direccion='Calle 123 #45-67'),
+                     email='juan@email.com', identificacion='1234567890', telefono='1234567890', direccion='Calle 123 #45-67', estado='ACTIVO'),
                 Mock(id=str(uuid.uuid4()), nombre='María García',
-                     email='maria@email.com', identificacion='0987654321', telefono='0987654321', direccion='Avenida 456 #78-90')
+                     email='maria@email.com', identificacion='0987654321', telefono='0987654321', direccion='Avenida 456 #78-90', estado='ACTIVO')
             ]
             mock_ejecutar.return_value = mock_clientes
             
@@ -159,6 +160,7 @@ class TestAPICliente:
             mock_cliente.identificacion = '1234567890'
             mock_cliente.telefono = '1234567890'
             mock_cliente.direccion = 'Calle 123 #45-67'
+            mock_cliente.estado = 'ACTIVO'
             mock_ejecutar.return_value = mock_cliente
             
             # Act

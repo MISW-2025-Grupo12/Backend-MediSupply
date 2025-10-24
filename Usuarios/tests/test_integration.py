@@ -103,6 +103,7 @@ class TestIntegration:
             mock_cliente.telefono = '1234567890'
             mock_cliente.direccion = 'Calle 123 #45-67'
             mock_cliente.identificacion = '1001234567'
+            mock_cliente.estado = 'ACTIVO'
             
             mock_crear.return_value = mock_cliente
             # Configurar side_effect para devolver lista para obtener_todos y objeto para obtener_por_id

@@ -20,7 +20,7 @@ class RepositorioProveedorSQLite:
     
     def obtener_por_id(self, proveedor_id: str) -> ProveedorDTO:
         """Obtener un proveedor por ID"""
-        proveedor_model = ProveedorModel.query.get(proveedor_id)
+        proveedor_model = db.session.get(ProveedorModel, proveedor_id)
         if not proveedor_model:
             return None
             
@@ -62,7 +62,7 @@ class RepositorioVendedorSQLite:
     
     def obtener_por_id(self, vendedor_id: str) -> VendedorDTO:
         """Obtener un vendedor por ID"""
-        vendedor_model = VendedorModel.query.get(vendedor_id)
+        vendedor_model = db.session.get(VendedorModel, vendedor_id)
         if not vendedor_model:
             return None
             
@@ -105,7 +105,7 @@ class RepositorioClienteSQLite:
     
     def obtener_por_id(self, cliente_id: str) -> ClienteDTO:
         """Obtener un cliente por ID"""
-        cliente_model = ClienteModel.query.get(cliente_id)
+        cliente_model = db.session.get(ClienteModel, cliente_id)
         if not cliente_model:
             return None
             
@@ -146,7 +146,7 @@ class RepositorioAdministradorSQLite:
     
     def obtener_por_id(self, administrador_id: str) -> AdministradorDTO:
         """Obtener un administrador por ID"""
-        administrador_model = AdministradorModel.query.get(administrador_id)
+        administrador_model = db.session.get(AdministradorModel, administrador_id)
         if not administrador_model:
             return None
             
@@ -181,7 +181,7 @@ class RepositorioRepartidorSQLite:
     
     def obtener_por_id(self, repartidor_id: str) -> RepartidorDTO:
         """Obtener un repartidor por ID"""
-        repartidor_model = RepartidorModel.query.get(repartidor_id)
+        repartidor_model = db.session.get(RepartidorModel, repartidor_id)
         if not repartidor_model:
             return None
             
@@ -235,7 +235,7 @@ class RepositorioUsuario:
     
     def obtener_por_id(self, usuario_id: str) -> Optional[UsuarioModel]:
         """Obtiene un usuario por su ID"""
-        return UsuarioModel.query.get(usuario_id)
+        return db.session.get(UsuarioModel, usuario_id)
     
     def existe_email(self, email: str) -> bool:
         """Verifica si un email ya está registrado"""
