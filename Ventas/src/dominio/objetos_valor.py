@@ -55,8 +55,8 @@ class EstadoPedido(ObjetoValor):
     estado: str
     
     def __post_init__(self):
-        if self.estado not in ['borrador', 'confirmado', 'cancelado']:
-            raise ValueError("Estado debe ser 'borrador', 'confirmado' o 'cancelado'")
+        if self.estado not in ['borrador', 'confirmado', 'en_transito', 'entregado', 'cancelado']:
+            raise ValueError("Estado debe ser 'borrador', 'confirmado', 'en_transito', 'entregado' o 'cancelado'")
 
 @dataclass(frozen=True)
 class Cantidad(ObjetoValor):
