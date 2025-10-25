@@ -143,6 +143,22 @@ class Pedido(AgregacionRaiz):
         self.estado = EstadoPedido("confirmado")
         return True
     
+    def marcar_en_transito(self) -> bool:
+        """Marca el pedido como en tránsito"""
+        if self.estado.estado != "confirmado":
+            return False
+        
+        self.estado = EstadoPedido("en_transito")
+        return True
+    
+    def marcar_entregado(self) -> bool:
+        """Marca el pedido como entregado"""
+        if self.estado.estado != "en_transito":
+            return False
+        
+        self.estado = EstadoPedido("entregado")
+        return True
+    
     def disparar_evento_creacion(self):
         """Dispara el evento de creación del pedido"""
         evento = PedidoCreado(

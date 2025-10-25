@@ -438,6 +438,58 @@ class TestPedido:
         
         total = pedido.calcular_total()
         assert total == 0.0
+    
+    def test_pedido_marcar_en_transito_exitoso(self):
+        """Test marcar pedido como en_transito desde confirmado"""
+        pedido = Pedido(
+            vendedor_id=str(uuid.uuid4()),
+            cliente_id=str(uuid.uuid4()),
+            estado=EstadoPedido("confirmado")
+        )
+        
+        resultado = pedido.marcar_en_transito()
+        
+        assert resultado == True
+        assert pedido.estado.estado == "en_transito"
+    
+    def test_pedido_marcar_en_transito_falla(self):
+        """Test marcar pedido como en_transito desde estado incorrecto"""
+        pedido = Pedido(
+            vendedor_id=str(uuid.uuid4()),
+            cliente_id=str(uuid.uuid4()),
+            estado=EstadoPedido("borrador")
+        )
+        
+        resultado = pedido.marcar_en_transito()
+        
+        assert resultado == False
+        assert pedido.estado.estado == "borrador"  # No cambia
+    
+    def test_pedido_marcar_entregado_exitoso(self):
+        """Test marcar pedido como entregado desde en_transito"""
+        pedido = Pedido(
+            vendedor_id=str(uuid.uuid4()),
+            cliente_id=str(uuid.uuid4()),
+            estado=EstadoPedido("en_transito")
+        )
+        
+        resultado = pedido.marcar_entregado()
+        
+        assert resultado == True
+        assert pedido.estado.estado == "entregado"
+    
+    def test_pedido_marcar_entregado_falla(self):
+        """Test marcar pedido como entregado desde estado incorrecto"""
+        pedido = Pedido(
+            vendedor_id=str(uuid.uuid4()),
+            cliente_id=str(uuid.uuid4()),
+            estado=EstadoPedido("confirmado")
+        )
+        
+        resultado = pedido.marcar_entregado()
+        
+        assert resultado == False
+        assert pedido.estado.estado == "confirmado"  # No cambia
 
 class TestItemPedido:
     """Pruebas para la entidad ItemPedido"""

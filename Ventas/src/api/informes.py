@@ -12,7 +12,7 @@ bp = api.crear_blueprint('informes', '/ventas/api/informes')
 
 @bp.route('/ventas', methods=['GET'])
 def obtener_informe_ventas():
-    """Obtiene el informe consolidado de ventas (solo pedidos CONFIRMADOS)."""
+    """Obtiene el informe consolidado de ventas (solo pedidos ENTREGADOS)."""
 
     try:
         vendedor_id = request.args.get('vendedor_id')

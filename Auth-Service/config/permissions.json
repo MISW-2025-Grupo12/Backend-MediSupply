@@ -35,6 +35,7 @@
   "GET:/ventas/api/pedidos/?$": ["VENDEDOR", "ADMINISTRADOR"],
   "GET:/ventas/api/pedidos/[^/]+/?$": ["VENDEDOR", "ADMINISTRADOR"],
   "POST:/ventas/api/pedidos/[^/]+/confirmar/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "PUT:/ventas/api/pedidos/[^/]+/estado/?$": ["VENDEDOR", "REPARTIDOR", "ADMINISTRADOR"],
   "GET:/ventas/api/informes/ventas/?$": ["VENDEDOR", "ADMINISTRADOR"],
   
   "POST:/productos/api/productos/?$": ["PROVEEDOR", "ADMINISTRADOR"],

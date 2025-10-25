@@ -26,7 +26,7 @@ class RepositorioVisitaSQLite:
     
     def obtener_por_id(self, visita_id: str) -> VisitaDTO:
         """Obtener una visita por ID"""
-        visita_model = VisitaModel.query.get(visita_id)
+        visita_model = db.session.get(VisitaModel, visita_id)
         if not visita_model:
             return None
             
@@ -139,7 +139,7 @@ class RepositorioPedidoSQLite:
         logger = logging.getLogger(__name__)
         logger.info(f"Buscando pedido con ID: {pedido_id}")
         
-        pedido_model = PedidoModel.query.get(pedido_id)
+        pedido_model = db.session.get(PedidoModel, pedido_id)
         if not pedido_model:
             logger.warning(f"Pedido no encontrado: {pedido_id}")
             # Listar todos los pedidos para debug
@@ -262,23 +262,24 @@ class RepositorioPedidoSQLite:
 
     def obtener_pedidos_confirmados(self, vendedor_id: str = None, fecha_inicio=None, fecha_fin=None) -> list[Pedido]:
         """
-        Obtener pedidos CONFIRMADOS, opcionalmente filtrados por vendedor y rango de fechas.
+        Obtener pedidos ENTREGADOS, opcionalmente filtrados por vendedor y rango de fechas.
+
 
         Comportamiento:
         - Si se envían ambas fechas -> filtra entre ellas (rango cerrado).
         - Si solo se envía fecha_inicio -> trae desde esa fecha hasta el futuro.
         - Si solo se envía fecha_fin -> trae desde el inicio hasta esa fecha.
-        - Si no se envían fechas -> trae todos los pedidos confirmados.
+        - Si no se envían fechas -> trae todos los pedidos entregados.
         """
         import logging
         from datetime import datetime
         from sqlalchemy import func
 
         logger = logging.getLogger(__name__)
-        logger.info("🔎 Obteniendo pedidos CONFIRMADOS filtrados")
+        logger.info("🔎 Obteniendo pedidos ENTREGADOS filtrados")
 
-        # Consulta base (insensible a mayúsculas)
-        query = PedidoModel.query.filter(func.lower(PedidoModel.estado) == "confirmado")
+        # Consulta base (insensible a mayúsculas) - CAMBIO: ahora filtra por 'entregado'
+        query = PedidoModel.query.filter(func.lower(PedidoModel.estado) == "entregado")
 
         # Filtro opcional por vendedor
         if vendedor_id:

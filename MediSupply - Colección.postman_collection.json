@@ -1694,6 +1694,51 @@
 							"response": []
 						},
 						{
+							"name": "Cambiar Estado Pedido",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"estado\": \"en_transito\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}/estado",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"{{pedido_id}}",
+										"estado"
+									]
+								},
+								"description": "Cambia el estado de un pedido confirmado a 'en_transito' o de 'en_transito' a 'entregado'. Requiere autenticación de VENDEDOR, REPARTIDOR o ADMINISTRADOR.",
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Buscar Productos para Pedidos",
 							"request": {
 								"method": "GET",

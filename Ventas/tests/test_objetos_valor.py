@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from dominio.objetos_valor import EstadoVisita, FechaProgramada, Direccion, Telefono, Descripcion
+from dominio.objetos_valor import EstadoVisita, FechaProgramada, Direccion, Telefono, Descripcion, EstadoPedido
 
 
 class TestObjetosValor:
@@ -42,3 +42,44 @@ class TestObjetosValor:
     def test_descripcion(self):
         descripcion = Descripcion("Visita programada")
         assert descripcion.descripcion == "Visita programada"
+    
+    def test_estado_pedido_validos(self):
+        """Test para estados válidos de pedido"""
+        # Estados originales
+        estado_borrador = EstadoPedido("borrador")
+        assert estado_borrador.estado == "borrador"
+        
+        estado_confirmado = EstadoPedido("confirmado")
+        assert estado_confirmado.estado == "confirmado"
+        
+        estado_cancelado = EstadoPedido("cancelado")
+        assert estado_cancelado.estado == "cancelado"
+        
+        # Nuevos estados
+        estado_en_transito = EstadoPedido("en_transito")
+        assert estado_en_transito.estado == "en_transito"
+        
+        estado_entregado = EstadoPedido("entregado")
+        assert estado_entregado.estado == "entregado"
+    
+    def test_estado_pedido_invalido(self):
+        """Test para estado inválido de pedido"""
+        with pytest.raises(ValueError, match="Estado debe ser 'borrador', 'confirmado', 'en_transito', 'entregado' o 'cancelado'"):
+            EstadoPedido("estado_invalido")
+        
+        with pytest.raises(ValueError, match="Estado debe ser 'borrador', 'confirmado', 'en_transito', 'entregado' o 'cancelado'"):
+            EstadoPedido("")
+        
+        with pytest.raises(ValueError, match="Estado debe ser 'borrador', 'confirmado', 'en_transito', 'entregado' o 'cancelado'"):
+            EstadoPedido(None)
+    
+    def test_estado_pedido_case_sensitive(self):
+        """Test para verificar que los estados son case sensitive"""
+        with pytest.raises(ValueError, match="Estado debe ser 'borrador', 'confirmado', 'en_transito', 'entregado' o 'cancelado'"):
+            EstadoPedido("BORRADOR")
+        
+        with pytest.raises(ValueError, match="Estado debe ser 'borrador', 'confirmado', 'en_transito', 'entregado' o 'cancelado'"):
+            EstadoPedido("En_Transito")
+        
+        with pytest.raises(ValueError, match="Estado debe ser 'borrador', 'confirmado', 'en_transito', 'entregado' o 'cancelado'"):
+            EstadoPedido("ENTREGADO")
