@@ -26,7 +26,7 @@ class RepositorioVisitaSQLite:
     
     def obtener_por_id(self, visita_id: str) -> VisitaDTO:
         """Obtener una visita por ID"""
-        visita_model = VisitaModel.query.get(visita_id)
+        visita_model = db.session.get(VisitaModel, visita_id)
         if not visita_model:
             return None
             
@@ -139,7 +139,7 @@ class RepositorioPedidoSQLite:
         logger = logging.getLogger(__name__)
         logger.info(f"Buscando pedido con ID: {pedido_id}")
         
-        pedido_model = PedidoModel.query.get(pedido_id)
+        pedido_model = db.session.get(PedidoModel, pedido_id)
         if not pedido_model:
             logger.warning(f"Pedido no encontrado: {pedido_id}")
             # Listar todos los pedidos para debug
