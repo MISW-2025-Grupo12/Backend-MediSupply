@@ -31,53 +31,74 @@ class DescontarInventarioHandler:
                         'error': f'Datos inválidos para producto {producto_id}'
                     }
                 
-                # Obtener inventario actual
-                inventario_dto = self._repositorio.obtener_por_producto_id(producto_id)
-                if not inventario_dto:
+                # Obtener TODOS los lotes de inventario del producto (retorna lista)
+                lotes_inventario = self._repositorio.obtener_por_producto_id(producto_id)
+                if not lotes_inventario:
                     return {
                         'success': False,
                         'error': f'Producto {producto_id} no encontrado en inventario'
                     }
                 
-                if inventario_dto.cantidad_reservada < cantidad_a_descontar:
+                # Sumar cantidad reservada total de todos los lotes
+                total_reservado = sum(lote.cantidad_reservada for lote in lotes_inventario)
+                
+                if total_reservado < cantidad_a_descontar:
                     return {
                         'success': False,
-                        'error': f'Cantidad reservada insuficiente para producto {producto_id}. Reservada: {inventario_dto.cantidad_reservada}, A descontar: {cantidad_a_descontar}'
+                        'error': f'Cantidad reservada insuficiente para producto {producto_id}. Reservada: {total_reservado}, A descontar: {cantidad_a_descontar}'
                     }
             
             # Si todas las validaciones pasan, proceder con el descuento
             for item in comando.items:
                 producto_id = item.get('producto_id')
                 cantidad_a_descontar = item.get('cantidad', 0)
+                cantidad_restante = cantidad_a_descontar
                 
-                # Obtener inventario actual
-                inventario_dto = self._repositorio.obtener_por_producto_id(producto_id)
+                # Obtener TODOS los lotes de inventario del producto
+                lotes_inventario = self._repositorio.obtener_por_producto_id(producto_id)
                 
-                # Crear entidad de dominio
-                inventario = Inventario(
-                    id=inventario_dto.producto_id,
-                    producto_id=ProductoID(inventario_dto.producto_id),
-                    cantidad_disponible=Cantidad(inventario_dto.cantidad_disponible),
-                    cantidad_reservada=Cantidad(inventario_dto.cantidad_reservada)
-                )
+                # Descontar de los lotes con cantidad reservada (FIFO)
+                # Actualización directa sin validaciones de dominio para fechas históricas
+                from infraestructura.modelos import InventarioModel
+                from config.db import db
                 
-                # Descontar cantidad (sale del sistema)
-                if not inventario.descontar_cantidad(cantidad_a_descontar):
-                    # Si falla, hacer rollback de los anteriores
-                    logger.error(f"Error descontando cantidad para producto {producto_id}")
-                    return {
-                        'success': False,
-                        'error': f'Error descontando inventario para producto {producto_id}'
-                    }
-                
-                # Actualizar en base de datos
-                nuevo_inventario_dto = InventarioDTO(
-                    producto_id=inventario.producto_id.valor,
-                    cantidad_disponible=inventario.cantidad_disponible.valor,
-                    cantidad_reservada=inventario.cantidad_reservada.valor
-                )
-                
-                self._repositorio.crear_o_actualizar(nuevo_inventario_dto)
+                for lote_dto in lotes_inventario:
+                    if cantidad_restante <= 0:
+                        break
+                    
+                    if lote_dto.cantidad_reservada <= 0:
+                        continue  # Este lote no tiene cantidad reservada
+                    
+                    # Calcular cuánto descontar de este lote
+                    cantidad_de_este_lote = min(cantidad_restante, lote_dto.cantidad_reservada)
+                    
+                    # Validar que tenemos suficiente cantidad reservada
+                    if cantidad_de_este_lote > lote_dto.cantidad_reservada:
+                        logger.error(f"Cantidad insuficiente en lote para producto {producto_id}")
+                        return {
+                            'success': False,
+                            'error': f'Error descontando inventario para producto {producto_id}'
+                        }
+                    
+                    # Actualizar directamente en la BD sin pasar por validaciones de dominio
+                    # (para soportar fechas de vencimiento históricas)
+                    inventario_model = InventarioModel.query.filter_by(
+                        producto_id=lote_dto.producto_id,
+                        fecha_vencimiento=lote_dto.fecha_vencimiento,
+                        bodega_id=lote_dto.bodega_id
+                    ).first()
+                    
+                    if inventario_model:
+                        # Descontar: reduce cantidad reservada (ya no está disponible ni reservada)
+                        inventario_model.cantidad_reservada -= cantidad_de_este_lote
+                        db.session.commit()
+                        cantidad_restante -= cantidad_de_este_lote
+                    else:
+                        logger.error(f"Lote de inventario no encontrado para producto {producto_id}")
+                        return {
+                            'success': False,
+                            'error': f'Lote de inventario no encontrado para producto {producto_id}'
+                        }
             
             return {
                 'success': True,

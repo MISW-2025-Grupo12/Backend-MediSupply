@@ -1,0 +1,36 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: medisupply-cors-config
+  namespace: medisupply
+spec:
+  cors:
+    # Dominios permitidos (producción + desarrollo)
+    allowOrigins:
+      - "https://api.medisupplyg4.online"
+      - "http://api.medisupplyg4.online"
+      - "https://medisupplyg4.online"
+      - "http://medisupplyg4.online"
+      - "http://localhost:3000"       # React/Next.js dev
+      - "http://localhost:5173"       # Vite dev
+      - "http://localhost:8080"       # Local testing
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+    allowHeaders:
+      - "Content-Type"
+      - "Authorization"
+      - "Accept"
+      - "Origin"
+      - "X-Requested-With"
+    allowCredentials: true
+    maxAge: 3600
+  # Timeouts coherentes con nginx.conf
+  timeoutSec: 60
+  connectionDraining:
+    drainingTimeoutSec: 60
+

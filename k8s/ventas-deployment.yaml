@@ -107,6 +107,8 @@ metadata:
   namespace: medisupply
   labels:
     app: ventas
+  annotations:
+    cloud.google.com/backend-config: '{"default": "medisupply-cors-config"}'
 spec:
   selector:
     app: ventas
