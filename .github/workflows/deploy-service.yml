@@ -15,6 +15,29 @@ env:
   REGISTRY: gcr.io
 
 jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      build_date: ${{ steps.date.outputs.build_date }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Get version
+      id: version
+      run: |
+        VERSION=$(cat VERSION)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "📦 Version: $VERSION"
+    
+    - name: Get build date
+      id: date
+      run: |
+        BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+        echo "build_date=$BUILD_DATE" >> $GITHUB_OUTPUT
+        echo "📅 Build Date: $BUILD_DATE"
+
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
@@ -22,6 +45,7 @@ jobs:
       usuarios: ${{ steps.changes.outputs.usuarios }}
       ventas: ${{ steps.changes.outputs.ventas }}
       logistica: ${{ steps.changes.outputs.logistica }}
+      auth: ${{ steps.changes.outputs.auth }}
       config: ${{ steps.changes.outputs.config }}
     steps:
     - name: Checkout code
@@ -42,6 +66,8 @@ jobs:
             - 'Ventas/**'
           logistica:
             - 'Logistica/**'
+          auth:
+            - 'Auth-Service/**'
           config:
             - 'k8s/**'
             - '.github/**'
@@ -298,6 +324,80 @@ jobs:
         kubectl set image deployment/logistica-deployment logistica=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/logistica:${{ github.sha }} -n ${{ env.GKE_NAMESPACE }}
         kubectl rollout status deployment/logistica-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
 
+  deploy-auth:
+    needs: [detect-changes, get-version]
+    if: ${{ needs.detect-changes.outputs.auth == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Run Auth-Service tests
+      run: |
+        echo "🧪 Ejecutando pruebas de Auth-Service..."
+        cd Auth-Service
+        pip install -r requirements.txt
+        pip install pytest pytest-flask
+        python -m pytest tests/ -v --tb=short
+        echo "✅ Pruebas de Auth-Service pasaron correctamente!"
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Configure Docker to use gcloud as a credential helper
+      run: |
+        gcloud auth configure-docker gcr.io
+        gcloud auth configure-docker us-docker.pkg.dev
+
+    - name: Verify Docker authentication
+      run: |
+        echo "Verificando autenticación de Docker..."
+        gcloud auth list
+        docker pull hello-world
+        echo "✅ Docker autenticado correctamente"
+
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        echo "Instalando gke-gcloud-auth-plugin..."
+        gcloud components install gke-gcloud-auth-plugin --quiet
+        echo "✅ Plugin instalado correctamente"
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
+    - name: Build and push Auth-Service image
+      run: |
+        cd Auth-Service
+        echo "🏗️ Building Auth-Service with version ${{ needs.get-version.outputs.version }}"
+        docker build \
+          --build-arg VERSION=${{ needs.get-version.outputs.version }} \
+          --build-arg BUILD_DATE=${{ needs.get-version.outputs.build_date }} \
+          --build-arg COMMIT_HASH=${{ github.sha }} \
+          -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/auth-service:${{ needs.get-version.outputs.version }} \
+          -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/auth-service:latest \
+          .
+        echo "📤 Pushing images..."
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/auth-service:${{ needs.get-version.outputs.version }}
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/auth-service:latest
+        echo "✅ Images pushed successfully!"
+
+    - name: Deploy Auth-Service
+      run: |
+        echo "🚀 Deploying Auth-Service version ${{ needs.get-version.outputs.version }}"
+        kubectl set image deployment/auth-deployment auth-service=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/auth-service:${{ needs.get-version.outputs.version }} -n ${{ env.GKE_NAMESPACE }}
+        kubectl rollout status deployment/auth-deployment -n ${{ env.GKE_NAMESPACE }} --timeout=300s
+        echo "✅ Auth-Service deployed successfully!"
+
   deploy-config:
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.config == 'true' }}
@@ -333,8 +433,8 @@ jobs:
         echo "✅ Configuración desplegada correctamente!"
 
   verify-deployment:
-    needs: [detect-changes, deploy-productos, deploy-usuarios, deploy-ventas, deploy-logistica, deploy-config]
-    if: always() && (needs.detect-changes.outputs.productos == 'true' || needs.detect-changes.outputs.usuarios == 'true' || needs.detect-changes.outputs.ventas == 'true' || needs.detect-changes.outputs.logistica == 'true' || needs.detect-changes.outputs.config == 'true')
+    needs: [detect-changes, deploy-productos, deploy-usuarios, deploy-ventas, deploy-logistica, deploy-auth, deploy-config]
+    if: always() && (needs.detect-changes.outputs.productos == 'true' || needs.detect-changes.outputs.usuarios == 'true' || needs.detect-changes.outputs.ventas == 'true' || needs.detect-changes.outputs.logistica == 'true' || needs.detect-changes.outputs.auth == 'true' || needs.detect-changes.outputs.config == 'true')
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code

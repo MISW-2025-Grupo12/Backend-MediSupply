@@ -26,6 +26,39 @@ El sistema está compuesto por 4 microservicios:
 - **🛒 Ventas** (Puerto 5002) - Gestión de visitas y pedidos
 - **🚚 Logística** (Puerto 5003) - Control de inventario y entregas
 
+## 📌 Versionamiento
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+
+Este proyecto usa [Semantic Versioning](https://semver.org/):
+- **MAJOR**: Cambios incompatibles en la API
+- **MINOR**: Nueva funcionalidad compatible hacia atrás
+- **PATCH**: Correcciones de bugs
+
+### Crear Release
+
+Ver [RELEASE_PROCESS.md](.github/RELEASE_PROCESS.md) para el proceso completo.
+
+### Consultar Versión Desplegada
+
+```bash
+# Producción
+curl https://api.medisupplyg4.online/auth/version
+
+# Local
+curl http://localhost:8080/auth/version
+```
+
+**Respuesta:**
+```json
+{
+  "version": "1.0.0",
+  "build_date": "2025-10-26T20:30:00Z",
+  "commit_hash": "abc123",
+  "environment": "production"
+}
+```
+
 ## 🚀 Requisitos
 
 - Docker y Docker Compose
