@@ -28,8 +28,14 @@ class TestObjetosValor:
     
     def test_fecha_programada_pasada(self):
         fecha_pasada = datetime.now() - timedelta(days=1)
-        with pytest.raises(ValueError, match="La fecha programada debe ser futura"):
+        with pytest.raises(ValueError, match="La fecha programada no puede ser en el pasado"):
             FechaProgramada(fecha_pasada)
+    
+    def test_fecha_programada_hoy_valida(self):
+        # Las fechas de hoy deben ser válidas
+        fecha_hoy = datetime.now()
+        fecha = FechaProgramada(fecha_hoy)
+        assert fecha.fecha == fecha_hoy
     
     def test_direccion(self):
         direccion = Direccion("Calle 123 #45-67")
