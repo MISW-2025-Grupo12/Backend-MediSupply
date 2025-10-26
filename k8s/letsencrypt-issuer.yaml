@@ -1,0 +1,22 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # Servidor de Let's Encrypt para producción
+    server: https://acme-v02.api.letsencrypt.org/directory
+    
+    # Email para notificaciones de expiración
+    email: admin@medisupplyg4.online
+    
+    # Secret donde se guardará la cuenta de Let's Encrypt
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    
+    # Usar HTTP-01 challenge
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+
