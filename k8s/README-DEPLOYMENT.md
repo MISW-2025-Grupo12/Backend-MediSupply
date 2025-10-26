@@ -266,7 +266,23 @@ kubectl get configmap app-config -n medisupply -o yaml
 kubectl get secret db-credentials -n medisupply -o yaml
 ```
 
-### 3. Desplegar Servicios
+### 3. Configurar CORS (BackendConfig)
+```bash
+# Aplicar configuración de CORS para GKE
+kubectl apply -f k8s/backend-config.yaml
+
+# Verificar BackendConfig
+kubectl get backendconfig medisupply-cors-config -n medisupply -o yaml
+```
+
+**Configuración de CORS incluida:**
+- ✅ Dominios: `api.medisupplyg4.online`, `medisupplyg4.online`, localhost
+- ✅ Métodos: GET, POST, PUT, PATCH, DELETE, OPTIONS
+- ✅ Headers: Content-Type, Authorization, Accept, Origin, X-Requested-With
+- ✅ Credentials: Habilitado
+- ✅ Timeout: 60s (coherente con nginx.conf)
+
+### 4. Desplegar Servicios
 ```bash
 # Desplegar Auth-Service (PRIMERO - requerido para autenticación)
 kubectl apply -f k8s/auth-configmap.yaml
@@ -279,7 +295,9 @@ kubectl apply -f k8s/ventas-deployment.yaml
 kubectl apply -f k8s/logistica-deployment.yaml
 ```
 
-### 4. Verificar Despliegue
+> **Nota**: Todos los Services incluyen la anotación `cloud.google.com/backend-config` que referencia el BackendConfig de CORS.
+
+### 5. Verificar Despliegue
 ```bash
 # Verificar pods
 kubectl get pods -n medisupply
@@ -367,6 +385,7 @@ k8s/
 ├── namespace.yaml                 # Namespace del proyecto
 ├── configmap.yaml                 # Configuración general de la aplicación
 ├── secret.yaml                    # Credenciales de BD y JWT Secret
+├── backend-config.yaml            # 🌐 Configuración CORS para GKE
 ├── auth-configmap.yaml            # ⭐ ConfigMap con permisos de autorización
 ├── auth-deployment.yaml           # ⭐ Deployment y Service de Auth
 ├── productos-deployment.yaml      # Deployment y Service de Productos
@@ -374,8 +393,8 @@ k8s/
 ├── ventas-deployment.yaml         # Deployment y Service de Ventas
 ├── logistica-deployment.yaml      # Deployment y Service de Logística
 ├── ingress.yaml                   # Configuración del Ingress
-├── README-DEPLOYMENT.md           # Esta guía
-└── DEPLOYMENT-AUTH-GUIDE.md       # ⭐ Guía específica de Auth-Service
+├── ssl-certificate.yaml           # Certificado SSL para HTTPS
+└── README-DEPLOYMENT.md           # Esta guía
 ```
 
 ## 🔗 URLs de Acceso

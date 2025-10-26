@@ -70,16 +70,16 @@ def _create_seed_data():
     
     bodegas_data = [
         {
-            "nombre": "Bodega Central Bogotá",
+            "nombre": "Bodega Central - Zona Norte",
             "direccion": "Calle 100 #15-20, Bogotá"
         },
         {
-            "nombre": "Bodega Norte Medellín",
-            "direccion": "Carrera 43A #1-50, Medellín"
+            "nombre": "Bodega Occidente - Fontibón",
+            "direccion": "Avenida El Dorado #68-90, Bogotá"
         },
         {
-            "nombre": "Bodega Sur Cali",
-            "direccion": "Avenida 5N #23-50, Cali"
+            "nombre": "Bodega Sur - Zona Industrial",
+            "direccion": "Autopista Sur #45-67, Bogotá"
         }
     ]
     
@@ -165,7 +165,7 @@ def _create_seed_data():
             "total": 588000.0
         },
         {
-            "direccion": "Carrera 43A #1-50, Medellín",
+            "direccion": "Carrera 15 #93-40, Bogotá",
             "dias_atras": 30,
             "items": [
                 {"producto": "Guantes de Látex", "cantidad": 20}
@@ -173,7 +173,7 @@ def _create_seed_data():
             "total": 560000.0
         },
         {
-            "direccion": "Avenida 5N #23-50, Cali",
+            "direccion": "Autopista Sur #45-67, Bogotá",
             "dias_atras": 15,
             "items": [
                 {"producto": "Jeringas Desechables", "cantidad": 15},

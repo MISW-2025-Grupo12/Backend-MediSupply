@@ -24,7 +24,9 @@ class FechaProgramadaDebeSerFutura(ReglaNegocio):
         from datetime import datetime
         try:
             fecha = datetime.fromisoformat(self.fecha_programada.replace('Z', '+00:00'))
-            return fecha > datetime.now()
+            fecha_solo_dia = fecha.replace(hour=0, minute=0, second=0, microsecond=0)
+            hoy = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            return fecha_solo_dia >= hoy
         except:
             return False
 

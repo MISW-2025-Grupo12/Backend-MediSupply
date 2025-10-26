@@ -78,6 +78,8 @@ metadata:
   namespace: medisupply
   labels:
     app: auth-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "medisupply-cors-config"}'
 spec:
   selector:
     app: auth-service

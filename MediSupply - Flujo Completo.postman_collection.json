@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "ff6a75fe-d181-42af-b814-df26deb8f6b9",
+		"_postman_id": "84dd19ad-d2c5-46da-a0b4-678b2e82ad82",
 		"name": "MediSupply - Flujo Completo",
 		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Autenticación JWT** - Registrar usuarios y obtener tokens (vendedores, clientes, proveedores)\n    \n3. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n4. **Crear Productos** - Con y sin inventario\n    \n5. **Crear Visitas** - Programar visitas de venta\n    \n6. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n7. **Gestionar Inventario** - Reservas y descuentos\n    \n8. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n9. **Consultar Entregas** - Ver entregas programadas\n    \n10. **Informes de Ventas** - Consultar datos de ventas por vendedor y fechas",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-ff6a75fe-d181-42af-b814-df26deb8f6b9?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-84dd19ad-d2c5-46da-a0b4-678b2e82ad82?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -150,76 +150,40 @@
 			"name": "🔐 2. Autenticación JWT",
 			"item": [
 				{
-					"name": "Registro de Vendedor",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Vendedor registrado exitosamente', function () {",
-									"    pm.response.to.have.status(201);",
-									"    const response = pm.response.json();",
-									"    pm.expect(response).to.have.property('mensaje');",
-									"    pm.expect(response).to.have.property('vendedor');",
-									"    pm.expect(response.vendedor).to.have.property('id');",
-									"    pm.collectionVariables.set('vendedor_auth_id', response.vendedor.id);",
-									"    console.log('Vendedor registrado con ID:', response.vendedor.id);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"María García\",\n    \"email\": \"maria.garcia@empresa.com\",\n    \"identificacion\": \"9876543210\",\n    \"telefono\": \"3009876543\",\n    \"direccion\": \"Calle 45 #67-89\",\n    \"password\": \"MiPassword123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url_usuarios}}/api/auth/registro-vendedor",
-							"host": [
-								"{{base_url_usuarios}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"registro-vendedor"
-							]
-						},
-						"description": "Registra un nuevo vendedor con autenticación JWT"
-					},
-					"response": []
-				},
-				{
 					"name": "Registro de Cliente",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('Cliente registrado exitosamente', function () {",
-									"    pm.response.to.have.status(201);",
+									"pm.test('Cliente registrado exitosamente o ya existe', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+									"    ",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.have.property('mensaje');",
-									"    pm.expect(response).to.have.property('cliente');",
-									"    pm.expect(response.cliente).to.have.property('id');",
-									"    pm.collectionVariables.set('cliente_auth_id', response.cliente.id);",
-									"    console.log('Cliente registrado con ID:', response.cliente.id);",
+									"    ",
+									"    if (pm.response.code === 201) {",
+									"        pm.expect(response).to.have.property('mensaje');",
+									"        pm.expect(response).to.have.property('cliente');",
+									"        pm.expect(response.cliente).to.have.property('id');",
+									"        pm.collectionVariables.set('cliente_auth_id', response.cliente.id);",
+									"        console.log('Cliente registrado con ID:', response.cliente.id);",
+									"        ",
+									"    } else if (pm.response.code === 409) {",
+									"        pm.expect(response).to.have.property('error');",
+									"        pm.expect(response.error).to.include('correo ya está registrado');",
+									"",
+									"        if (response.cliente && response.cliente.id) {",
+									"            pm.collectionVariables.set('cliente_auth_id', response.cliente.id);",
+									"            console.log('Cliente ya existe con ID:', response.cliente.id);",
+									"        } else {",
+									"            console.log('Cliente ya existe (correo duplicado)');",
+									"        }",
+									"    }",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -262,17 +226,31 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('Proveedor registrado exitosamente', function () {",
-									"    pm.response.to.have.status(201);",
+									"pm.test('Proveedor registrado exitosamente o ya existe', function () {",
+									"    // Aceptar 201 (creado) o 409 (ya existe)",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+									"    ",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.have.property('mensaje');",
-									"    pm.expect(response).to.have.property('proveedor');",
-									"    pm.expect(response.proveedor).to.have.property('id');",
-									"    pm.collectionVariables.set('proveedor_auth_id', response.proveedor.id);",
-									"    console.log('Proveedor registrado con ID:', response.proveedor.id);",
+									"    ",
+									"    if (pm.response.code === 201) {",
+									"        // Caso 1: Proveedor creado exitosamente",
+									"        pm.expect(response).to.have.property('mensaje');",
+									"        pm.expect(response).to.have.property('proveedor');",
+									"        pm.expect(response.proveedor).to.have.property('id');",
+									"        pm.collectionVariables.set('proveedor_auth_id', response.proveedor.id);",
+									"        console.log('✅ Proveedor registrado con ID:', response.proveedor.id);",
+									"        ",
+									"    } else if (pm.response.code === 409) {",
+									"        // Caso 2: Proveedor ya existe",
+									"        pm.expect(response).to.have.property('error');",
+									"        pm.expect(response.error).to.include('correo ya está registrado');",
+									"        console.log('⚠️ Proveedor ya existe (correo duplicado) - continuando...');",
+									"    }",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -305,6 +283,73 @@
 							]
 						},
 						"description": "Registra un nuevo proveedor con autenticación JWT"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro de Vendedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Vendedor registrado exitosamente o ya existe', function () {",
+									"    // Aceptar 201 (creado) o 409 (ya existe)",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+									"    ",
+									"    const response = pm.response.json();",
+									"    ",
+									"    if (pm.response.code === 201) {",
+									"        // Caso 1: Vendedor creado exitosamente",
+									"        pm.expect(response).to.have.property('mensaje');",
+									"        pm.expect(response).to.have.property('vendedor');",
+									"        pm.expect(response.vendedor).to.have.property('id');",
+									"        pm.collectionVariables.set('vendedor_auth_id', response.vendedor.id);",
+									"        console.log('Vendedor registrado con ID:', response.vendedor.id);",
+									"        ",
+									"    } else if (pm.response.code === 409) {",
+									"        // Caso 2: Vendedor ya existe",
+									"        pm.expect(response).to.have.property('error');",
+									"        pm.expect(response.error).to.include('correo ya está registrado');",
+									"        console.log('Vendedor ya existe (correo duplicado) - continuando...');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"María García\",\n    \"email\": \"maria.garcia@empresa.com\",\n    \"identificacion\": \"9876543210\",\n    \"telefono\": \"3009876543\",\n    \"direccion\": \"Calle 45 #67-89\",\n    \"password\": \"MiPassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/registro-vendedor",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"registro-vendedor"
+							]
+						},
+						"description": "Registra un nuevo vendedor con autenticación JWT"
 					},
 					"response": []
 				},
@@ -369,17 +414,31 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('Administrador registrado exitosamente', function () {",
-									"    pm.response.to.have.status(201);",
+									"pm.test('Administrador registrado exitosamente o ya existe', function () {",
+									"    // Aceptar 201 (creado) o 409 (ya existe)",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+									"    ",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.have.property('mensaje');",
-									"    pm.expect(response).to.have.property('administrador');",
-									"    pm.expect(response.administrador).to.have.property('id');",
-									"    pm.collectionVariables.set('admin_id', response.administrador.id);",
-									"    console.log('Administrador registrado con ID:', response.administrador.id);",
+									"    ",
+									"    if (pm.response.code === 201) {",
+									"        // Caso 1: Administrador creado exitosamente",
+									"        pm.expect(response).to.have.property('mensaje');",
+									"        pm.expect(response).to.have.property('administrador');",
+									"        pm.expect(response.administrador).to.have.property('id');",
+									"        pm.collectionVariables.set('admin_id', response.administrador.id);",
+									"        console.log('Administrador registrado con ID:', response.administrador.id);",
+									"        ",
+									"    } else if (pm.response.code === 409) {",
+									"        // Caso 2: Administrador ya existe",
+									"        pm.expect(response).to.have.property('error');",
+									"        pm.expect(response.error).to.include('correo ya está registrado');",
+									"        console.log('Administrador ya existe (correo duplicado) - continuando...');",
+									"    }",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -451,7 +510,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@medisupply.com\",\n    \"password\": \"AdminPass123\"\n}",
+							"raw": "{\n    \"email\": \"admin@medisupply.com\",\n    \"password\": \"AdminPass2024\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -739,11 +798,23 @@
 									"    console.log('Estado del cliente modificado a:', response.estado);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
@@ -1798,6 +1869,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
