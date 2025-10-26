@@ -1,0 +1,80 @@
+name: Finish Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-release:
+    runs-on: ubuntu-latest
+    outputs:
+      is_release: ${{ steps.check.outputs.is_release }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+    
+    - name: Check if merged from release branch
+      id: check
+      run: |
+        COMMIT_MSG=$(git log -1 --pretty=%B)
+        echo "Commit message: $COMMIT_MSG"
+        
+        # Verificar si el último commit es un merge de release
+        if echo "$COMMIT_MSG" | grep -q "Merge pull request.*release/v"; then
+          VERSION=$(cat VERSION)
+          echo "is_release=true" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "This is a release merge! Version: $VERSION"
+        else
+          echo "is_release=false" >> $GITHUB_OUTPUT
+          echo "Not a release merge"
+        fi
+  
+  create-tag:
+    needs: check-release
+    if: needs.check-release.outputs.is_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Configure Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+    
+    - name: Create and push tag
+      run: |
+        TAG="v${{ needs.check-release.outputs.version }}"
+        git tag -a "$TAG" -m "Release $TAG"
+        git push origin "$TAG"
+        echo "Created and pushed tag: $TAG"
+    
+    - name: Create GitHub Release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        TAG="v${{ needs.check-release.outputs.version }}"
+        gh release create "$TAG" \
+          --title "Release $TAG" \
+          --notes "## MediSupply Backend $TAG
+
+        ### Deployed Services
+        - Auth-Service
+        - Usuarios
+        - Productos
+        - Ventas
+        - Logística
+
+        ### Deployment
+        Automatically deployed to GKE production environment.
+
+        ### Version Info
+        - Version: ${{ needs.check-release.outputs.version }}
+        - Deployed: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+        - Commit: ${{ github.sha }}"
+

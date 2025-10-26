@@ -6,6 +6,8 @@
   "GET:/productos/health/?$": ["*"],
   "GET:/logistica/health/?$": ["*"],
   
+  "GET:/auth/version/?$": ["*"],
+  
   "POST:/auth/login/?$": ["*"],
   "POST:/usuarios/api/auth/registro-vendedor/?$": ["*"],
   "POST:/usuarios/api/auth/registro-cliente/?$": ["*"],

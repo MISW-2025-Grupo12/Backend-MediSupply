@@ -10,6 +10,7 @@ import json
 import re
 import requests
 import logging
+from config.version import get_version_info
 
 # Configuración de logging
 logging.basicConfig(
@@ -317,6 +318,7 @@ def root():
             'POST /login': 'Autenticación de usuarios',
             'GET/POST /verify': 'Verificación de tokens y autorización',
             'GET /health': 'Health check',
+            'GET /version': 'Información de versión del servicio',
             'POST /reload-permissions': 'Recargar permisos sin reiniciar'
         }
     }), 200
@@ -347,6 +349,23 @@ def reload_permissions():
             'success': False,
             'error': f'Error recargando permisos: {str(e)}'
         }), 500
+
+
+@app.route('/version', methods=['GET'])
+def version():
+    """
+    Endpoint de versión - Retorna información de la versión del servicio
+    
+    Responses:
+        200: Información de versión
+            {
+                "version": "1.0.0",
+                "build_date": "2025-10-26T15:30:00Z",
+                "commit_hash": "abc123",
+                "environment": "production"
+            }
+    """
+    return jsonify(get_version_info()), 200
 
 
 if __name__ == '__main__':
