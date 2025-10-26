@@ -21,3 +21,7 @@ def init_db(app: Flask):
     # Crear tablas si no existen
     with app.app_context():
         db.create_all()
+        
+        # Ejecutar seed data
+        from config.seed import seed_data
+        seed_data(app)
