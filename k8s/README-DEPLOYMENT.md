@@ -184,6 +184,45 @@ kubectl annotate serviceaccount medisupply-ksa \
   iam.gke.io/gcp-service-account=medisupply-workload-identity@desarrolloswcloud.iam.gserviceaccount.com
 ```
 
+## 📦 Configuración de Google Cloud Storage
+
+### Bucket de Evidencias de Visitas
+
+#### 1. Crear Bucket (Si no existe)
+```bash
+# Crear bucket para evidencias
+gcloud storage buckets create gs://evidencias-g12 \
+  --location=US-EAST1 \
+  --storage-class=NEARLINE \
+  --uniform-bucket-level-access \
+  --project=desarrolloswcloud
+```
+
+#### 2. Configurar Permisos
+```bash
+# Dar permisos al service account de Workload Identity
+gcloud storage buckets add-iam-policy-binding gs://evidencias-g12 \
+  --member="serviceAccount:medisupply-workload-prod@desarrolloswcloud.iam.gserviceaccount.com" \
+  --role="roles/storage.objectAdmin"
+
+# Verificar permisos
+gcloud storage buckets get-iam-policy gs://evidencias-g12
+```
+
+# Aplicar configuración
+gcloud storage buckets update gs://evidencias-g12 --lifecycle-file=lifecycle.json
+```
+
+**Permisos Requeridos:**
+- ✅ `storage.objects.create` - Crear evidencias
+- ✅ `storage.objects.get` - Leer evidencias
+- ✅ `storage.objects.update` - Actualizar evidencias
+- ✅ `storage.objects.delete` - Eliminar evidencias
+
+**Uso:**
+- El servicio de Ventas usa este bucket para almacenar evidencias de visitas
+- Las evidencias se suben mediante el endpoint: `POST /ventas/api/visitas/{visita_id}/evidencias`
+
 ## 🐳 Construcción de Imágenes Docker
 
 ### Construir Imágenes en Paralelo
