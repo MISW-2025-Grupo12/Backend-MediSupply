@@ -6,7 +6,7 @@ metadata:
   labels:
     app: logistica
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: logistica
@@ -97,6 +97,8 @@ metadata:
   namespace: medisupply
   labels:
     app: logistica
+  annotations:
+    cloud.google.com/backend-config: '{"default": "medisupply-cors-config"}'
 spec:
   selector:
     app: logistica

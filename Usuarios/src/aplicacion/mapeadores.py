@@ -1,6 +1,6 @@
 from aplicacion.dto import ProveedorDTO, VendedorDTO, ClienteDTO
 from dominio.entidades import Proveedor, Vendedor, Cliente
-from dominio.objetos_valor import Nombre, Email, Direccion, Telefono
+from dominio.objetos_valor import Nombre, Email, Direccion, Telefono, Identificacion
 
 class MapeadorProveedorDTOJson:
     def dto_a_externo(self, dto: ProveedorDTO) -> dict:
@@ -8,6 +8,8 @@ class MapeadorProveedorDTOJson:
             'id': str(dto.id),
             'nombre': dto.nombre,
             'email': dto.email,
+            'identificacion': dto.identificacion,
+            'telefono': dto.telefono,
             'direccion': dto.direccion
         }
     
@@ -16,15 +18,19 @@ class MapeadorProveedorDTOJson:
             id=externo.get('id'),
             nombre=externo.get('nombre', ''),
             email=externo.get('email', ''),
+            identificacion=externo.get('identificacion', ''),
+            telefono=externo.get('telefono', ''),
             direccion=externo.get('direccion', '')
         )
 
 class MapeadorProveedor:
     def entidad_a_dto(self, entidad: Proveedor) -> ProveedorDTO:
         return ProveedorDTO(
-            id=entidad.id,
+            id=entidad._id, 
             nombre=entidad.nombre.nombre,
             email=entidad.email.email,
+            identificacion=entidad.identificacion.identificacion,
+            telefono=entidad.telefono.telefono,
             direccion=entidad.direccion.direccion
         )
 
@@ -34,6 +40,7 @@ class MapeadorVendedorDTOJson:
             'id': str(dto.id),
             'nombre': dto.nombre,
             'email': dto.email,
+            'identificacion': dto.identificacion,
             'telefono': dto.telefono,
             'direccion': dto.direccion
         }
@@ -43,6 +50,7 @@ class MapeadorVendedorDTOJson:
             id=externo.get('id'),
             nombre=externo.get('nombre', ''),
             email=externo.get('email', ''),
+            identificacion=externo.get('identificacion', ''),
             telefono=externo.get('telefono', ''),
             direccion=externo.get('direccion', '')
         )
@@ -53,9 +61,10 @@ class MapeadorVendedorDTOJson:
 class MapeadorVendedor:
     def entidad_a_dto(self, entidad: Vendedor) -> VendedorDTO:
         return VendedorDTO(
-            id=entidad.id,
+            id=entidad._id, 
             nombre=entidad.nombre.nombre,
             email=entidad.email.email,
+            identificacion=entidad.identificacion.identificacion,
             telefono=entidad.telefono.telefono,
             direccion=entidad.direccion.direccion
         )
@@ -66,8 +75,10 @@ class MapeadorClienteDTOJson:
             'id': str(dto.id),
             'nombre': dto.nombre,
             'email': dto.email,
+            'identificacion': dto.identificacion,
             'telefono': dto.telefono,
-            'direccion': dto.direccion
+            'direccion': dto.direccion,
+            'estado': dto.estado
         }
     
     def externo_a_dto(self, externo: dict) -> ClienteDTO:
@@ -75,8 +86,10 @@ class MapeadorClienteDTOJson:
             id=externo.get('id'),
             nombre=externo.get('nombre', ''),
             email=externo.get('email', ''),
+            identificacion=externo.get('identificacion', ''),
             telefono=externo.get('telefono', ''),
-            direccion=externo.get('direccion', '')
+            direccion=externo.get('direccion', ''),
+            estado=externo.get('estado', 'ACTIVO')
         )
     
     def dtos_a_externo(self, dtos: list[ClienteDTO]) -> list[dict]:
@@ -85,9 +98,11 @@ class MapeadorClienteDTOJson:
 class MapeadorCliente:
     def entidad_a_dto(self, entidad: Cliente) -> ClienteDTO:
         return ClienteDTO(
-            id=entidad.id,
+            id=entidad._id,
             nombre=entidad.nombre.nombre,
             email=entidad.email.email,
+            identificacion=entidad.identificacion.identificacion,
             telefono=entidad.telefono.telefono,
-            direccion=entidad.direccion.direccion
+            direccion=entidad.direccion.direccion,
+            estado=entidad.estado.estado
         )

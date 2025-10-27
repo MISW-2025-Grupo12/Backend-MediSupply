@@ -15,8 +15,11 @@ class FechaProgramada(ObjetoValor):
     fecha: datetime
     
     def __post_init__(self):
-        if self.fecha <= datetime.now():
-            raise ValueError("La fecha programada debe ser futura")
+        # Permitir fechas de hoy o futuras (comparar solo el día)
+        fecha_solo_dia = self.fecha.replace(hour=0, minute=0, second=0, microsecond=0)
+        hoy = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        if fecha_solo_dia < hoy:
+            raise ValueError("La fecha programada no puede ser en el pasado")
 
 @dataclass(frozen=True)
 class Direccion(ObjetoValor):
@@ -55,8 +58,8 @@ class EstadoPedido(ObjetoValor):
     estado: str
     
     def __post_init__(self):
-        if self.estado not in ['borrador', 'confirmado', 'cancelado']:
-            raise ValueError("Estado debe ser 'borrador', 'confirmado' o 'cancelado'")
+        if self.estado not in ['borrador', 'confirmado', 'en_transito', 'entregado', 'cancelado']:
+            raise ValueError("Estado debe ser 'borrador', 'confirmado', 'en_transito', 'entregado' o 'cancelado'")
 
 @dataclass(frozen=True)
 class Cantidad(ObjetoValor):

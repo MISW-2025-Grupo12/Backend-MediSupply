@@ -1,6 +1,6 @@
 from config.db import db
-from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel
-from aplicacion.dto import VisitaDTO, PedidoDTO, ItemPedidoDTO
+from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel, EvidenciaVisitaModel
+from aplicacion.dto import VisitaDTO, PedidoDTO, ItemPedidoDTO, EvidenciaVisitaDTO
 from dominio.entidades import Pedido, ItemPedido
 from dominio.objetos_valor import EstadoPedido, Cantidad, Precio
 import uuid
@@ -26,7 +26,7 @@ class RepositorioVisitaSQLite:
     
     def obtener_por_id(self, visita_id: str) -> VisitaDTO:
         """Obtener una visita por ID"""
-        visita_model = VisitaModel.query.get(visita_id)
+        visita_model = db.session.get(VisitaModel, visita_id)
         if not visita_model:
             return None
             
@@ -139,7 +139,7 @@ class RepositorioPedidoSQLite:
         logger = logging.getLogger(__name__)
         logger.info(f"Buscando pedido con ID: {pedido_id}")
         
-        pedido_model = PedidoModel.query.get(pedido_id)
+        pedido_model = db.session.get(PedidoModel, pedido_id)
         if not pedido_model:
             logger.warning(f"Pedido no encontrado: {pedido_id}")
             # Listar todos los pedidos para debug
@@ -262,23 +262,24 @@ class RepositorioPedidoSQLite:
 
     def obtener_pedidos_confirmados(self, vendedor_id: str = None, fecha_inicio=None, fecha_fin=None) -> list[Pedido]:
         """
-        Obtener pedidos CONFIRMADOS, opcionalmente filtrados por vendedor y rango de fechas.
+        Obtener pedidos ENTREGADOS, opcionalmente filtrados por vendedor y rango de fechas.
+
 
         Comportamiento:
         - Si se envían ambas fechas -> filtra entre ellas (rango cerrado).
         - Si solo se envía fecha_inicio -> trae desde esa fecha hasta el futuro.
         - Si solo se envía fecha_fin -> trae desde el inicio hasta esa fecha.
-        - Si no se envían fechas -> trae todos los pedidos confirmados.
+        - Si no se envían fechas -> trae todos los pedidos entregados.
         """
         import logging
         from datetime import datetime
         from sqlalchemy import func
 
         logger = logging.getLogger(__name__)
-        logger.info("🔎 Obteniendo pedidos CONFIRMADOS filtrados")
+        logger.info("🔎 Obteniendo pedidos ENTREGADOS filtrados")
 
-        # Consulta base (insensible a mayúsculas)
-        query = PedidoModel.query.filter(func.lower(PedidoModel.estado) == "confirmado")
+        # Consulta base (insensible a mayúsculas) - CAMBIO: ahora filtra por 'entregado'
+        query = PedidoModel.query.filter(func.lower(PedidoModel.estado) == "entregado")
 
         # Filtro opcional por vendedor
         if vendedor_id:
@@ -347,3 +348,52 @@ class RepositorioPedidoSQLite:
 
         logger.info(f"✅ Pedidos CONFIRMADOS encontrados: {len(pedidos)}")
         return pedidos
+
+class RepositorioEvidenciaVisita:
+    def crear(self, evidencia_dto: EvidenciaVisitaDTO) -> EvidenciaVisitaDTO:
+        """Crear una nueva evidencia de visita"""
+        evidencia_model = EvidenciaVisitaModel(
+            id=str(evidencia_dto.id),
+            visita_id=evidencia_dto.visita_id,
+            archivo_url=evidencia_dto.archivo_url,
+            nombre_archivo=evidencia_dto.nombre_archivo,
+            formato=evidencia_dto.formato,
+            tamaño_bytes=evidencia_dto.tamaño_bytes,
+            comentarios=evidencia_dto.comentarios,
+            vendedor_id=evidencia_dto.vendedor_id
+        )
+        db.session.add(evidencia_model)
+        db.session.commit()
+        return evidencia_dto
+    
+    def obtener_por_visita(self, visita_id: str) -> list[EvidenciaVisitaDTO]:
+        """Obtener todas las evidencias de una visita"""
+        evidencias_model = EvidenciaVisitaModel.query.filter_by(visita_id=visita_id).all()
+        return [
+            EvidenciaVisitaDTO(
+                id=uuid.UUID(e.id),
+                visita_id=e.visita_id,
+                archivo_url=e.archivo_url,
+                nombre_archivo=e.nombre_archivo,
+                formato=e.formato,
+                tamaño_bytes=e.tamaño_bytes,
+                comentarios=e.comentarios,
+                vendedor_id=e.vendedor_id,
+                created_at=e.created_at
+            )
+            for e in evidencias_model
+        ]
+    
+    def eliminar(self, evidencia_id: str, storage_service) -> bool:
+        """Eliminar una evidencia y su archivo del storage"""
+        evidencia = EvidenciaVisitaModel.query.get(evidencia_id)
+        if evidencia:
+            storage_service.eliminar_archivo(evidencia.archivo_url)
+            db.session.delete(evidencia)
+            db.session.commit()
+            return True
+        return False
+
+# Alias para compatibilidad
+RepositorioVisita = RepositorioVisitaSQLite
+RepositorioPedido = RepositorioPedidoSQLite

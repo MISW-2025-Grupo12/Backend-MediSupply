@@ -38,6 +38,7 @@ class TestCrearCliente:
         comando = CrearCliente(
             nombre="Juan Pérez",
             email="juan@email.com",
+            identificacion="1234567890",
             telefono="1234567890",
             direccion="Calle 123 #45-67"
         )
@@ -49,6 +50,7 @@ class TestCrearCliente:
                 id=uuid.uuid4(),
                 nombre="Juan Pérez",
                 email="juan@email.com",
+                identificacion="1234567890",
                 telefono="1234567890",
                 direccion="Calle 123 #45-67"
             )
@@ -63,75 +65,46 @@ class TestCrearCliente:
             assert resultado is not None
             assert resultado.nombre == "Juan Pérez"
             assert resultado.email == "juan@email.com"
+            assert resultado.identificacion == "1234567890"
             assert resultado.telefono == "1234567890"
             assert resultado.direccion == "Calle 123 #45-67"
             mock_repo.crear.assert_called_once()
     
     def test_crear_cliente_nombre_vacio(self):
-        """Test crear cliente con nombre vacío"""
+        """Test crear cliente con nombre vacío lanza excepción"""
         # Arrange
+        from dominio.excepciones import NombreInvalidoError
         comando = CrearCliente(
             nombre="",
             email="juan@email.com",
+            identificacion="1234567890",
             telefono="1234567890",
             direccion="Calle 123 #45-67"
         )
         
-        with patch('aplicacion.comandos.crear_cliente.RepositorioClienteSQLite') as mock_repo_class:
-            mock_repo = Mock()
-            mock_repo_class.return_value = mock_repo
-            mock_cliente = ClienteDTO(
-                id=uuid.uuid4(),
-                nombre="",
-                email="juan@email.com",
-                telefono="1234567890",
-                direccion="Calle 123 #45-67"
-            )
-            mock_repo.crear.return_value = mock_cliente
-            
-            handler = CrearClienteHandler()
-            
-            # Act
-            with self.app.app_context():
-                resultado = handler.handle(comando)
-            
-            # Assert
-            assert resultado is not None
-            assert resultado.nombre == ""
-            mock_repo.crear.assert_called_once()
+        handler = CrearClienteHandler()
+        
+        # Act & Assert
+        with pytest.raises(NombreInvalidoError):
+            handler.handle(comando)
     
     def test_crear_cliente_email_invalido(self):
-        """Test crear cliente con email inválido"""
+        """Test crear cliente con email inválido lanza excepción"""
         # Arrange
+        from dominio.excepciones import EmailInvalidoError
         comando = CrearCliente(
             nombre="Juan Pérez",
             email="email_invalido",
+            identificacion="1234567890",
             telefono="1234567890",
             direccion="Calle 123 #45-67"
         )
         
-        with patch('aplicacion.comandos.crear_cliente.RepositorioClienteSQLite') as mock_repo_class:
-            mock_repo = Mock()
-            mock_repo_class.return_value = mock_repo
-            mock_cliente = ClienteDTO(
-                id=uuid.uuid4(),
-                nombre="Juan Pérez",
-                email="email_invalido",
-                telefono="1234567890",
-                direccion="Calle 123 #45-67"
-            )
-            mock_repo.crear.return_value = mock_cliente
-            
-            handler = CrearClienteHandler()
-            
-            # Act
-            with self.app.app_context():
-                resultado = handler.handle(comando)
-            
-            # Assert
-            assert resultado is not None
-            assert resultado.email == "email_invalido"
-            mock_repo.crear.assert_called_once()
+        handler = CrearClienteHandler()
+        
+        # Act & Assert
+        with pytest.raises(EmailInvalidoError):
+            handler.handle(comando)
     
     def test_crear_cliente_error_repositorio(self):
         """Test crear cliente con error en repositorio"""
@@ -139,6 +112,7 @@ class TestCrearCliente:
         comando = CrearCliente(
             nombre="Juan Pérez",
             email="juan@email.com",
+            identificacion="1234567890",
             telefono="1234567890",
             direccion="Calle 123 #45-67"
         )
@@ -160,6 +134,7 @@ class TestCrearCliente:
         comando = CrearCliente(
             nombre="Juan Pérez",
             email="juan@email.com",
+            identificacion="1234567890",
             telefono="1234567890",
             direccion="Calle 123 #45-67"
         )
@@ -169,6 +144,7 @@ class TestCrearCliente:
             id=uuid.uuid4(),
             nombre="Juan Pérez",
             email="juan@email.com",
+            identificacion="1234567890",
             telefono="1234567890",
             direccion="Calle 123 #45-67"
         )

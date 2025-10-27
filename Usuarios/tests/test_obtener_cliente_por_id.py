@@ -41,7 +41,8 @@ class TestObtenerClientePorId:
             nombre="Juan Pérez",
             email="juan@email.com",
             telefono="1234567890",
-            direccion="Calle 123 #45-67"
+            direccion="Calle 123 #45-67",
+            identificacion="1001234567"
         )
         
         with patch('aplicacion.consultas.obtener_cliente_por_id.RepositorioClienteSQLite') as mock_repo_class:

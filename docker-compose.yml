@@ -72,6 +72,8 @@ services:
       - DB_USER=usuarios_user
       - DB_PASSWORD=usuarios_pass
       - SQLALCHEMY_DATABASE_URI=postgresql://usuarios_user:usuarios_pass@usuarios-db:5432/usuarios_db
+      - JWT_SECRET_KEY=medisupply-jwt-secret-key-production-2024
+      - TOKEN_EXPIRATION_HOURS=24
     networks:
       - medi-supply-network
     depends_on:
@@ -214,6 +216,9 @@ services:
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
+      - GCP_CREDENTIALS_PATH=/run/secrets/gcp_credentials
+    secrets:
+      - gcp_credentials
     networks:
       - medi-supply-network
     depends_on:
@@ -230,6 +235,61 @@ services:
       retries: 3
       start_period: 40s
 
+  # Auth Service - Autenticación y Autorización Centralizada
+  auth-service:
+    build:
+      context: ./Auth-Service
+      dockerfile: Dockerfile
+    container_name: medi-supply-auth
+    ports:
+      - "5004:5004"
+    environment:
+      - FLASK_ENV=production
+      - JWT_SECRET_KEY=medisupply-jwt-secret-key-production-2024
+      - USUARIOS_SERVICE_URL=http://usuarios:5001
+      - TOKEN_EXPIRATION_HOURS=24
+    volumes:
+      - ./Auth-Service/config:/app/config:ro
+    networks:
+      - medi-supply-network
+    depends_on:
+      usuarios:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Nginx Gateway - API Gateway para todos los servicios
+  nginx-gateway:
+    image: nginx:alpine
+    container_name: medi-supply-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - medi-supply-network
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      usuarios:
+        condition: service_healthy
+      ventas:
+        condition: service_healthy
+      productos:
+        condition: service_healthy
+      logistica:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
 # Volúmenes para persistir datos de PostgreSQL
 volumes:
   usuarios_db_data:
@@ -245,3 +305,8 @@ volumes:
 networks:
   medi-supply-network:
     driver: bridge
+
+# Secrets para manejo seguro de credenciales
+secrets:
+  gcp_credentials:
+    file: ./Ventas/gcp-credentials.json

@@ -41,14 +41,16 @@ class TestObtenerClientes:
                 nombre="Juan Pérez",
                 email="juan@email.com",
                 telefono="1234567890",
-                direccion="Calle 123 #45-67"
+                direccion="Calle 123 #45-67",
+                identificacion="1001234567"
             ),
             ClienteDTO(
                 id=uuid.uuid4(),
                 nombre="Ana López",
                 email="ana@email.com",
                 telefono="0987654321",
-                direccion="Avenida 456 #78-90"
+                direccion="Avenida 456 #78-90",
+                identificacion="1009876543"
             )
         ]
         

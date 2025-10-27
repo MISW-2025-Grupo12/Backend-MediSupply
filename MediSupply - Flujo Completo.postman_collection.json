@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "0b0ad8ee-1522-4c83-b92b-7bc5894bef5b",
+		"_postman_id": "84dd19ad-d2c5-46da-a0b4-678b2e82ad82",
 		"name": "MediSupply - Flujo Completo",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n3. **Crear Productos** - Con y sin inventario\n    \n4. **Crear Visitas** - Programar visitas de venta\n    \n5. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n6. **Gestionar Inventario** - Reservas y descuentos\n    \n7. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n8. **Consultar Entregas** - Ver entregas programadas",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Autenticación JWT** - Registrar usuarios y obtener tokens (vendedores, clientes, proveedores)\n    \n3. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n4. **Crear Productos** - Con y sin inventario\n    \n5. **Crear Visitas** - Programar visitas de venta\n    \n6. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n7. **Gestionar Inventario** - Reservas y descuentos\n    \n8. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n9. **Consultar Entregas** - Ver entregas programadas\n    \n10. **Informes de Ventas** - Consultar datos de ventas por vendedor y fechas",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-0b0ad8ee-1522-4c83-b92b-7bc5894bef5b?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-84dd19ad-d2c5-46da-a0b4-678b2e82ad82?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -147,7 +147,394 @@
 			"description": "Verificar que todos los servicios estén funcionando correctamente"
 		},
 		{
-			"name": "👥 2. Crear Entidades Base",
+			"name": "🔐 2. Autenticación JWT",
+			"item": [
+				{
+					"name": "Registro de Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Cliente registrado exitosamente o ya existe', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+									"    ",
+									"    const response = pm.response.json();",
+									"    ",
+									"    if (pm.response.code === 201) {",
+									"        pm.expect(response).to.have.property('mensaje');",
+									"        pm.expect(response).to.have.property('cliente');",
+									"        pm.expect(response.cliente).to.have.property('id');",
+									"        pm.collectionVariables.set('cliente_auth_id', response.cliente.id);",
+									"        console.log('Cliente registrado con ID:', response.cliente.id);",
+									"        ",
+									"    } else if (pm.response.code === 409) {",
+									"        pm.expect(response).to.have.property('error');",
+									"        pm.expect(response.error).to.include('correo ya está registrado');",
+									"",
+									"        if (response.cliente && response.cliente.id) {",
+									"            pm.collectionVariables.set('cliente_auth_id', response.cliente.id);",
+									"            console.log('Cliente ya existe con ID:', response.cliente.id);",
+									"        } else {",
+									"            console.log('Cliente ya existe (correo duplicado)');",
+									"        }",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Clínica Los Olivos\",\n    \"email\": \"contacto@losolivos.com\",\n    \"identificacion\": \"8609876543\",\n    \"telefono\": \"6014567890\",\n    \"direccion\": \"Avenida 15 #23-45\",\n    \"password\": \"ClinicaPass456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/registro-cliente",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"registro-cliente"
+							]
+						},
+						"description": "Registra un nuevo cliente con autenticación JWT"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro de Proveedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Proveedor registrado exitosamente o ya existe', function () {",
+									"    // Aceptar 201 (creado) o 409 (ya existe)",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+									"    ",
+									"    const response = pm.response.json();",
+									"    ",
+									"    if (pm.response.code === 201) {",
+									"        // Caso 1: Proveedor creado exitosamente",
+									"        pm.expect(response).to.have.property('mensaje');",
+									"        pm.expect(response).to.have.property('proveedor');",
+									"        pm.expect(response.proveedor).to.have.property('id');",
+									"        pm.collectionVariables.set('proveedor_auth_id', response.proveedor.id);",
+									"        console.log('✅ Proveedor registrado con ID:', response.proveedor.id);",
+									"        ",
+									"    } else if (pm.response.code === 409) {",
+									"        // Caso 2: Proveedor ya existe",
+									"        pm.expect(response).to.have.property('error');",
+									"        pm.expect(response.error).to.include('correo ya está registrado');",
+									"        console.log('⚠️ Proveedor ya existe (correo duplicado) - continuando...');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Pfizer Colombia\",\n    \"email\": \"contacto@pfizer.com.co\",\n    \"identificacion\": \"9005678901\",\n    \"telefono\": \"6017654321\",\n    \"direccion\": \"Carrera 9 #50-30, Bogotá\",\n    \"password\": \"PfizerSecure789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/registro-proveedor",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"registro-proveedor"
+							]
+						},
+						"description": "Registra un nuevo proveedor con autenticación JWT"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro de Vendedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Vendedor registrado exitosamente o ya existe', function () {",
+									"    // Aceptar 201 (creado) o 409 (ya existe)",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+									"    ",
+									"    const response = pm.response.json();",
+									"    ",
+									"    if (pm.response.code === 201) {",
+									"        // Caso 1: Vendedor creado exitosamente",
+									"        pm.expect(response).to.have.property('mensaje');",
+									"        pm.expect(response).to.have.property('vendedor');",
+									"        pm.expect(response.vendedor).to.have.property('id');",
+									"        pm.collectionVariables.set('vendedor_auth_id', response.vendedor.id);",
+									"        console.log('Vendedor registrado con ID:', response.vendedor.id);",
+									"        ",
+									"    } else if (pm.response.code === 409) {",
+									"        // Caso 2: Vendedor ya existe",
+									"        pm.expect(response).to.have.property('error');",
+									"        pm.expect(response.error).to.include('correo ya está registrado');",
+									"        console.log('Vendedor ya existe (correo duplicado) - continuando...');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"María García\",\n    \"email\": \"maria.garcia@empresa.com\",\n    \"identificacion\": \"9876543210\",\n    \"telefono\": \"3009876543\",\n    \"direccion\": \"Calle 45 #67-89\",\n    \"password\": \"MiPassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/registro-vendedor",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"registro-vendedor"
+							]
+						},
+						"description": "Registra un nuevo vendedor con autenticación JWT"
+					},
+					"response": []
+				},
+				{
+					"name": "Login de Vendedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Login exitoso', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('access_token');",
+									"    pm.expect(response).to.have.property('user_info');",
+									"    pm.expect(response.user_info).to.have.property('tipo_usuario');",
+									"    pm.expect(response.user_info.tipo_usuario).to.eql('VENDEDOR');",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"    console.log('Token JWT guardado');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"maria.garcia@empresa.com\",\n    \"password\": \"MiPassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_auth}}/login",
+							"host": [
+								"{{base_url_auth}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Autentica un vendedor a través del Auth-Service centralizado y obtiene token JWT válido por 24 horas"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro de Administrador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Administrador registrado exitosamente o ya existe', function () {",
+									"    // Aceptar 201 (creado) o 409 (ya existe)",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+									"    ",
+									"    const response = pm.response.json();",
+									"    ",
+									"    if (pm.response.code === 201) {",
+									"        // Caso 1: Administrador creado exitosamente",
+									"        pm.expect(response).to.have.property('mensaje');",
+									"        pm.expect(response).to.have.property('administrador');",
+									"        pm.expect(response.administrador).to.have.property('id');",
+									"        pm.collectionVariables.set('admin_id', response.administrador.id);",
+									"        console.log('Administrador registrado con ID:', response.administrador.id);",
+									"        ",
+									"    } else if (pm.response.code === 409) {",
+									"        // Caso 2: Administrador ya existe",
+									"        pm.expect(response).to.have.property('error');",
+									"        pm.expect(response.error).to.include('correo ya está registrado');",
+									"        console.log('Administrador ya existe (correo duplicado) - continuando...');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Admin Sistema\",\n    \"email\": \"admin@medisupply.com\",\n    \"password\": \"AdminPass123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/auth/registro-administrador",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"registro-administrador"
+							]
+						},
+						"description": "Registra un nuevo administrador con permisos completos en el sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Login de Administrador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Login de administrador exitoso', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('access_token');",
+									"    pm.expect(response).to.have.property('user_info');",
+									"    pm.expect(response.user_info).to.have.property('tipo_usuario');",
+									"    pm.expect(response.user_info.tipo_usuario).to.eql('ADMINISTRADOR');",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"    pm.collectionVariables.set('admin_token', response.access_token);",
+									"    console.log('Token JWT de administrador guardado');",
+									"    console.log('NOTA: Este token se usará para el resto del flujo');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@medisupply.com\",\n    \"password\": \"AdminPass2024\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_auth}}/login",
+							"host": [
+								"{{base_url_auth}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Autentica un administrador a través del Auth-Service. El token obtenido tiene permisos completos para todos los endpoints del sistema."
+					},
+					"response": []
+				}
+			],
+			"description": "Registrar usuarios y obtener tokens JWT para autenticación"
+		},
+		{
+			"name": "👥 3. Crear Entidades Base",
 			"item": [
 				{
 					"name": "Crear Proveedor",
@@ -164,11 +551,23 @@
 									"    console.log('Proveedor ID guardado:', response.id);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -178,7 +577,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
+							"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"identificacion\": \"9001234567\",\n    \"telefono\": \"6013456789\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -220,6 +619,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -271,6 +680,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -280,7 +699,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
+							"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"identificacion\": \"1234567890\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -322,6 +741,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -331,7 +760,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
+							"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"identificacion\": \"8601234567\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -352,12 +781,77 @@
 						"description": "Crea un nuevo cliente y guarda su ID para uso posterior"
 					},
 					"response": []
+				},
+				{
+					"name": "Modificar Estado del Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Estado del cliente modificado exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('estado');",
+									"    pm.expect(response.estado).to.eql('INACTIVO');",
+									"    console.log('Estado del cliente modificado a:', response.estado);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"estado\": \"INACTIVO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_usuarios}}/api/clientes/{{cliente_id}}/estado",
+							"host": [
+								"{{base_url_usuarios}}"
+							],
+							"path": [
+								"api",
+								"clientes",
+								"{{cliente_id}}",
+								"estado"
+							]
+						},
+						"description": "Modifica el estado de un cliente específico. Estados válidos: ACTIVO, INACTIVO"
+					},
+					"response": []
 				}
 			],
 			"description": "Crear proveedores, categorías, vendedores y clientes necesarios para el flujo"
 		},
 		{
-			"name": "📦 3. Crear Productos",
+			"name": "📦 4. Crear Productos",
 			"item": [
 				{
 					"name": "Crear Producto Básico",
@@ -379,6 +873,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -430,6 +934,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -480,6 +994,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -501,7 +1025,7 @@
 			"description": "Crear productos con y sin inventario usando las entidades base creadas"
 		},
 		{
-			"name": "📅 4. Crear Visitas",
+			"name": "📅 5. Crear Visitas",
 			"item": [
 				{
 					"name": "Crear Visita de Venta",
@@ -525,6 +1049,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -575,6 +1109,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -617,6 +1161,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -670,6 +1224,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -709,7 +1273,7 @@
 			"description": "Crear visitas de venta programadas"
 		},
 		{
-			"name": "🛒 5. Crear Pedidos",
+			"name": "🛒 6. Crear Pedidos",
 			"item": [
 				{
 					"name": "Crear Pedido",
@@ -731,6 +1295,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -788,6 +1362,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -839,6 +1423,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -890,6 +1484,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -927,6 +1531,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -949,7 +1563,7 @@
 			"description": "Crear pedidos con items y confirmarlos"
 		},
 		{
-			"name": "📦 6. Gestionar Inventario",
+			"name": "📦 7. Gestionar Inventario",
 			"item": [
 				{
 					"name": "Buscar Productos con Inventario",
@@ -970,6 +1584,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1016,6 +1640,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1053,6 +1687,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1074,7 +1718,7 @@
 			"description": "Consultar y gestionar el inventario de productos"
 		},
 		{
-			"name": "🏢 7. Gestionar Bodegas",
+			"name": "🏢 8. Gestionar Bodegas",
 			"item": [
 				{
 					"name": "Inicializar Bodegas por Defecto",
@@ -1098,6 +1742,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -1139,6 +1793,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1205,6 +1869,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1267,6 +1941,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1354,6 +2038,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1377,7 +2071,7 @@
 			"description": "Gestionar bodegas y consultar ubicaciones de productos"
 		},
 		{
-			"name": "🚚 8. Consultar Entregas",
+			"name": "🚚 9. Consultar Entregas",
 			"item": [
 				{
 					"name": "Crear Entregas de Prueba",
@@ -1398,6 +2092,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -1434,6 +2138,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1472,6 +2186,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1502,11 +2226,21 @@
 			"description": "Consultar entregas programadas y crear datos de prueba"
 		},
 		{
-			"name": "📊  9. Informes de ventas",
+			"name": "📊 10. Informes de ventas",
 			"item": [
 				{
 					"name": "Listar datos informe de ventas",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1526,6 +2260,16 @@
 				{
 					"name": "Listar datos informe por vendedor",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1551,6 +2295,16 @@
 				{
 					"name": "Listar datos informe rango de fechas",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1611,23 +2365,51 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost"
+			"value": "http://localhost:8080",
+			"description": {
+				"content": "Nginx Gateway - Punto de entrada principal",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "base_url_auth",
+			"value": "http://localhost:8080/auth",
+			"description": {
+				"content": "Auth-Service via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_usuarios",
-			"value": "http://localhost:5001/usuarios"
+			"value": "http://localhost:8080/usuarios",
+			"description": {
+				"content": "Usuarios via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_productos",
-			"value": "http://localhost:5000/productos"
+			"value": "http://localhost:8080/productos",
+			"description": {
+				"content": "Productos via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_ventas",
-			"value": "http://localhost:5002/ventas"
+			"value": "http://localhost:8080/ventas",
+			"description": {
+				"content": "Ventas via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_logistica",
-			"value": "http://localhost:5003/logistica"
+			"value": "http://localhost:8080/logistica",
+			"description": {
+				"content": "Logística via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "proveedor_id",
@@ -1703,6 +2485,30 @@
 		},
 		{
 			"key": "bodega_3_nombre",
+			"value": ""
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "vendedor_auth_id",
+			"value": ""
+		},
+		{
+			"key": "cliente_auth_id",
+			"value": ""
+		},
+		{
+			"key": "proveedor_auth_id",
+			"value": ""
+		},
+		{
+			"key": "admin_id",
+			"value": ""
+		},
+		{
+			"key": "admin_token",
 			"value": ""
 		}
 	]

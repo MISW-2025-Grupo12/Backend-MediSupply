@@ -4,15 +4,65 @@ metadata:
   name: medisupply-ingress
   namespace: medisupply
   annotations:
-    kubernetes.io/ingress.class: "gce"
-    kubernetes.io/ingress.global-static-ip-name: "medisupply-ip"
-    networking.gke.io/managed-certificates: "medisupply-certificate"
-    kubernetes.io/ingress.allow-http: "true"
+    # Usar NGINX Ingress Controller
+    kubernetes.io/ingress.class: "nginx"
+    
+    # Autenticación con Auth-Service (por defecto para TODAS las rutas)
+    nginx.ingress.kubernetes.io/auth-url: "http://auth-service.medisupply.svc.cluster.local:5004/verify"
+    nginx.ingress.kubernetes.io/auth-method: "POST"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-Usuario-Id,X-Usuario-Tipo,X-Usuario-Email"
+    nginx.ingress.kubernetes.io/auth-cache-key: "$http_authorization"
+    nginx.ingress.kubernetes.io/auth-cache-duration: "200 202 401 5m"
+    
+    # 🔑 SNIPPET: Desactivar autenticación para rutas públicas específicas
+    nginx.ingress.kubernetes.io/auth-snippet: |
+      # Rutas públicas - bypass auth (return 202 = skip auth)
+      if ($request_uri ~* "^/(auth/(login|health|version)|usuarios/api/auth/registrar-cliente)(/)?$") {
+        return 202;
+      }
+      if ($request_uri ~* "^/(usuarios|productos|ventas|logistica)/health(/)?$") {
+        return 202;
+      }
+      if ($request_uri = "/") {
+        return 202;
+      }
+    
+    # Configuration snippet: Solo aplicar rewrite a rutas /auth
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($request_uri ~* ^/auth/(.*)$) {
+        rewrite ^/auth/(.*)$ /$1 break;
+      }
+    
+    # SSL/TLS
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    
+    # CORS (manejado por nginx)
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://medisupplyg4.online,https://api.medisupplyg4.online,http://localhost:3000,http://localhost:5173"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type,Authorization,Accept,Origin,X-Requested-With"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-max-age: "3600"
+
 spec:
+  tls:
+  - hosts:
+    - api.medisupplyg4.online
+    secretName: medisupply-tls
   rules:
     - host: api.medisupplyg4.online
       http:
         paths:
+          # Auth Service
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 5004
+          
+          # Usuarios
           - path: /usuarios
             pathType: Prefix
             backend:
@@ -20,6 +70,8 @@ spec:
                 name: usuarios-service
                 port:
                   number: 5001
+          
+          # Productos
           - path: /productos
             pathType: Prefix
             backend:
@@ -27,6 +79,8 @@ spec:
                 name: productos-service
                 port:
                   number: 5000
+          
+          # Ventas
           - path: /ventas
             pathType: Prefix
             backend:
@@ -34,6 +88,8 @@ spec:
                 name: ventas-service
                 port:
                   number: 5002
+          
+          # Logística
           - path: /logistica
             pathType: Prefix
             backend:
@@ -41,10 +97,12 @@ spec:
                 name: logistica-service
                 port:
                   number: 5003
+          
+          # Root (health check general)
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: usuarios-service
+                name: auth-service
                 port:
-                  number: 5001
+                  number: 5004

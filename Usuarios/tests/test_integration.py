@@ -56,6 +56,8 @@ class TestIntegration:
             mock_proveedor.nombre = 'Farmacia Central'
             mock_proveedor.email = 'contacto@farmacia.com'
             mock_proveedor.direccion = 'Calle 123 #45-67'
+            mock_proveedor.identificacion = '9001234567'
+            mock_proveedor.telefono = '3001234567'
             
             mock_crear.return_value = mock_proveedor
             # Configurar side_effect para devolver lista para obtener_todos y objeto para obtener_por_id
@@ -65,7 +67,9 @@ class TestIntegration:
             proveedor_data = {
                 'nombre': 'Farmacia Central',
                 'email': 'contacto@farmacia.com',
-                'direccion': 'Calle 123 #45-67'
+                'direccion': 'Calle 123 #45-67',
+                'identificacion': '9001234567',
+                'telefono': '3001234567'
             }
             
             response = self.client.post(get_usuarios_url('proveedores'), 
@@ -98,6 +102,8 @@ class TestIntegration:
             mock_cliente.email = 'juan@email.com'
             mock_cliente.telefono = '1234567890'
             mock_cliente.direccion = 'Calle 123 #45-67'
+            mock_cliente.identificacion = '1001234567'
+            mock_cliente.estado = 'ACTIVO'
             
             mock_crear.return_value = mock_cliente
             # Configurar side_effect para devolver lista para obtener_todos y objeto para obtener_por_id
@@ -108,7 +114,8 @@ class TestIntegration:
                 'nombre': 'Juan Pérez',
                 'email': 'juan@email.com',
                 'telefono': '1234567890',
-                'direccion': 'Calle 123 #45-67'
+                'direccion': 'Calle 123 #45-67',
+                'identificacion': '1001234567'
             }
             
             response = self.client.post(get_usuarios_url('clientes'), 
@@ -141,6 +148,7 @@ class TestIntegration:
             mock_vendedor.email = 'carlos@empresa.com'
             mock_vendedor.telefono = '1234567890'
             mock_vendedor.direccion = 'Calle 123 #45-67'
+            mock_vendedor.identificacion = '1009876543'
             
             mock_crear.return_value = mock_vendedor
             # Configurar side_effect para devolver lista para obtener_todos y objeto para obtener_por_id
@@ -151,7 +159,8 @@ class TestIntegration:
                 'nombre': 'Carlos López',
                 'email': 'carlos@empresa.com',
                 'telefono': '1234567890',
-                'direccion': 'Calle 123 #45-67'
+                'direccion': 'Calle 123 #45-67',
+                'identificacion': '1009876543'
             }
             
             response = self.client.post(get_usuarios_url('vendedores'), 

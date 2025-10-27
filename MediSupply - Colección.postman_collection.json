@@ -1,21 +1,21 @@
 {
 	"info": {
-		"_postman_id": "f04d32ee-738b-47c3-96ef-97dbdb063dce",
+		"_postman_id": "bf408684-f5fb-4553-9b83-2f5504b6bcf6",
 		"name": "MediSupply - Colección",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 4 microservicios:\n\n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores y clientes\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}, PUT/{id}/estado\n    \n- **Autenticación**: POST /registro-vendedor, POST /registro-cliente, POST /registro-proveedor, POST /registro-administrador, POST /registro-repartidor, POST /login\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-f04d32ee-738b-47c3-96ef-97dbdb063dce?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-bf408684-f5fb-4553-9b83-2f5504b6bcf6?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
 			"name": "🔐 Usuarios (Puerto 5001)",
 			"item": [
 				{
-					"name": "Proveedores",
+					"name": "Autenticación",
 					"item": [
 						{
-							"name": "Crear Proveedor",
+							"name": "Registro de Vendedor",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -26,7 +26,243 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
+									"raw": "{\n    \"nombre\": \"María García\",\n    \"email\": \"maria.garcia@empresa.com\",\n    \"identificacion\": \"9876543210\",\n    \"telefono\": \"3009876543\",\n    \"direccion\": \"Calle 45 #67-89\",\n    \"password\": \"MiPassword123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/auth/registro-vendedor",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"registro-vendedor"
+									]
+								},
+								"description": "Registra un nuevo vendedor con autenticación JWT. Crea cuenta y credenciales."
+							},
+							"response": []
+						},
+						{
+							"name": "Registro de Cliente",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Clínica Los Olivos\",\n    \"email\": \"contacto@losolivos.com\",\n    \"identificacion\": \"8609876543\",\n    \"telefono\": \"6014567890\",\n    \"direccion\": \"Avenida 15 #23-45\",\n    \"password\": \"ClinicaPass456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/auth/registro-cliente",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"registro-cliente"
+									]
+								},
+								"description": "Registra un nuevo cliente con autenticación JWT. Crea cuenta y credenciales."
+							},
+							"response": []
+						},
+						{
+							"name": "Registro de Proveedor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Pfizer Colombia\",\n    \"email\": \"contacto@pfizer.com.co\",\n    \"identificacion\": \"9005678901\",\n    \"telefono\": \"6017654321\",\n    \"direccion\": \"Carrera 9 #50-30, Bogotá\",\n    \"password\": \"PfizerSecure789\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/auth/registro-proveedor",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"registro-proveedor"
+									]
+								},
+								"description": "Registra un nuevo proveedor con autenticación JWT. Crea cuenta y credenciales."
+							},
+							"response": []
+						},
+						{
+							"name": "Registro de Repartidor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Carlos Repartidor\",\n    \"email\": \"carlos.repartidor@medisupply.com\",\n    \"identificacion\": \"1122334455\",\n    \"telefono\": \"3201234567\",\n    \"password\": \"Repartidor123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/auth/registro-repartidor",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"registro-repartidor"
+									]
+								},
+								"description": "Registra un nuevo repartidor con autenticación JWT. Requiere nombre, email, identificación, teléfono y contraseña (sin dirección ya que el repartidor se mueve constantemente)."
+							},
+							"response": []
+						},
+						{
+							"name": "Registro de Administrador",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Admin Principal\",\n    \"email\": \"admin@medisupply.com\",\n    \"password\": \"AdminPass2024\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/auth/registro-administrador",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"registro-administrador"
+									]
+								},
+								"description": "Registra un nuevo administrador con autenticación JWT. Solo requiere nombre, email y contraseña (sin identificación, teléfono ni dirección)."
+							},
+							"response": []
+						},
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Login exitoso', function () {",
+											"    pm.response.to.have.status(200);",
+											"    const response = pm.response.json();",
+											"    pm.expect(response).to.have.property('access_token');",
+											"    pm.collectionVariables.set('access_token', response.access_token);",
+											"    console.log('Token JWT guardado:', response.access_token.substring(0, 50) + '...');",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"admin@medisupply.com\",\n    \"password\": \"AdminPass2024\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_auth}}/login",
+									"host": [
+										"{{base_url_auth}}"
+									],
+									"path": [
+										"login"
+									]
+								},
+								"description": "Autentica un usuario (vendedor, cliente, proveedor, administrador o repartidor) a través del Auth-Service y devuelve un token JWT válido por 24 horas. Este endpoint maneja la autenticación centralizada para todos los tipos de usuarios."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Proveedores",
+					"item": [
+						{
+							"name": "Crear Proveedor",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"identificacion\": \"9001234567\",\n    \"telefono\": \"6013456789\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -51,6 +287,16 @@
 						{
 							"name": "Obtener Todos los Proveedores",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -71,6 +317,16 @@
 						{
 							"name": "Obtener Proveedor por ID",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -96,6 +352,16 @@
 						{
 							"name": "Crear Vendedor",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -105,7 +371,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
+									"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"identificacion\": \"1234567890\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -130,6 +396,16 @@
 						{
 							"name": "Obtener Todos los Vendedores",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -150,6 +426,16 @@
 						{
 							"name": "Obtener Vendedor por ID",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -175,6 +461,16 @@
 						{
 							"name": "Crear Cliente",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -184,7 +480,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
+									"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"identificacion\": \"8601234567\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -209,6 +505,16 @@
 						{
 							"name": "Obtener Todos los Clientes",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -229,6 +535,16 @@
 						{
 							"name": "Obtener Cliente por ID",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -243,6 +559,51 @@
 									]
 								},
 								"description": "Obtiene los detalles de un cliente específico por su ID"
+							},
+							"response": []
+						},
+						{
+							"name": "Modificar Estado del Cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"estado\": \"ACTIVO\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/clientes/{{cliente_id}}/estado",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"clientes",
+										"{{cliente_id}}",
+										"estado"
+									]
+								},
+								"description": "Modifica el estado de un cliente específico. Estados válidos: ACTIVO, INACTIVO"
 							},
 							"response": []
 						}
@@ -272,17 +633,126 @@
 					]
 				}
 			],
-			"description": "Microservicio de gestión de usuarios: proveedores, vendedores y clientes"
+			"description": "Microservicio de gestión de usuarios: proveedores, vendedores, clientes, administradores y repartidores"
 		},
 		{
 			"name": "📦 Productos (Puerto 5000)",
 			"item": [
+				{
+					"name": "Categorías",
+					"item": [
+						{
+							"name": "Crear Categoría",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Medicamentos\",\n    \"descripcion\": \"Productos farmacéuticos y medicamentos\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_productos}}/api/categorias/",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"categorias",
+										""
+									]
+								},
+								"description": "Crea una nueva categoría de productos"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todas las Categorías",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_productos}}/api/categorias/",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"categorias",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todas las categorías de productos"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Categoría por ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_productos}}/api/categorias/{{categoria_id}}",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"categorias",
+										"{{categoria_id}}"
+									]
+								},
+								"description": "Obtiene los detalles de una categoría específica por su ID"
+							},
+							"response": []
+						}
+					]
+				},
 				{
 					"name": "Productos",
 					"item": [
 						{
 							"name": "Crear Producto",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -317,6 +787,16 @@
 						{
 							"name": "Crear Producto con Inventario",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -391,86 +871,6 @@
 					]
 				},
 				{
-					"name": "Categorías",
-					"item": [
-						{
-							"name": "Crear Categoría",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Medicamentos\",\n    \"descripcion\": \"Productos farmacéuticos y medicamentos\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url_productos}}/api/categorias/",
-									"host": [
-										"{{base_url_productos}}"
-									],
-									"path": [
-										"api",
-										"categorias",
-										""
-									]
-								},
-								"description": "Crea una nueva categoría de productos"
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener Todas las Categorías",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url_productos}}/api/categorias/",
-									"host": [
-										"{{base_url_productos}}"
-									],
-									"path": [
-										"api",
-										"categorias",
-										""
-									]
-								},
-								"description": "Obtiene la lista de todas las categorías de productos"
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener Categoría por ID",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url_productos}}/api/productos/categorias/{{categoria_id}}",
-									"host": [
-										"{{base_url_productos}}"
-									],
-									"path": [
-										"api",
-										"productos",
-										"categorias",
-										"{{categoria_id}}"
-									]
-								},
-								"description": "Obtiene los detalles de una categoría específica por su ID"
-							},
-							"response": []
-						}
-					]
-				},
-				{
 					"name": "Health Check",
 					"item": [
 						{
@@ -505,6 +905,16 @@
 						{
 							"name": "Crear Visita de Venta",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -514,7 +924,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2025-10-15T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada\"\n}",
+									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2026-10-15T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -539,6 +949,16 @@
 						{
 							"name": "Obtener Todas las Visitas",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -559,6 +979,16 @@
 						{
 							"name": "Obtener Visitas Pendientes",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -586,10 +1016,20 @@
 						{
 							"name": "Obtener Visitas por Rango de Fechas",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_ventas}}/api/visitas/?fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+									"raw": "{{base_url_ventas}}/api/visitas/?fecha_inicio=2025-10-13&fecha_fin=2027-10-17",
 									"host": [
 										"{{base_url_ventas}}"
 									],
@@ -606,7 +1046,7 @@
 										},
 										{
 											"key": "fecha_fin",
-											"value": "2025-10-17",
+											"value": "2027-10-17",
 											"description": "Fecha de fin del rango (YYYY-MM-DD)"
 										}
 									]
@@ -618,10 +1058,20 @@
 						{
 							"name": "Obtener Visitas Pendientes por Fechas",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_ventas}}/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+									"raw": "{{base_url_ventas}}/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2027-10-17",
 									"host": [
 										"{{base_url_ventas}}"
 									],
@@ -643,7 +1093,7 @@
 										},
 										{
 											"key": "fecha_fin",
-											"value": "2025-10-17",
+											"value": "2027-10-17",
 											"description": "Fecha de fin del rango (YYYY-MM-DD)"
 										}
 									]
@@ -655,10 +1105,20 @@
 						{
 							"name": "Obtener Visitas por Vendedor y Fechas",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_ventas}}/api/visitas/?vendedor_id={{vendedor_id}}&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+									"raw": "{{base_url_ventas}}/api/visitas/?vendedor_id={{vendedor_id}}&fecha_inicio=2025-10-13&fecha_fin=2027-10-17",
 									"host": [
 										"{{base_url_ventas}}"
 									],
@@ -680,7 +1140,7 @@
 										},
 										{
 											"key": "fecha_fin",
-											"value": "2025-10-17",
+											"value": "2027-10-17",
 											"description": "Fecha de fin del rango (YYYY-MM-DD)"
 										}
 									]
@@ -692,10 +1152,20 @@
 						{
 							"name": "Obtener Visitas por Vendedor",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+									"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2027-10-17",
 									"host": [
 										"{{base_url_ventas}}"
 									],
@@ -718,7 +1188,7 @@
 										},
 										{
 											"key": "fecha_fin",
-											"value": "2025-10-17",
+											"value": "2027-10-17",
 											"description": "Fecha de fin del rango (YYYY-MM-DD)"
 										}
 									]
@@ -730,6 +1200,16 @@
 						{
 							"name": "Actualizar Visita (Registrar Realizada)",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "PUT",
 								"header": [
 									{
@@ -760,6 +1240,88 @@
 								"description": "Registra una visita como realizada con sus detalles"
 							},
 							"response": []
+						},
+						{
+							"name": "Subir Evidencia a Visita",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "archivo",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "comentarios",
+											"value": "Equipo en buen estado, ubicado en sala 203",
+											"type": "text"
+										},
+										{
+											"key": "vendedor_id",
+											"value": "{{vendedor_id}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/{{visita_id}}/evidencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										"{{visita_id}}",
+										"evidencias"
+									]
+								},
+								"description": "Sube evidencia visual (fotos/videos) del estado de equipos médicos durante una visita. Acepta formatos: jpg, png, mp4, mov (máx 100MB)"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Evidencias de Visita",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/{{visita_id}}/evidencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										"{{visita_id}}",
+										"evidencias"
+									]
+								},
+								"description": "Obtiene todas las evidencias visuales (fotos/videos) asociadas a una visita específica"
+							},
+							"response": []
 						}
 					]
 				},
@@ -769,6 +1331,16 @@
 						{
 							"name": "Crear Pedido",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -801,136 +1373,18 @@
 							"response": []
 						},
 						{
-							"name": "Crear Pedido Completo",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"items\": [\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 5\n        },\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 3\n        }\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url_ventas}}/api/pedidos/completo",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"pedidos",
-										"completo"
-									]
-								},
-								"description": "Crea un pedido completo con items y lo confirma automáticamente en una sola operación. Valida inventario y reserva stock."
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener Pedido por ID",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"pedidos",
-										"{{pedido_id}}"
-									]
-								},
-								"description": "Obtiene los detalles de un pedido específico con sus items"
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener Todos los Pedidos",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url_ventas}}/api/pedidos/",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"pedidos",
-										""
-									]
-								},
-								"description": "Obtiene la lista de todos los pedidos"
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener Pedidos por Vendedor",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url_ventas}}/api/pedidos/?vendedor_id={{vendedor_id}}",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"pedidos",
-										""
-									],
-									"query": [
-										{
-											"key": "vendedor_id",
-											"value": "{{vendedor_id}}",
-											"description": "ID del vendedor"
-										}
-									]
-								},
-								"description": "Obtiene los pedidos de un vendedor específico"
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener Pedidos por Estado",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url_ventas}}/api/pedidos/?estado=confirmado",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"pedidos",
-										""
-									],
-									"query": [
-										{
-											"key": "estado",
-											"value": "confirmado",
-											"description": "Estado del pedido (borrador, confirmado, etc.)"
-										}
-									]
-								},
-								"description": "Obtiene los pedidos filtrados por estado"
-							},
-							"response": []
-						},
-						{
 							"name": "Agregar Item al Pedido",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -966,6 +1420,16 @@
 						{
 							"name": "Actualizar Item del Pedido",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "PUT",
 								"header": [
 									{
@@ -1002,6 +1466,16 @@
 						{
 							"name": "Quitar Item del Pedido",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "DELETE",
 								"header": [],
 								"url": {
@@ -1024,6 +1498,16 @@
 						{
 							"name": "Confirmar Pedido",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [],
 								"url": {
@@ -1043,8 +1527,241 @@
 							"response": []
 						},
 						{
+							"name": "Crear Pedido Completo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"items\": [\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 5\n        },\n        {\n            \"producto_id\": \"{{producto_id}}\",\n            \"cantidad\": 3\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/completo",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"completo"
+									]
+								},
+								"description": "Crea un pedido completo con items y lo confirma automáticamente en una sola operación. Valida inventario y reserva stock."
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Pedido por ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"{{pedido_id}}"
+									]
+								},
+								"description": "Obtiene los detalles de un pedido específico con sus items"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Todos los Pedidos",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										""
+									]
+								},
+								"description": "Obtiene la lista de todos los pedidos"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Pedidos por Vendedor",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/?vendedor_id={{vendedor_id}}",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										""
+									],
+									"query": [
+										{
+											"key": "vendedor_id",
+											"value": "{{vendedor_id}}",
+											"description": "ID del vendedor"
+										}
+									]
+								},
+								"description": "Obtiene los pedidos de un vendedor específico"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Pedidos por Estado",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/?estado=confirmado",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										""
+									],
+									"query": [
+										{
+											"key": "estado",
+											"value": "confirmado",
+											"description": "Estado del pedido (borrador, confirmado, etc.)"
+										}
+									]
+								},
+								"description": "Obtiene los pedidos filtrados por estado"
+							},
+							"response": []
+						},
+						{
+							"name": "Cambiar Estado Pedido",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"estado\": \"en_transito\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/{{pedido_id}}/estado",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										"{{pedido_id}}",
+										"estado"
+									]
+								},
+								"description": "Cambia el estado de un pedido confirmado a 'en_transito' o de 'en_transito' a 'entregado'. Requiere autenticación de VENDEDOR, REPARTIDOR o ADMINISTRADOR."
+							},
+							"response": []
+						},
+						{
 							"name": "Buscar Productos para Pedidos",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1101,6 +1818,16 @@
 						{
 							"name": "Informes",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1120,6 +1847,16 @@
 						{
 							"name": "Informes filtro por vendedor",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1145,6 +1882,16 @@
 						{
 							"name": "Informes filtro por fechas",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1188,6 +1935,16 @@
 						{
 							"name": "Obtener Todas las Entregas",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1208,16 +1965,25 @@
 						{
 							"name": "Obtener Entregas por Rango de Fechas",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url_logistica}}/api/logistica/entregas?fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+									"raw": "{{base_url_logistica}}/api/entregas?fecha_inicio=2025-10-13&fecha_fin=2026-10-17",
 									"host": [
 										"{{base_url_logistica}}"
 									],
 									"path": [
 										"api",
-										"logistica",
 										"entregas"
 									],
 									"query": [
@@ -1228,7 +1994,7 @@
 										},
 										{
 											"key": "fecha_fin",
-											"value": "2025-10-17",
+											"value": "2026-10-17",
 											"description": "Fecha de fin del rango (YYYY-MM-DD)"
 										}
 									]
@@ -1240,6 +2006,16 @@
 						{
 							"name": "Crear 20 Entregas (Desarrollo)",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [],
 								"url": {
@@ -1265,6 +2041,16 @@
 						{
 							"name": "Obtener Todo el Inventario",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1285,6 +2071,16 @@
 						{
 							"name": "Buscar Productos con Inventario",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1317,6 +2113,16 @@
 						{
 							"name": "Reservar Inventario",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -1351,6 +2157,16 @@
 						{
 							"name": "Descontar Inventario",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -1385,6 +2201,16 @@
 						{
 							"name": "Obtener Inventario de Producto",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1411,6 +2237,16 @@
 						{
 							"name": "Obtener Todas las Bodegas",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1431,6 +2267,16 @@
 						{
 							"name": "Inicializar Bodegas por Defecto",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [],
 								"url": {
@@ -1451,6 +2297,16 @@
 						{
 							"name": "Obtener Productos en Bodega",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1472,6 +2328,16 @@
 						{
 							"name": "Obtener Ubicacion de Producto",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1493,6 +2359,16 @@
 						{
 							"name": "Obtener Todos los Productos",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -1566,23 +2442,33 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost"
+			"value": "http://localhost:8080",
+			"description": "Nginx Gateway - Punto de entrada principal"
+		},
+		{
+			"key": "base_url_auth",
+			"value": "http://localhost:8080/auth",
+			"description": "Auth-Service via Gateway"
 		},
 		{
 			"key": "base_url_usuarios",
-			"value": "http://localhost:5001/usuarios"
+			"value": "http://localhost:8080/usuarios",
+			"description": "Usuarios via Gateway"
 		},
 		{
 			"key": "base_url_productos",
-			"value": "http://localhost:5000/productos"
+			"value": "http://localhost:8080/productos",
+			"description": "Productos via Gateway"
 		},
 		{
 			"key": "base_url_ventas",
-			"value": "http://localhost:5002/ventas"
+			"value": "http://localhost:8080/ventas",
+			"description": "Ventas via Gateway"
 		},
 		{
 			"key": "base_url_logistica",
-			"value": "http://localhost:5003/logistica"
+			"value": "http://localhost:8080/logistica",
+			"description": "Logística via Gateway"
 		},
 		{
 			"key": "proveedor_id",
@@ -1619,6 +2505,19 @@
 		{
 			"key": "bodega_id",
 			"value": "bodega-uuid-ejemplo"
+		},
+		{
+			"key": "administrador_id",
+			"value": "admin-uuid-ejemplo"
+		},
+		{
+			"key": "repartidor_id",
+			"value": "repartidor-uuid-ejemplo"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"description": "Token JWT obtenido del login"
 		}
 	]
 }

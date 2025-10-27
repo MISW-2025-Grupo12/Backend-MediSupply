@@ -41,7 +41,8 @@ class TestObtenerVendedorPorId:
             nombre="María García",
             email="maria@email.com",
             telefono="0987654321",
-            direccion="Avenida 456 #78-90"
+            direccion="Avenida 456 #78-90",
+            identificacion="1001234567"
         )
         
         with patch('aplicacion.consultas.obtener_vendedor_por_id.RepositorioVendedorSQLite') as mock_repo_class:

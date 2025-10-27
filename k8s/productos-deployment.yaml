@@ -6,7 +6,7 @@ metadata:
   labels:
     app: productos
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: productos
@@ -97,6 +97,8 @@ metadata:
   namespace: medisupply
   labels:
     app: productos
+  annotations:
+    cloud.google.com/backend-config: '{"default": "medisupply-cors-config"}'
 spec:
   selector:
     app: productos

@@ -1,0 +1,12 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: medisupply-cors-config
+  namespace: medisupply
+spec:
+  iap:
+    enabled: false
+  timeoutSec: 60
+  connectionDraining:
+    drainingTimeoutSec: 60
+

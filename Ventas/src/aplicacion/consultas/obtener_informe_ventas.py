@@ -30,7 +30,7 @@ class ObtenerInformeVentasHandler:
     def handle(self, consulta: ObtenerInformeVentas) -> dict:
         """
         Obtiene las métricas principales del dashboard:
-        - Ventas totales
+        - Ventas totales (solo pedidos ENTREGADOS)
         - Total de productos vendidos
         - Ventas por mes
         - Ventas por cliente
@@ -44,7 +44,7 @@ class ObtenerInformeVentasHandler:
             )
 
             if not pedidos:
-                logger.info("No se encontraron pedidos confirmados en el rango dado.")
+                logger.info("No se encontraron pedidos entregados en el rango dado.")
                 return {
                     "ventas_totales": 0,
                     "total_productos_vendidos": 0,
@@ -60,7 +60,7 @@ class ObtenerInformeVentasHandler:
             productos_vendidos = {}
 
             # -------------------------------------------------------
-            # Recorremos los pedidos confirmados y acumulamos métricas
+            # Recorremos los pedidos entregados y acumulamos métricas
             # -------------------------------------------------------
             for pedido in pedidos:
                 total_ventas += pedido.total.valor

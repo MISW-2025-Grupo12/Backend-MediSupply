@@ -6,6 +6,7 @@ from aplicacion.comandos.agregar_item_pedido import AgregarItemPedido
 from aplicacion.comandos.actualizar_item_pedido import ActualizarItemPedido
 from aplicacion.comandos.quitar_item_pedido import QuitarItemPedido
 from aplicacion.comandos.confirmar_pedido import ConfirmarPedido
+from aplicacion.comandos.cambiar_estado_pedido import CambiarEstadoPedido
 from aplicacion.comandos.crear_pedido_completo import CrearPedidoCompleto, ItemPedidoCompleto
 from aplicacion.consultas.obtener_pedido import ObtenerPedido
 from aplicacion.consultas.obtener_pedidos import ObtenerPedidos
@@ -406,6 +407,74 @@ def crear_pedido_completo():
         
     except Exception as e:
         logger.error(f"Error creando pedido completo: {e}")
+        return Response(
+            json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
+            status=500, 
+            mimetype='application/json'
+        )
+
+@bp.route('/<pedido_id>/estado', methods=['PUT'])
+def cambiar_estado_pedido(pedido_id):
+    """Cambiar el estado de un pedido (en_transito, entregado)"""
+    try:
+        data = request.json
+        
+        if not data:
+            return Response(
+                json.dumps({'error': 'Se requiere un JSON válido'}), 
+                status=400, 
+                mimetype='application/json'
+            )
+        
+        nuevo_estado = data.get('estado', '').strip()
+        
+        if not nuevo_estado:
+            return Response(
+                json.dumps({'error': 'El campo "estado" es obligatorio'}), 
+                status=400, 
+                mimetype='application/json'
+            )
+        
+        # Obtener información del usuario desde el token JWT
+        usuario_id = request.headers.get('X-User-Id', '')
+        tipo_usuario = request.headers.get('X-User-Role', '')
+        
+        # Debug: Log de headers
+        logger.info(f"Headers recibidos: {dict(request.headers)}")
+        logger.info(f"X-User-Id: '{usuario_id}', X-User-Role: '{tipo_usuario}'")
+        
+        if not usuario_id or not tipo_usuario:
+            logger.error(f"Headers faltantes - X-User-Id: '{usuario_id}', X-User-Role: '{tipo_usuario}'")
+            return Response(
+                json.dumps({'error': 'Información de usuario no disponible'}), 
+                status=401, 
+                mimetype='application/json'
+            )
+        
+        comando = CambiarEstadoPedido(
+            pedido_id=pedido_id,
+            nuevo_estado=nuevo_estado,
+            usuario_id=usuario_id,
+            tipo_usuario=tipo_usuario
+        )
+        
+        resultado = ejecutar_comando(comando)
+        
+        if resultado.get('success'):
+            return Response(
+                json.dumps(resultado), 
+                status=200, 
+                mimetype='application/json'
+            )
+        else:
+            return Response(
+                json.dumps(resultado), 
+                status=400, 
+                mimetype='application/json'
+            )
+        
+    except Exception as e:
+        logger.error(f"Error cambiando estado del pedido: {e}")
         return Response(
             json.dumps({'error': f'Error interno del servidor: {str(e)}'}), 
             status=500, 

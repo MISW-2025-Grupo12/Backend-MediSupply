@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deployment
+  namespace: medisupply
+  labels:
+    app: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: gcr.io/desarrolloswcloud/auth-service:latest
+        ports:
+        - containerPort: 5004
+        env:
+        - name: FLASK_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: FLASK_ENV
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: jwt-secret-key
+        - name: USUARIOS_SERVICE_URL
+          value: "http://usuarios-service:5001"
+        - name: TOKEN_EXPIRATION_HOURS
+          value: "24"
+        - name: HOST
+          value: "0.0.0.0"
+        - name: PORT
+          value: "5004"
+        volumeMounts:
+        - name: permissions-config
+          mountPath: /app/config
+          readOnly: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5004
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5004
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: permissions-config
+        configMap:
+          name: auth-permissions
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: medisupply
+  labels:
+    app: auth-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "medisupply-cors-config"}'
+spec:
+  selector:
+    app: auth-service
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5004
+      targetPort: 5004
+  type: ClusterIP
+

@@ -13,6 +13,7 @@ class TestAPICliente:
         cliente_data = {
             'nombre': 'Juan Pérez',
             'email': 'juan@email.com',
+            'identificacion': '1234567890',
             'telefono': '1234567890',
             'direccion': 'Calle 123 #45-67'
         }
@@ -23,8 +24,10 @@ class TestAPICliente:
             mock_cliente.id = str(uuid.uuid4())
             mock_cliente.nombre = 'Juan Pérez'
             mock_cliente.email = 'juan@email.com'
+            mock_cliente.identificacion = '1234567890'
             mock_cliente.telefono = '1234567890'
             mock_cliente.direccion = 'Calle 123 #45-67'
+            mock_cliente.estado = 'ACTIVO'
             mock_ejecutar.return_value = mock_cliente
             
             # Act
@@ -39,6 +42,7 @@ class TestAPICliente:
             response_data = json.loads(response.data.decode())
             assert response_data['nombre'] == 'Juan Pérez'
             assert response_data['email'] == 'juan@email.com'
+            assert response_data['identificacion'] == '1234567890'
             assert response_data['telefono'] == '1234567890'
             assert response_data['direccion'] == 'Calle 123 #45-67'
     
@@ -97,9 +101,9 @@ class TestAPICliente:
         with patch('aplicacion.consultas.obtener_clientes.ObtenerClientesHandler.handle') as mock_ejecutar:
             mock_clientes = [
                 Mock(id=str(uuid.uuid4()), nombre='Juan Pérez',
-                     email='juan@email.com', telefono='1234567890', direccion='Calle 123 #45-67'),
+                     email='juan@email.com', identificacion='1234567890', telefono='1234567890', direccion='Calle 123 #45-67', estado='ACTIVO'),
                 Mock(id=str(uuid.uuid4()), nombre='María García',
-                     email='maria@email.com', telefono='0987654321', direccion='Avenida 456 #78-90')
+                     email='maria@email.com', identificacion='0987654321', telefono='0987654321', direccion='Avenida 456 #78-90', estado='ACTIVO')
             ]
             mock_ejecutar.return_value = mock_clientes
             
@@ -118,7 +122,7 @@ class TestAPICliente:
     def test_obtener_clientes_lista_vacia(self, client):
         """Test obtener clientes con lista vacía"""
         # Arrange
-        with patch('aplicacion.consultas.obtener_cliente_por_id.ObtenerClientePorIdHandler.handle') as mock_ejecutar:
+        with patch('aplicacion.consultas.obtener_clientes.ObtenerClientesHandler.handle') as mock_ejecutar:
             mock_ejecutar.return_value = []
             
             # Act
@@ -153,8 +157,10 @@ class TestAPICliente:
             mock_cliente.id = cliente_id
             mock_cliente.nombre = 'Juan Pérez'
             mock_cliente.email = 'juan@email.com'
+            mock_cliente.identificacion = '1234567890'
             mock_cliente.telefono = '1234567890'
             mock_cliente.direccion = 'Calle 123 #45-67'
+            mock_cliente.estado = 'ACTIVO'
             mock_ejecutar.return_value = mock_cliente
             
             # Act
@@ -168,6 +174,7 @@ class TestAPICliente:
             assert response_data['id'] == cliente_id
             assert response_data['nombre'] == 'Juan Pérez'
             assert response_data['email'] == 'juan@email.com'
+            assert response_data['identificacion'] == '1234567890'
             assert response_data['telefono'] == '1234567890'
             assert response_data['direccion'] == 'Calle 123 #45-67'
     
@@ -201,6 +208,126 @@ class TestAPICliente:
             
             # Assert
             assert response.status_code == 500
+            response_data = json.loads(response.data.decode())
+            assert 'error' in response_data
+            assert 'Error interno del servidor' in response_data['error']
+    
+    def test_modificar_estado_cliente_exitoso(self, client):
+        """Test modificar estado del cliente exitoso"""
+        # Arrange
+        cliente_id = str(uuid.uuid4())
+        estado_data = {'estado': 'INACTIVO'}
+        
+        with patch('aplicacion.comandos.modificar_estado_cliente.ModificarEstadoClienteHandler.handle') as mock_ejecutar:
+            mock_cliente = Mock()
+            mock_cliente.id = cliente_id
+            mock_cliente.nombre = 'Juan Pérez'
+            mock_cliente.email = 'juan@email.com'
+            mock_cliente.identificacion = '1234567890'
+            mock_cliente.telefono = '1234567890'
+            mock_cliente.direccion = 'Calle 123 #45-67'
+            mock_cliente.estado = 'INACTIVO'
+            mock_ejecutar.return_value = mock_cliente
+            
+            # Act
+            response = client.put(f"{get_usuarios_url('clientes')}/{cliente_id}/estado",
+                                data=json.dumps(estado_data),
+                                content_type='application/json')
+            
+            # Assert
+            assert response.status_code == 200
+            assert response.mimetype == 'application/json'
+            
+            response_data = json.loads(response.data.decode())
+            assert response_data['id'] == cliente_id
+            assert response_data['nombre'] == 'Juan Pérez'
+            assert response_data['email'] == 'juan@email.com'
+            assert response_data['identificacion'] == '1234567890'
+            assert response_data['telefono'] == '1234567890'
+            assert response_data['direccion'] == 'Calle 123 #45-67'
+            assert response_data['estado'] == 'INACTIVO'
+    
+    def test_modificar_estado_cliente_sin_estado(self, client):
+        """Test modificar estado del cliente sin campo estado"""
+        # Arrange
+        cliente_id = str(uuid.uuid4())
+        estado_data = {'otro_campo': 'valor'}
+        
+        # Act
+        response = client.put(f"{get_usuarios_url('clientes')}/{cliente_id}/estado",
+                             data=json.dumps(estado_data),
+                             content_type='application/json')
+        
+        # Assert
+        assert response.status_code == 400
+        assert response.mimetype == 'application/json'
+        
+        response_data = json.loads(response.data.decode())
+        assert 'error' in response_data
+        assert 'Se requiere el campo "estado"' in response_data['error']
+    
+    def test_modificar_estado_cliente_estado_invalido(self, client):
+        """Test modificar estado del cliente con estado inválido"""
+        # Arrange
+        cliente_id = str(uuid.uuid4())
+        estado_data = {'estado': 'ESTADO_INEXISTENTE'}
+        
+        with patch('aplicacion.comandos.modificar_estado_cliente.ModificarEstadoClienteHandler.handle') as mock_ejecutar:
+            mock_ejecutar.side_effect = ValueError("El estado 'ESTADO_INEXISTENTE' no es válido")
+            
+            # Act
+            response = client.put(f"{get_usuarios_url('clientes')}/{cliente_id}/estado",
+                                data=json.dumps(estado_data),
+                                content_type='application/json')
+            
+            # Assert
+            assert response.status_code == 400
+            assert response.mimetype == 'application/json'
+            
+            response_data = json.loads(response.data.decode())
+            assert 'error' in response_data
+            assert 'El estado' in response_data['error']
+    
+    def test_modificar_estado_cliente_no_encontrado(self, client):
+        """Test modificar estado del cliente no encontrado"""
+        # Arrange
+        cliente_id = str(uuid.uuid4())
+        estado_data = {'estado': 'INACTIVO'}
+        
+        with patch('aplicacion.comandos.modificar_estado_cliente.ModificarEstadoClienteHandler.handle') as mock_ejecutar:
+            mock_ejecutar.side_effect = ValueError(f"Cliente con ID {cliente_id} no encontrado")
+            
+            # Act
+            response = client.put(f"{get_usuarios_url('clientes')}/{cliente_id}/estado",
+                                data=json.dumps(estado_data),
+                                content_type='application/json')
+            
+            # Assert
+            assert response.status_code == 400
+            assert response.mimetype == 'application/json'
+            
+            response_data = json.loads(response.data.decode())
+            assert 'error' in response_data
+            assert 'Cliente con ID' in response_data['error']
+    
+    def test_modificar_estado_cliente_error_interno(self, client):
+        """Test modificar estado del cliente con error interno"""
+        # Arrange
+        cliente_id = str(uuid.uuid4())
+        estado_data = {'estado': 'INACTIVO'}
+        
+        with patch('aplicacion.comandos.modificar_estado_cliente.ModificarEstadoClienteHandler.handle') as mock_ejecutar:
+            mock_ejecutar.side_effect = Exception("Error de base de datos")
+            
+            # Act
+            response = client.put(f"{get_usuarios_url('clientes')}/{cliente_id}/estado",
+                                data=json.dumps(estado_data),
+                                content_type='application/json')
+            
+            # Assert
+            assert response.status_code == 500
+            assert response.mimetype == 'application/json'
+            
             response_data = json.loads(response.data.decode())
             assert 'error' in response_data
             assert 'Error interno del servidor' in response_data['error']

@@ -554,7 +554,7 @@ function Diagnose-Issues {
     $errorPods = kubectl get pods -n medisupply --field-selector=status.phase!=Running -o name
     foreach ($pod in $errorPods) {
         $podName = $pod -replace "pod/", ""
-        Write-Info "Logs de $podName:"
+        Write-Info "Logs de ${podName}:"
         kubectl logs $podName -n medisupply --tail=20
     }
     

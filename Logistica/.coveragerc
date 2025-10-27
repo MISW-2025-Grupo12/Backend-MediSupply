@@ -1,0 +1,27 @@
+[run]
+source = src
+omit = 
+    */tests/*
+    */test_*.py
+    src/config/seed.py
+    src/main.py
+    src/api/test_app.py
+    src/config/test_db.py
+    */seedwork/aplicacion/eventos.py
+    */seedwork/dominio/servicios.py
+    */seedwork/infraestructura/consumidor_pubsub.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+
+precision = 2
+show_missing = True
+skip_covered = False
+

@@ -45,7 +45,7 @@ class TestDescontarInventario:
             cantidad_reservada=5,
             fecha_vencimiento=datetime.now() + timedelta(days=30)
         )
-        self.mock_repositorio.obtener_por_producto_id.return_value = inventario_dto
+        self.mock_repositorio.obtener_por_producto_id.return_value = [inventario_dto]
         
         resultado = self.handler.handle(comando)
         
@@ -58,28 +58,28 @@ class TestDescontarInventario:
             producto_id="prod-1",
             cantidad_disponible=20,
             cantidad_reservada=10,
-            fecha_vencimiento=datetime.now() + timedelta(days=30)
+            fecha_vencimiento=datetime.now() + timedelta(days=30),
+            bodega_id="bodega-1"
         )
-        self.mock_repositorio.obtener_por_producto_id.return_value = inventario_dto
+        self.mock_repositorio.obtener_por_producto_id.return_value = [inventario_dto]
         
-        with patch('aplicacion.comandos.descontar_inventario.Inventario') as mock_inventario_class, \
-             patch('aplicacion.comandos.descontar_inventario.InventarioDTO') as mock_dto_class:
-            mock_inventario = Mock()
-            mock_inventario.descontar_cantidad.return_value = True
-            mock_inventario.producto_id.valor = "prod-1"
-            mock_inventario.cantidad_disponible.valor = 20
-            mock_inventario.cantidad_reservada.valor = 5
-            mock_inventario_class.return_value = mock_inventario
+        with patch('infraestructura.modelos.InventarioModel') as mock_inventario_model, \
+             patch('config.db.db') as mock_db:
+            # Mock del modelo de inventario
+            mock_lote = Mock()
+            mock_lote.cantidad_disponible = 20
+            mock_lote.cantidad_reservada = 10
+            mock_lote.fecha_vencimiento = datetime.now() + timedelta(days=30)
+            mock_inventario_model.query.filter_by.return_value.first.return_value = mock_lote
             
-            # Mock del DTO que se crea en el handler
-            mock_nuevo_dto = Mock()
-            mock_dto_class.return_value = mock_nuevo_dto
+            # Mock de la sesión de DB
+            mock_db.session.commit.return_value = None
             
             resultado = self.handler.handle(comando)
             
             assert resultado['success'] == True
             assert 'Inventario descontado exitosamente' in resultado['message']
-            self.mock_repositorio.crear_o_actualizar.assert_called_once()
+            mock_db.session.commit.assert_called()
 
     def test_handle_error_descontar_cantidad(self):
         comando = DescontarInventario(items=[{"producto_id": "prod-1", "cantidad": 5}])
@@ -87,19 +87,27 @@ class TestDescontarInventario:
             producto_id="prod-1",
             cantidad_disponible=20,
             cantidad_reservada=10,
-            fecha_vencimiento=datetime.now() + timedelta(days=30)
+            fecha_vencimiento=datetime.now() + timedelta(days=30),
+            bodega_id="bodega-1"
         )
-        self.mock_repositorio.obtener_por_producto_id.return_value = inventario_dto
+        self.mock_repositorio.obtener_por_producto_id.return_value = [inventario_dto]
         
-        with patch('aplicacion.comandos.descontar_inventario.Inventario') as mock_inventario_class:
-            mock_inventario = Mock()
-            mock_inventario.descontar_cantidad.return_value = False
-            mock_inventario_class.return_value = mock_inventario
+        with patch('infraestructura.modelos.InventarioModel') as mock_inventario_model, \
+             patch('config.db.db') as mock_db:
+            # Mock del modelo de inventario
+            mock_lote = Mock()
+            mock_lote.cantidad_disponible = 20
+            mock_lote.cantidad_reservada = 10
+            mock_lote.fecha_vencimiento = datetime.now() + timedelta(days=30)
+            mock_inventario_model.query.filter_by.return_value.first.return_value = mock_lote
+            
+            # Mock de la sesión de DB que falla
+            mock_db.session.commit.side_effect = Exception("Error en DB")
             
             resultado = self.handler.handle(comando)
             
             assert resultado['success'] == False
-            assert 'Error descontando inventario' in resultado['error']
+            assert 'Error interno' in resultado['error']
 
     def test_handle_excepcion(self):
         comando = DescontarInventario(items=[{"producto_id": "prod-1", "cantidad": 5}])

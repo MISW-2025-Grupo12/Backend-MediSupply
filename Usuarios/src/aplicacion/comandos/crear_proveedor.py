@@ -4,7 +4,7 @@ import logging
 from aplicacion.dto import ProveedorDTO
 from dominio.fabricas import FabricaProveedor
 from dominio.entidades import Proveedor
-from dominio.objetos_valor import Nombre, Email, Direccion
+from dominio.objetos_valor import Nombre, Email, Direccion, Identificacion, Telefono
 from infraestructura.repositorios import RepositorioProveedorSQLite
 
 logger = logging.getLogger(__name__)
@@ -13,6 +13,8 @@ logger = logging.getLogger(__name__)
 class CrearProveedor(Comando):
     nombre: str
     email: str
+    identificacion: str
+    telefono: str
     direccion: str
 
 class CrearProveedorHandler:
@@ -24,12 +26,16 @@ class CrearProveedorHandler:
             proveedor_dto = ProveedorDTO(
                 nombre=comando.nombre,
                 email=comando.email,
+                identificacion=comando.identificacion,
+                telefono=comando.telefono,
                 direccion=comando.direccion
             )
             
             proveedor_temp = Proveedor(
                 nombre=Nombre(comando.nombre),
                 email=Email(comando.email),
+                identificacion=Identificacion(comando.identificacion),
+                telefono=Telefono(comando.telefono),
                 direccion=Direccion(comando.direccion)
             )
             
