@@ -68,6 +68,7 @@ jobs:
             - 'Logistica/**'
           auth:
             - 'Auth-Service/**'
+            - 'VERSION'
           config:
             - 'k8s/**'
             - '.github/**'
