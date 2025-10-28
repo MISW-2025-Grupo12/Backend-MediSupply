@@ -8,6 +8,7 @@ from aplicacion.consultas.obtener_cliente_por_id import ObtenerClientePorId
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from aplicacion.mapeadores import MapeadorClienteDTOJson
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -64,6 +65,9 @@ def crear_cliente():
 @bp.route('/', methods=['GET'])
 def obtener_clientes():
     try:
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         # Crear consulta
         consulta = ObtenerClientes()
         
@@ -74,8 +78,11 @@ def obtener_clientes():
         mapeador = MapeadorClienteDTOJson()
         clientes_json = mapeador.dtos_a_externo(clientes)
         
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(clientes_json, page=page, page_size=page_size)
+        
         return Response(
-            json.dumps(clientes_json), 
+            json.dumps(resultado_paginado), 
             status=200, 
             mimetype='application/json'
         )

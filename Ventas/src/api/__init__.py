@@ -57,10 +57,11 @@ def create_app(configuracion=None):
                 "service": "ventas",
                 "endpoints": [
                     "POST /ventas/api/visitas/", 
-                    "GET /ventas/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17&vendedor_id=<id>",
-                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+                    "GET /ventas/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17&vendedor_id=<id>&page=1&page_size=20",
+                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17&page=1&page_size=20",
                     "PUT /ventas/api/visitas/<visita_id>",
                     "POST /ventas/api/pedidos/",
+                    "GET /ventas/api/pedidos/?vendedor_id=<id>&cliente_id=<id>&estado=<estado>&page=1&page_size=20",
                     "GET /ventas/api/pedidos/<pedido_id>",
                     "POST /ventas/api/pedidos/<pedido_id>/items",
                     "PUT /ventas/api/pedidos/<pedido_id>/items/<item_id>",
@@ -68,7 +69,13 @@ def create_app(configuracion=None):
                     "POST /ventas/api/pedidos/<pedido_id>/confirmar",
                     "POST /ventas/api/pedidos/completo",
                     "GET /ventas/api/pedidos/productos/buscar"
-                ]
+                ],
+                "pagination": {
+                    "default_page": 1,
+                    "default_page_size": 20,
+                    "max_page_size": 100,
+                    "info": "Todos los endpoints GET que retornan listas soportan paginación con parámetros 'page' y 'page_size'"
+                }
             }
 
         @app.route("/health")

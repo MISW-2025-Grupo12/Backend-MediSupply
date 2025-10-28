@@ -81,8 +81,9 @@ class TestIntegration:
             response = self.client.get(get_usuarios_url('proveedores'))
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
-            assert len(response_data) == 1
-            assert response_data[0]['nombre'] == 'Farmacia Central'
+            assert 'items' in response_data
+            assert len(response_data['items']) == 1
+            assert response_data['items'][0]['nombre'] == 'Farmacia Central'
             
             # 3. Obtener proveedor por ID
             response = self.client.get(f"{get_usuarios_url('proveedores')}/{proveedor_id}")
@@ -127,8 +128,9 @@ class TestIntegration:
             response = self.client.get(get_usuarios_url('clientes'))
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
-            assert len(response_data) == 1
-            assert response_data[0]['nombre'] == 'Juan Pérez'
+            assert 'items' in response_data
+            assert len(response_data['items']) == 1
+            assert response_data['items'][0]['nombre'] == 'Juan Pérez'
             
             # 3. Obtener cliente por ID
             response = self.client.get(f"{get_usuarios_url('clientes')}/{cliente_id}")
@@ -172,8 +174,9 @@ class TestIntegration:
             response = self.client.get(get_usuarios_url('vendedores'))
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
-            assert len(response_data) == 1
-            assert response_data[0]['nombre'] == 'Carlos López'
+            assert 'items' in response_data
+            assert len(response_data['items']) == 1
+            assert response_data['items'][0]['nombre'] == 'Carlos López'
             
             # 3. Obtener vendedor por ID
             response = self.client.get(f"{get_usuarios_url('vendedores')}/{vendedor_id}")

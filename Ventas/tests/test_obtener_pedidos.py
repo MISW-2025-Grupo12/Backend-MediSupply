@@ -19,19 +19,23 @@ class TestObtenerPedidos:
         consulta = ObtenerPedidos()
         
         assert consulta.vendedor_id is None
+        assert consulta.cliente_id is None
         assert consulta.estado is None
     
     def test_crear_consulta_con_filtros(self):
         """Test crear consulta con filtros"""
         vendedor_id = str(uuid.uuid4())
+        cliente_id = str(uuid.uuid4())
         estado = "borrador"
         
         consulta = ObtenerPedidos(
             vendedor_id=vendedor_id,
+            cliente_id=cliente_id,
             estado=estado
         )
         
         assert consulta.vendedor_id == vendedor_id
+        assert consulta.cliente_id == cliente_id
         assert consulta.estado == estado
 
 class TestObtenerPedidosHandler:
@@ -106,6 +110,35 @@ class TestObtenerPedidosHandler:
             
             assert len(resultado) == 1
             assert resultado[0]['vendedor_id'] == self.vendedor_id
+    
+    def test_handle_con_filtro_cliente(self):
+        """Test manejar consulta con filtro por cliente"""
+        consulta = ObtenerPedidos(cliente_id=self.cliente_id)
+        
+        # Crear mocks de pedidos
+        mock_pedido1 = Mock()
+        mock_pedido1.id = uuid.uuid4()
+        mock_pedido1.vendedor_id = self.vendedor_id
+        mock_pedido1.cliente_id = self.cliente_id
+        mock_pedido1.estado.estado = "borrador"
+        mock_pedido1.total.valor = 100.0
+        mock_pedido1.items = []
+        
+        mock_pedido2 = Mock()
+        mock_pedido2.id = uuid.uuid4()
+        mock_pedido2.vendedor_id = str(uuid.uuid4())
+        mock_pedido2.cliente_id = str(uuid.uuid4())  # Diferente cliente
+        mock_pedido2.estado.estado = "confirmado"
+        mock_pedido2.total.valor = 200.0
+        mock_pedido2.items = []
+        
+        pedidos = [mock_pedido1, mock_pedido2]
+        
+        with patch.object(self.handler._repositorio, 'obtener_todos', return_value=pedidos):
+            resultado = self.handler.handle(consulta)
+            
+            assert len(resultado) == 1
+            assert resultado[0]['cliente_id'] == self.cliente_id
     
     def test_handle_con_filtro_estado(self):
         """Test manejar consulta con filtro por estado"""

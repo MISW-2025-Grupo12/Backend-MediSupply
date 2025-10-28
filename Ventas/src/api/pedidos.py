@@ -13,6 +13,7 @@ from aplicacion.consultas.obtener_pedidos import ObtenerPedidos
 from aplicacion.servicios.validador_pedidos import ValidadorPedidos
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 from infraestructura.servicio_logistica import ServicioLogistica
 
 import logging
@@ -104,22 +105,30 @@ def obtener_pedido(pedido_id):
 
 @bp.route('/', methods=['GET'])
 def obtener_pedidos():
-    """Obtener todos los pedidos con filtros opcionales"""
+    """Obtener todos los pedidos con filtros opcionales y paginación"""
     try:
         # Obtener parámetros de filtro de la query string
         vendedor_id = request.args.get('vendedor_id', '').strip()
+        cliente_id = request.args.get('cliente_id', '').strip()
         estado = request.args.get('estado', '').strip()
+        
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
         
         # Crear consulta con filtros opcionales
         consulta = ObtenerPedidos(
             vendedor_id=vendedor_id if vendedor_id else None,
+            cliente_id=cliente_id if cliente_id else None,
             estado=estado if estado else None
         )
         
         pedidos = ejecutar_consulta(consulta)
         
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(pedidos, page=page, page_size=page_size)
+        
         return Response(
-            json.dumps(pedidos), 
+            json.dumps(resultado_paginado), 
             status=200, 
             mimetype='application/json'
         )

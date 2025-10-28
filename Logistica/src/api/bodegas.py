@@ -8,6 +8,7 @@ from aplicacion.consultas.obtener_ubicaciones_producto import ObtenerUbicaciones
 from aplicacion.consultas.obtener_todos_los_productos import ObtenerTodosLosProductos
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 
 bp = api.crear_blueprint('bodegas', '/logistica/api/bodegas')
 
@@ -15,9 +16,16 @@ bp = api.crear_blueprint('bodegas', '/logistica/api/bodegas')
 def obtener_bodegas():
     """Obtener todas las bodegas"""
     try:
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         consulta = ObtenerBodegas()
         bodegas = ejecutar_consulta(consulta)
-        return Response(json.dumps(bodegas), status=200, mimetype='application/json')
+        
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(bodegas, page=page, page_size=page_size)
+        
+        return Response(json.dumps(resultado_paginado), status=200, mimetype='application/json')
     except Exception as e:
         return Response(json.dumps({'error': str(e)}), status=500, mimetype='application/json')
 
@@ -55,8 +63,15 @@ def obtener_ubicaciones_producto(producto_id):
 def obtener_todos_los_productos():
     """Obtener todos los productos de todas las bodegas"""
     try:
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         consulta = ObtenerTodosLosProductos()
         productos = ejecutar_consulta(consulta)
-        return Response(json.dumps(productos), status=200, mimetype='application/json')
+        
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(productos, page=page, page_size=page_size)
+        
+        return Response(json.dumps(resultado_paginado), status=200, mimetype='application/json')
     except Exception as e:
         return Response(json.dumps({'error': str(e)}), status=500, mimetype='application/json')

@@ -64,7 +64,10 @@ class TestAPIPedidos:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_pedidos_por_vendedor(self):
         """Test para obtener pedidos filtrados por vendedor"""
@@ -73,7 +76,10 @@ class TestAPIPedidos:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_pedidos_por_cliente(self):
         """Test para obtener pedidos filtrados por cliente"""
@@ -82,7 +88,10 @@ class TestAPIPedidos:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_pedidos_por_estado(self):
         """Test para obtener pedidos filtrados por estado"""
@@ -90,7 +99,10 @@ class TestAPIPedidos:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_pedido_por_id(self):
         """Test para obtener un pedido específico por ID"""

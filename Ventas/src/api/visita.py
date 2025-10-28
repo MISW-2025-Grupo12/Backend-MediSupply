@@ -10,6 +10,7 @@ from aplicacion.consultas.obtener_visitas_por_vendedor import ObtenerVisitasPorV
 from aplicacion.consultas.obtener_evidencias_visita import ObtenerEvidenciasVisita
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 from aplicacion.mapeadores import MapeadorVisitaAgregacionDTOJson
 
 import logging
@@ -100,6 +101,9 @@ def obtener_visitas():
         fecha_inicio = parsear_fecha(fecha_inicio_str) if fecha_inicio_str else None
         fecha_fin = parsear_fecha(fecha_fin_str) if fecha_fin_str else None
         
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         consulta = ObtenerVisitas(
             estado=estado,
             vendedor_id=vendedor_id,
@@ -112,8 +116,11 @@ def obtener_visitas():
         mapeador = MapeadorVisitaAgregacionDTOJson()
         visitas_json = mapeador.agregaciones_a_externo(visitas_agregacion)
         
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(visitas_json, page=page, page_size=page_size)
+        
         return Response(
-            json.dumps(visitas_json), 
+            json.dumps(resultado_paginado), 
             status=200, 
             mimetype='application/json'
         )
@@ -144,6 +151,9 @@ def obtener_visitas_por_vendedor(vendedor_id):
         fecha_inicio = parsear_fecha(fecha_inicio_str) if fecha_inicio_str else None
         fecha_fin = parsear_fecha(fecha_fin_str) if fecha_fin_str else None
         
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         consulta = ObtenerVisitasPorVendedor(
             vendedor_id=vendedor_id, 
             estado=estado,
@@ -156,8 +166,11 @@ def obtener_visitas_por_vendedor(vendedor_id):
         mapeador = MapeadorVisitaAgregacionDTOJson()
         visitas_json = mapeador.agregaciones_a_externo(visitas_agregacion)
         
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(visitas_json, page=page, page_size=page_size)
+        
         return Response(
-            json.dumps(visitas_json), 
+            json.dumps(resultado_paginado), 
             status=200, 
             mimetype='application/json'
         )

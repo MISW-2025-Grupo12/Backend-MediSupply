@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 class ObtenerPedidos(Consulta):
     """Consulta para obtener todos los pedidos"""
     vendedor_id: str = None  # Filtro opcional por vendedor
+    cliente_id: str = None   # Filtro opcional por cliente
     estado: str = None       # Filtro opcional por estado
 
 class ObtenerPedidosHandler:
@@ -25,6 +26,9 @@ class ObtenerPedidosHandler:
             # Aplicar filtros si se especifican
             if consulta.vendedor_id:
                 pedidos = [p for p in pedidos if p.vendedor_id == consulta.vendedor_id]
+            
+            if consulta.cliente_id:
+                pedidos = [p for p in pedidos if p.cliente_id == consulta.cliente_id]
             
             if consulta.estado:
                 pedidos = [p for p in pedidos if p.estado.estado == consulta.estado]

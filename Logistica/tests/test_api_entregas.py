@@ -44,9 +44,13 @@ class TestAPIEntregas:
         
         assert response.status_code == 200
         data = json.loads(response.data)
-        assert isinstance(data, list)
-        assert "pedido" in data[0]
-        assert "productos" in data[0]["pedido"]
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
+        assert len(data['items']) > 0
+        assert "pedido" in data['items'][0]
+        assert "productos" in data['items'][0]["pedido"]
 
     @patch('api.entregas.ejecutar_consulta')
     def test_obtener_entregas_vacio(self, mock_ejecutar_consulta):
@@ -56,7 +60,10 @@ class TestAPIEntregas:
         
         assert response.status_code == 200
         data = json.loads(response.data)
-        assert data == []
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert data['items'] == []
 
     @patch('api.entregas.ejecutar_consulta')
     def test_obtener_entregas_error(self, mock_ejecutar_consulta):
