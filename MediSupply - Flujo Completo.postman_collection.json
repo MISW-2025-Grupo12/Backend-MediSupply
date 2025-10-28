@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "84dd19ad-d2c5-46da-a0b4-678b2e82ad82",
+		"_postman_id": "28eeee66-2db1-4bb8-9563-ba165006958f",
 		"name": "MediSupply - Flujo Completo",
 		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Autenticación JWT** - Registrar usuarios y obtener tokens (vendedores, clientes, proveedores)\n    \n3. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n4. **Crear Productos** - Con y sin inventario\n    \n5. **Crear Visitas** - Programar visitas de venta\n    \n6. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n7. **Gestionar Inventario** - Reservas y descuentos\n    \n8. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n9. **Consultar Entregas** - Ver entregas programadas\n    \n10. **Informes de Ventas** - Consultar datos de ventas por vendedor y fechas",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-84dd19ad-d2c5-46da-a0b4-678b2e82ad82?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-28eeee66-2db1-4bb8-9563-ba165006958f?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -985,11 +985,13 @@
 									"pm.test('Productos listados exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.items).to.be.an('array');",
 									"    console.log('Total de productos:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1100,11 +1102,13 @@
 									"pm.test('Visitas pendientes listadas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.items).to.be.an('array');",
 									"    console.log('Total de visitas pendientes:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1138,7 +1142,7 @@
 								}
 							]
 						},
-						"description": "Lista las visitas en estado pendiente"
+						"description": "Lista las visitas en estado pendiente. Soporta paginación con parámetros ?page=1&page_size=20"
 					},
 					"response": []
 				},
@@ -1152,11 +1156,13 @@
 									"pm.test('Visitas por rango de fechas listadas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.items).to.be.an('array');",
 									"    console.log('Total de visitas en el rango:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1174,7 +1180,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url_ventas}}/api/visitas/?fecha_inicio=2025-10-13&fecha_fin=2025-10-17&estado=pendiente",
+							"raw": "{{base_url_ventas}}/api/visitas/?fecha_inicio=2025-10-13&fecha_fin=2027-10-17&estado=pendiente",
 							"host": [
 								"{{base_url_ventas}}"
 							],
@@ -1191,7 +1197,7 @@
 								},
 								{
 									"key": "fecha_fin",
-									"value": "2025-10-17",
+									"value": "2027-10-17",
 									"description": "Fecha de fin del rango (YYYY-MM-DD)"
 								},
 								{
@@ -1201,7 +1207,7 @@
 								}
 							]
 						},
-						"description": "Lista las visitas programadas en un rango de fechas específico, filtradas por estado"
+						"description": "Lista las visitas programadas en un rango de fechas específico, filtradas por estado. Soporta paginación con parámetros ?page=1&page_size=20"
 					},
 					"response": []
 				},
@@ -1215,11 +1221,13 @@
 									"pm.test('Visitas por vendedor y fechas listadas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.items).to.be.an('array');",
 									"    console.log('Total de visitas del vendedor en el rango:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1237,7 +1245,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?fecha_inicio=2025-10-13&fecha_fin=2025-10-17&estado=pendiente",
+							"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?fecha_inicio=2025-10-13&fecha_fin=2027-10-17&estado=pendiente",
 							"host": [
 								"{{base_url_ventas}}"
 							],
@@ -1255,7 +1263,7 @@
 								},
 								{
 									"key": "fecha_fin",
-									"value": "2025-10-17",
+									"value": "2027-10-17",
 									"description": "Fecha de fin del rango (YYYY-MM-DD)"
 								},
 								{
@@ -1265,7 +1273,7 @@
 								}
 							]
 						},
-						"description": "Lista las visitas de un vendedor específico en un rango de fechas, filtradas por estado"
+						"description": "Lista las visitas de un vendedor específico en un rango de fechas, filtradas por estado. Soporta paginación con parámetros ?page=1&page_size=20"
 					},
 					"response": []
 				}
@@ -1558,6 +1566,69 @@
 						"description": "Confirma el pedido y lo envía a logística para procesamiento"
 					},
 					"response": []
+				},
+				{
+					"name": "Obtener Pedidos por Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Pedidos del cliente obtenidos exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    ",
+									"    // Puede ser array simple o con paginación",
+									"    if (response.items) {",
+									"        pm.expect(response.items).to.be.an('array');",
+									"        pm.expect(response).to.have.property('pagination');",
+									"        console.log('Pedidos del cliente (paginados):', response.items.length);",
+									"        console.log('Total de pedidos:', response.pagination.total_items);",
+									"    } else {",
+									"        pm.expect(response).to.be.an('array');",
+									"        console.log('Pedidos del cliente:', response.length);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/pedidos/?cliente_id={{cliente_id}}",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								""
+							],
+							"query": [
+								{
+									"key": "cliente_id",
+									"value": "{{cliente_id}}"
+								}
+							]
+						},
+						"description": "Obtiene todos los pedidos de un cliente específico. Soporta paginación con parámetros page y page_size."
+					},
+					"response": []
 				}
 			],
 			"description": "Crear pedidos con items y confirmarlos"
@@ -1778,7 +1849,7 @@
 								"exec": [
 									"pm.test('Lista de bodegas obtenida exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    pm.expect(response).to.be.an('array');",
 									"    pm.expect(response.length).to.be.greaterThan(0);",
 									"    pm.collectionVariables.set('bodega_id', response[0].id);",
@@ -1830,14 +1901,14 @@
 									"pm.test('Todos los productos obtenidos exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    pm.expect(response.length).to.be.greaterThan(0);",
+									"    pm.expect(response.items).to.be.an('array');",
+									"    pm.expect(response.items.length).to.be.greaterThan(0);",
 									"    console.log('Total productos encontrados:', response.length);",
 									"});",
 									"",
 									"pm.test('Estructura de productos válida', function () {",
 									"    const response = pm.response.json();",
-									"    const producto = response[0];",
+									"    const producto = response.items[0];",
 									"    pm.expect(producto).to.have.property('id');",
 									"    pm.expect(producto).to.have.property('nombre');",
 									"    pm.expect(producto).to.have.property('stock');",
@@ -1849,7 +1920,7 @@
 									"",
 									"pm.test('Estructura de ubicaciones válida', function () {",
 									"    const response = pm.response.json();",
-									"    const ubicacion = response[0].ubicaciones[0];",
+									"    const ubicacion = response.items[0].ubicaciones[0];",
 									"    pm.expect(ubicacion).to.have.property('nombre');",
 									"    pm.expect(ubicacion).to.have.property('pasillo');",
 									"    pm.expect(ubicacion).to.have.property('estante');",
@@ -1905,14 +1976,14 @@
 								"exec": [
 									"pm.test('Productos en bodega obtenidos exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    pm.expect(response).to.be.an('array');",
 									"    pm.expect(response.length).to.be.greaterThan(0);",
 									"    console.log('Productos en bodega:', response.length);",
 									"});",
 									"",
 									"pm.test('Estructura de productos válida', function () {",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    const producto = response[0];",
 									"    pm.expect(producto).to.have.property('producto_id');",
 									"    pm.expect(producto).to.have.property('cantidad_total');",
@@ -1923,7 +1994,7 @@
 									"});",
 									"",
 									"pm.test('Estructura de ubicaciones válida', function () {",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    const ubicacion = response[0].ubicaciones[0];",
 									"    pm.expect(ubicacion).to.have.property('pasillo');",
 									"    pm.expect(ubicacion).to.have.property('estante');",
@@ -2128,12 +2199,14 @@
 								"exec": [
 									"pm.test('Entregas obtenidas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    pm.expect(response).to.be.an('array');",
 									"    console.log('Total de entregas:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -2174,7 +2247,7 @@
 								"exec": [
 									"pm.test('Entregas por rango de fechas obtenidas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    pm.expect(response).to.be.an('array');",
 									"    console.log('Entregas en el rango de fechas:', response.length);",
 									"});"

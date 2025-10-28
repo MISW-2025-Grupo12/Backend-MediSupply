@@ -7,6 +7,7 @@ from aplicacion.consultas.obtener_vendedor_por_id import ObtenerVendedorPorId
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from aplicacion.mapeadores import MapeadorVendedorDTOJson
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -63,6 +64,9 @@ def crear_vendedor():
 @bp.route('/', methods=['GET'])
 def obtener_vendedores():
     try:
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         # Crear consulta
         consulta = ObtenerVendedores()
         
@@ -73,8 +77,11 @@ def obtener_vendedores():
         mapeador = MapeadorVendedorDTOJson()
         vendedores_json = mapeador.dtos_a_externo(vendedores)
         
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(vendedores_json, page=page, page_size=page_size)
+        
         return Response(
-            json.dumps(vendedores_json), 
+            json.dumps(resultado_paginado), 
             status=200, 
             mimetype='application/json'
         )
