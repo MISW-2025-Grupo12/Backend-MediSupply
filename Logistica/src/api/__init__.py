@@ -97,7 +97,11 @@ def create_app(configuracion=None):
         app.register_blueprint(bodegas.bp)
         
         # Importar consumidores de eventos
+        print("🔔 Importando consumidores de eventos...")
         from aplicacion.eventos.consumidor_pedido_confirmado import manejador
+        print("✅ ManejadorPedidoConfirmado importado")
+        from aplicacion.eventos.consumidor_pedido_entregado import manejador as manejador_entregado
+        print("✅ ManejadorPedidoEntregado importado")
 
         # Endpoint de verificación de estado
         @app.route("/")
