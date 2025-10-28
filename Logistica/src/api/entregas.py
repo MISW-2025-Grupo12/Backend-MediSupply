@@ -6,6 +6,7 @@ from aplicacion.consultas.obtener_entregas import ObtenerEntregas
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from aplicacion.mapeadores import MapeadorEntregaDTOJson
 from infraestructura.servicio_pedidos import obtener_pedido_random
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 
 import random
 from datetime import datetime, timedelta
@@ -91,6 +92,9 @@ def obtener_entregas():
                 return datetime.strptime(valor, "%Y-%m-%d")
 
     try:
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         fecha_inicio_str = request.args.get("fecha_inicio")
         fecha_fin_str = request.args.get("fecha_fin")
 
@@ -120,8 +124,11 @@ def obtener_entregas():
         mapeador = MapeadorEntregaDTOJson()
         entregas_json = [mapeador.dto_a_externo(e) for e in entregas_dto]
 
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(entregas_json, page=page, page_size=page_size)
+
         logger.info(f"✅ {len(entregas_json)} entregas consultadas correctamente")
-        return Response(json.dumps(entregas_json), status=200, mimetype='application/json')
+        return Response(json.dumps(resultado_paginado), status=200, mimetype='application/json')
 
     except Exception as e:
         logger.error(f"❌ Error obteniendo entregas programadas: {e}")

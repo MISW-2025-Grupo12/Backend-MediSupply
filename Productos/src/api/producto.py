@@ -9,6 +9,7 @@ from aplicacion.consultas.obtener_producto_por_id import ObtenerProductoPorId
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from aplicacion.mapeadores import MapeadorProductoDTOJson, MapeadorProductoAgregacionDTOJson
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -128,6 +129,9 @@ def crear_producto_con_inventario():
 @bp.route('/', methods=['GET'])
 def obtener_productos():
     try:
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         # Crear consulta
         consulta = ObtenerProductos()
         
@@ -138,8 +142,11 @@ def obtener_productos():
         mapeador = MapeadorProductoAgregacionDTOJson()
         productos_json = mapeador.agregaciones_a_externo(productos_agregacion)
         
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(productos_json, page=page, page_size=page_size)
+        
         return Response(
-            json.dumps(productos_json), 
+            json.dumps(resultado_paginado), 
             status=200, 
             mimetype='application/json'
         )

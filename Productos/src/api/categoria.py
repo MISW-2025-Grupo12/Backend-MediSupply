@@ -7,6 +7,7 @@ from aplicacion.consultas.obtener_categoria_por_id import ObtenerCategoriaPorId
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from aplicacion.mapeadores import MapeadorCategoriaDTOJson
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -67,6 +68,9 @@ def crear_categoria():
 @bp.route('/', methods=['GET'])
 def obtener_categorias():
     try:
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         # Crear consulta
         consulta = ObtenerCategorias()
         
@@ -79,8 +83,11 @@ def obtener_categorias():
         for categoria in categorias:
             categorias_json.append(mapeador.dto_a_externo(categoria))
         
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(categorias_json, page=page, page_size=page_size)
+        
         return Response(
-            json.dumps(categorias_json), 
+            json.dumps(resultado_paginado), 
             status=200, 
             mimetype='application/json'
         )

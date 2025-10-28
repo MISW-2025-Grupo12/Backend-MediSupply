@@ -972,7 +972,7 @@
 										""
 									]
 								},
-								"description": "Obtiene la lista de todas las visitas"
+								"description": "Obtiene la lista de todas las visitas. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -1009,7 +1009,7 @@
 										}
 									]
 								},
-								"description": "Obtiene solo las visitas en estado pendiente"
+								"description": "Obtiene solo las visitas en estado pendiente. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -1051,7 +1051,7 @@
 										}
 									]
 								},
-								"description": "Obtiene las visitas programadas en un rango de fechas específico"
+								"description": "Obtiene las visitas programadas en un rango de fechas específico. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -1098,7 +1098,7 @@
 										}
 									]
 								},
-								"description": "Obtiene las visitas pendientes en un rango de fechas específico"
+								"description": "Obtiene las visitas pendientes en un rango de fechas específico. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -1145,7 +1145,7 @@
 										}
 									]
 								},
-								"description": "Obtiene las visitas de un vendedor específico en un rango de fechas"
+								"description": "Obtiene las visitas de un vendedor específico en un rango de fechas. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -1193,7 +1193,7 @@
 										}
 									]
 								},
-								"description": "Obtiene las visitas asignadas a un vendedor específico, opcionalmente filtradas por estado y rango de fechas"
+								"description": "Obtiene las visitas asignadas a un vendedor específico, opcionalmente filtradas por estado y rango de fechas. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -1626,7 +1626,7 @@
 										""
 									]
 								},
-								"description": "Obtiene la lista de todos los pedidos"
+								"description": "Obtiene la lista de todos los pedidos. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -1663,7 +1663,7 @@
 										}
 									]
 								},
-								"description": "Obtiene los pedidos de un vendedor específico"
+								"description": "Obtiene los pedidos de un vendedor específico. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -1700,7 +1700,44 @@
 										}
 									]
 								},
-								"description": "Obtiene los pedidos filtrados por estado"
+								"description": "Obtiene los pedidos filtrados por estado. Soporta paginación con parámetros ?page=1&page_size=20"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Pedidos por Cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/pedidos/?cliente_id={{cliente_id}}",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"pedidos",
+										""
+									],
+									"query": [
+										{
+											"key": "cliente_id",
+											"value": "{{cliente_id}}",
+											"description": "ID del cliente"
+										}
+									]
+								},
+								"description": "Obtiene los pedidos de un cliente específico. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
