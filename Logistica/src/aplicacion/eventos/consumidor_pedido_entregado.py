@@ -35,4 +35,5 @@ class ManejadorPedidoEntregado(ManejadorEvento):
 from seedwork.dominio.eventos import despachador_eventos
 manejador = ManejadorPedidoEntregado()
 despachador_eventos.registrar_manejador('PedidoEntregado', manejador)
+print("ManejadorPedidoEntregado registrado correctamente")
 
