@@ -98,6 +98,7 @@ def create_app(configuracion=None):
         
         # Importar consumidores de eventos
         from aplicacion.eventos.consumidor_pedido_confirmado import manejador
+        from aplicacion.eventos.consumidor_pedido_entregado import manejador as manejador_entregado
 
         # Endpoint de verificación de estado
         @app.route("/")

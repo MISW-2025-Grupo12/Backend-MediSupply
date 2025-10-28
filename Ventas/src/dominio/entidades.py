@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import List
 from seedwork.dominio.entidades import Entidad, AgregacionRaiz
 from .objetos_valor import EstadoVisita, FechaProgramada, Direccion, Telefono, Descripcion, FechaRealizada, HoraRealizada, Novedades, PedidoGenerado, EstadoPedido, Cantidad, Precio
-from .eventos import VisitaCreada, PedidoCreado, PedidoConfirmado, ItemAgregado, ItemQuitado
+from .eventos import VisitaCreada, PedidoCreado, PedidoConfirmado, PedidoEntregado, ItemAgregado, ItemQuitado
 
 @dataclass
 class Visita(AgregacionRaiz):
@@ -179,6 +179,24 @@ class Pedido(AgregacionRaiz):
             })
         
         evento = PedidoConfirmado(
+            pedido_id=self.id,
+            vendedor_id=self.vendedor_id,
+            cliente_id=self.cliente_id,
+            items=items_data,
+            total=self.total.valor
+        )
+        return evento
+    
+    def disparar_evento_entrega(self):
+        """Dispara el evento de entrega del pedido"""
+        items_data = []
+        for item in self.items:
+            items_data.append({
+                'producto_id': item.producto_id,
+                'cantidad': item.cantidad.valor
+            })
+        
+        evento = PedidoEntregado(
             pedido_id=self.id,
             vendedor_id=self.vendedor_id,
             cliente_id=self.cliente_id,

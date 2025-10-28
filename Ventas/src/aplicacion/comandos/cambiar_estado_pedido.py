@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from seedwork.aplicacion.comandos import Comando
 from seedwork.aplicacion.comandos import ejecutar_comando as comando
 from infraestructura.repositorios import RepositorioPedidoSQLite
+from seedwork.dominio.eventos import despachador_eventos
 import logging
 
 logger = logging.getLogger(__name__)
@@ -43,6 +44,9 @@ class CambiarEstadoPedidoHandler:
                     'error': 'Pedido no encontrado'
                 }
             
+            # Guardar estado anterior
+            estado_anterior = pedido.estado.estado
+            
             # Validar transición de estado
             transicion_valida, error_transicion = self._validar_transicion_estado(
                 pedido.estado.estado, 
@@ -65,11 +69,16 @@ class CambiarEstadoPedidoHandler:
             # Actualizar en repositorio
             pedido_actualizado = self._repositorio.actualizar(pedido)
             
+            # Disparar evento si el pedido se marcó como entregado
+            if comando.nuevo_estado == 'entregado':
+                evento_entrega = pedido_actualizado.disparar_evento_entrega()
+                despachador_eventos.publicar_evento(evento_entrega)
+            
             return {
                 'success': True,
                 'message': f'Estado del pedido actualizado a {comando.nuevo_estado}',
                 'pedido_id': str(pedido_actualizado.id),
-                'estado_anterior': pedido.estado.estado,
+                'estado_anterior': estado_anterior,
                 'estado_nuevo': comando.nuevo_estado,
                 'vendedor_id': pedido_actualizado.vendedor_id,
                 'cliente_id': pedido_actualizado.cliente_id,

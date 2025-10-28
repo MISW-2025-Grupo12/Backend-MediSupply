@@ -63,6 +63,27 @@ class PedidoConfirmado(EventoDominio):
         }
 
 @dataclass
+class PedidoEntregado(EventoDominio):
+    pedido_id: uuid.UUID = None
+    vendedor_id: str = ""
+    cliente_id: str = ""
+    items: list = None
+    total: float = 0.0
+    
+    def __post_init__(self):
+        if self.items is None:
+            self.items = []
+    
+    def _get_datos_evento(self) -> dict:
+        return {
+            'pedido_id': str(self.pedido_id),
+            'vendedor_id': self.vendedor_id,
+            'cliente_id': self.cliente_id,
+            'items': self.items,
+            'total': self.total
+        }
+
+@dataclass
 class ItemAgregado(EventoDominio):
     pedido_id: uuid.UUID = None
     item_id: uuid.UUID = None
