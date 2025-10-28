@@ -110,6 +110,9 @@ resource "google_container_cluster" "medisupply" {
   }
   
   
+  # Desactivar temporalmente la protección para poder destruir
+  deletion_protection = false
+  
   depends_on = [
     google_project_service.apis,
     google_service_account.medisupply_workload

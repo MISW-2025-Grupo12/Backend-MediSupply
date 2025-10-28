@@ -49,9 +49,12 @@ class TestApiBodegas:
             
             assert response.status_code == 200
             data = json.loads(response.data)
-            assert len(data) == 2
-            assert data[0]['nombre'] == 'Bodega Central'
-            assert data[1]['nombre'] == 'Bodega Norte'
+            assert isinstance(data, dict)
+            assert 'items' in data
+            assert 'pagination' in data
+            assert len(data['items']) == 2
+            assert data['items'][0]['nombre'] == 'Bodega Central'
+            assert data['items'][1]['nombre'] == 'Bodega Norte'
 
     def test_obtener_bodegas_error(self, client):
         """Test para manejo de errores al obtener bodegas"""

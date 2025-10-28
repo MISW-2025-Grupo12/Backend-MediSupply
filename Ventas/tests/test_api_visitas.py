@@ -117,7 +117,10 @@ class TestAPIVisitas:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_visitas_por_estado(self):
         """Test para obtener visitas filtradas por estado"""
@@ -125,7 +128,10 @@ class TestAPIVisitas:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_visitas_por_vendedor(self):
         """Test para obtener visitas filtradas por vendedor"""
@@ -134,7 +140,10 @@ class TestAPIVisitas:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_visitas_por_rango_fechas(self):
         """Test para obtener visitas por rango de fechas"""
@@ -144,7 +153,10 @@ class TestAPIVisitas:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_visitas_por_vendedor_endpoint_especifico(self):
         """Test para obtener visitas por vendedor usando endpoint específico"""
@@ -153,7 +165,10 @@ class TestAPIVisitas:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_visitas_vendedor_con_estado(self):
         """Test para obtener visitas por vendedor filtradas por estado"""
@@ -164,7 +179,10 @@ class TestAPIVisitas:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_obtener_visitas_vendedor_con_fechas(self):
         """Test para obtener visitas por vendedor con rango de fechas"""
@@ -175,7 +193,10 @@ class TestAPIVisitas:
         
         assert response.status_code == 200
         data = response.get_json()
-        assert isinstance(data, list)
+        assert isinstance(data, dict)
+        assert 'items' in data
+        assert 'pagination' in data
+        assert isinstance(data['items'], list)
     
     def test_registrar_visita_endpoint_estructura(self):
         """Test para verificar estructura del endpoint de registrar visita"""

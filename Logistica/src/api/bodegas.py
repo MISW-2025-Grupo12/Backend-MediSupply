@@ -43,16 +43,9 @@ def inicializar_bodegas():
 def obtener_productos_por_bodega(bodega_id):
     """Obtener productos de una bodega específica"""
     try:
-        # Obtener parámetros de paginación
-        page, page_size = extraer_parametros_paginacion(request.args)
-        
         consulta = ObtenerProductosPorBodega(bodega_id=bodega_id)
         productos = ejecutar_consulta(consulta)
-        
-        # Aplicar paginación
-        resultado_paginado = paginar_resultados(productos, page=page, page_size=page_size)
-        
-        return Response(json.dumps(resultado_paginado), status=200, mimetype='application/json')
+        return Response(json.dumps(productos), status=200, mimetype='application/json')
     except Exception as e:
         return Response(json.dumps({'error': str(e)}), status=500, mimetype='application/json')
 

@@ -114,9 +114,11 @@ class TestAPIVendedor:
             assert response.mimetype == 'application/json'
             
             response_data = json.loads(response.data.decode())
-            assert len(response_data) == 2
-            assert response_data[0]['nombre'] == 'Carlos López'
-            assert response_data[1]['nombre'] == 'Ana Martínez'
+            assert 'items' in response_data
+            assert 'pagination' in response_data
+            assert len(response_data['items']) == 2
+            assert response_data['items'][0]['nombre'] == 'Carlos López'
+            assert response_data['items'][1]['nombre'] == 'Ana Martínez'
     
     def test_obtener_vendedores_lista_vacia(self, client):
         """Test obtener vendedores con lista vacía"""
@@ -130,7 +132,9 @@ class TestAPIVendedor:
             # Assert
             assert response.status_code == 200
             response_data = json.loads(response.data.decode())
-            assert response_data == []
+            assert 'items' in response_data
+            assert 'pagination' in response_data
+            assert response_data['items'] == []
     
     def test_obtener_vendedores_error(self, client):
         """Test obtener vendedores con error"""
