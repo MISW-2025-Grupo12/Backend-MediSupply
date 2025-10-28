@@ -252,3 +252,56 @@ resource "google_service_account_iam_member" "workload_identity_binding" {
   ]
 }
 
+# ========================================
+# Google Cloud Storage - Bucket de Evidencias
+# ========================================
+
+# Bucket para almacenar evidencias de visitas
+resource "google_storage_bucket" "evidencias" {
+  name          = "evidencias-g12"
+  location      = "US-EAST1"
+  storage_class = "NEARLINE"
+  project       = var.project_id
+  
+  uniform_bucket_level_access = true
+  
+  # Política de retención de soft delete (7 días por defecto)
+  soft_delete_policy {
+    retention_duration_seconds = 604800
+  }
+  
+  # Versionado de objetos (opcional, útil para recuperación)
+  versioning {
+    enabled = false
+  }
+  
+  # Lifecycle para optimizar costos
+  lifecycle_rule {
+    condition {
+      age = 90  # Después de 90 días
+    }
+    action {
+      type          = "SetStorageClass"
+      storage_class = "ARCHIVE"
+    }
+  }
+  
+  labels = merge(local.common_labels, {
+    purpose = "evidencias-visitas"
+  })
+  
+  depends_on = [google_project_service.apis]
+}
+
+# Permisos IAM para el bucket de evidencias
+resource "google_storage_bucket_iam_member" "evidencias_object_admin" {
+  bucket = google_storage_bucket.evidencias.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.medisupply_workload.email}"
+  
+  depends_on = [
+    google_storage_bucket.evidencias,
+    google_service_account.medisupply_workload
+  ]
+}
+
