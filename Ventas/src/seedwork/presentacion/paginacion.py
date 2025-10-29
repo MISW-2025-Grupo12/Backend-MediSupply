@@ -9,7 +9,7 @@ T = TypeVar('T')
 def paginar_resultados(
     items: List[T], 
     page: int = 1, 
-    page_size: int = 20,
+    page_size: int = 100,
     max_page_size: int = 100
 ) -> Dict[str, Any]:
     """
@@ -18,7 +18,7 @@ def paginar_resultados(
     Args:
         items: Lista completa de items a paginar
         page: Número de página (empieza en 1)
-        page_size: Cantidad de items por página
+        page_size: Cantidad de items por página (default: 100)
         max_page_size: Tamaño máximo permitido por página
         
     Returns:
@@ -27,10 +27,10 @@ def paginar_resultados(
             'items': [...],  # Items de la página actual
             'pagination': {
                 'page': 1,
-                'page_size': 20,
+                'page_size': 100,
                 'total_items': 100,
-                'total_pages': 5,
-                'has_next': True,
+                'total_pages': 1,
+                'has_next': False,
                 'has_prev': False
             }
         }
@@ -49,7 +49,7 @@ def paginar_resultados(
     
     # Validar y ajustar page_size
     if page_size < 1:
-        page_size = 20
+        page_size = 100
     if page_size > max_page_size:
         page_size = max_page_size
     
@@ -101,9 +101,9 @@ def extraer_parametros_paginacion(request_args: dict) -> tuple[int, int]:
         page = 1
     
     try:
-        page_size = int(request_args.get('page_size', 20))
+        page_size = int(request_args.get('page_size', 100))
     except (ValueError, TypeError):
-        page_size = 20
+        page_size = 100
     
     return page, page_size
 

@@ -126,7 +126,7 @@ class TestServicioProductos:
         
         assert len(resultado) == 2
         assert resultado[0]["id"] == "prod-1"
-        mock_get.assert_called_once_with(get_service_url('productos_service'), timeout=5)
+        mock_get.assert_called_once_with(get_service_url('productos_service'), params={'page': 1, 'page_size': 100}, timeout=5)
 
     @patch('infraestructura.servicio_productos.requests.get')
     def test_obtener_todos_productos_error_servidor(self, mock_get):
@@ -138,7 +138,7 @@ class TestServicioProductos:
         resultado = self.servicio.obtener_todos_productos()
         
         assert resultado == []
-        mock_get.assert_called_once_with(get_service_url('productos_service'), timeout=5)
+        mock_get.assert_called_once_with(get_service_url('productos_service'), params={'page': 1, 'page_size': 100}, timeout=5)
 
     @patch('infraestructura.servicio_productos.requests.get')
     def test_obtener_todos_productos_excepcion(self, mock_get):
