@@ -174,11 +174,26 @@ class TestComandoLogin:
         """Test que user_info contiene todos los campos necesarios"""
         with app_context.app_context():
             # Arrange
+            from infraestructura.modelos import VendedorModel
+            from config.db import db
+            
             repositorio = RepositorioUsuario()
             email = "test@example.com"
             password = "password123"
             identificacion = "9876543210"
             entidad_id = str(uuid.uuid4())
+            
+            # Crear la entidad Vendedor primero
+            vendedor_model = VendedorModel(
+                id=entidad_id,
+                nombre="Test Vendedor",
+                email=email,
+                identificacion=identificacion,
+                telefono="3001234567",
+                direccion="Test Dirección"
+            )
+            db.session.add(vendedor_model)
+            db.session.commit()
             
             # Crear usuario
             usuario = repositorio.crear(
@@ -198,11 +213,13 @@ class TestComandoLogin:
             # Assert
             user_info = token_dto.user_info
             assert 'id' in user_info
+            assert 'nombre' in user_info  # Verificar que el nombre está presente
             assert 'email' in user_info
             assert 'tipo_usuario' in user_info
             assert 'identificacion' in user_info
             assert 'entidad_id' in user_info
             assert user_info['id'] == usuario.id
+            assert user_info['nombre'] == "Test Vendedor"  # Verificar que el nombre es correcto
             assert user_info['email'] == email
             assert user_info['tipo_usuario'] == "vendedor"
             assert user_info['identificacion'] == identificacion
