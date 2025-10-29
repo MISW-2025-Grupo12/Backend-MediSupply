@@ -50,13 +50,37 @@ class ServicioProductos:
         """Obtener todos los productos"""
         try:
             url = f"{self.base_url}/productos"
-            response = requests.get(url, timeout=5)
+            all_products = []
+            page = 1
+            page_size = 100
             
-            if response.status_code == 200:
-                return response.json()
-            else:
-                logger.error(f"Error obteniendo todos los productos: {response.status_code}")
-                return []
+            while True:
+                params = {'page': page, 'page_size': page_size}
+                response = requests.get(url, params=params, timeout=5)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    # Si la respuesta tiene paginación, extraer los items
+                    if isinstance(data, dict) and 'items' in data:
+                        items = data['items']
+                        all_products.extend(items)
+                        # Verificar si hay más páginas
+                        pagination = data.get('pagination', {})
+                        if not pagination.get('has_next', False):
+                            break
+                        page += 1
+                    # Si es una lista directa (formato antiguo), devolverla
+                    elif isinstance(data, list):
+                        all_products.extend(data)
+                        break
+                    else:
+                        logger.warning(f"Formato inesperado en respuesta de productos: {type(data)}")
+                        break
+                else:
+                    logger.error(f"Error obteniendo productos (página {page}): {response.status_code}")
+                    break
+            
+            return all_products
                 
         except Exception as e:
             logger.error(f"Error consultando servicio de productos: {e}")

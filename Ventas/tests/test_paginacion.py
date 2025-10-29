@@ -77,13 +77,13 @@ class TestPaginarResultados:
         """Test paginación con tamaño de página inválido"""
         items = list(range(1, 11))
         
-        # page_size negativo debe convertirse a 20 (default)
+        # page_size negativo debe convertirse a 100 (default)
         result = paginar_resultados(items, page=1, page_size=-5)
-        assert result['pagination']['page_size'] == 20
+        assert result['pagination']['page_size'] == 100
         
-        # page_size cero debe convertirse a 20 (default)
+        # page_size cero debe convertirse a 100 (default)
         result = paginar_resultados(items, page=1, page_size=0)
-        assert result['pagination']['page_size'] == 20
+        assert result['pagination']['page_size'] == 100
     
     def test_paginacion_max_page_size(self):
         """Test que page_size no exceda el máximo permitido"""
@@ -96,13 +96,13 @@ class TestPaginarResultados:
     
     def test_paginacion_valores_default(self):
         """Test paginación con valores por defecto"""
-        items = list(range(1, 51))
+        items = list(range(1, 101))
         
         result = paginar_resultados(items)
         
         assert result['pagination']['page'] == 1
-        assert result['pagination']['page_size'] == 20
-        assert len(result['items']) == 20
+        assert result['pagination']['page_size'] == 100
+        assert len(result['items']) == 100
     
     def test_paginacion_todos_los_items_en_una_pagina(self):
         """Test cuando todos los items caben en una página"""
@@ -135,7 +135,7 @@ class TestExtraerParametrosPaginacion:
         page, page_size = extraer_parametros_paginacion(request_args)
         
         assert page == 1
-        assert page_size == 20
+        assert page_size == 100
     
     def test_extraer_parametros_invalidos(self):
         """Test extracción con valores inválidos"""
@@ -144,7 +144,7 @@ class TestExtraerParametrosPaginacion:
         page, page_size = extraer_parametros_paginacion(request_args)
         
         assert page == 1
-        assert page_size == 20
+        assert page_size == 100
     
     def test_extraer_parametros_parciales(self):
         """Test extracción con solo algunos parámetros"""
@@ -153,7 +153,7 @@ class TestExtraerParametrosPaginacion:
         page, page_size = extraer_parametros_paginacion(request_args)
         
         assert page == 3
-        assert page_size == 20
+        assert page_size == 100
         
         request_args = {'page_size': '30'}
         
