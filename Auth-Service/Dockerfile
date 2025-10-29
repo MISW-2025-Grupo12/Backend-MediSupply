@@ -13,6 +13,9 @@ ENV BUILD_DATE=${BUILD_DATE}
 ENV COMMIT_HASH=${COMMIT_HASH}
 ENV ENVIRONMENT=production
 
+# Instalar curl para healthcheck
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Copiar requirements e instalar dependencias
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
