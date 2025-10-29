@@ -67,9 +67,12 @@ def obtener_clientes():
     try:
         # Obtener parámetros de paginación
         page, page_size = extraer_parametros_paginacion(request.args)
+        # Parámetros de ordenamiento opcionales
+        sort_by = request.args.get('sort_by')  # nombre, email, identificacion, created_at
+        order = request.args.get('order')      # asc, desc
         
         # Crear consulta
-        consulta = ObtenerClientes()
+        consulta = ObtenerClientes(sort_by=sort_by, order=order)
         
         # Ejecutar consulta
         clientes = ejecutar_consulta(consulta)
