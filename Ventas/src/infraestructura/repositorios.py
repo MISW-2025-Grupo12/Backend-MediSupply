@@ -1,5 +1,5 @@
 from config.db import db
-from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel, EvidenciaVisitaModel
+from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel, EvidenciaVisitaModel, PlanVisitaModel
 from aplicacion.dto import VisitaDTO, PedidoDTO, ItemPedidoDTO, EvidenciaVisitaDTO
 from dominio.entidades import Pedido, ItemPedido
 from dominio.objetos_valor import EstadoPedido, Cantidad, Precio
@@ -397,3 +397,26 @@ class RepositorioEvidenciaVisita:
 # Alias para compatibilidad
 RepositorioVisita = RepositorioVisitaSQLite
 RepositorioPedido = RepositorioPedidoSQLite
+
+class RepositorioPlanes:
+    """Repositorio para gestionar Planes de Visita."""
+
+    def agregar(self, plan: PlanVisitaModel) -> PlanVisitaModel:
+        db.session.add(plan)
+        db.session.commit()
+        db.session.refresh(plan)
+        return plan
+
+    def obtener_por_id(self, plan_id: str) -> PlanVisitaModel | None:
+        return PlanVisitaModel.query.filter_by(id=plan_id).first()
+
+    def obtener_todos(self) -> list[PlanVisitaModel]:
+        return PlanVisitaModel.query.order_by(PlanVisitaModel.fecha_inicio.desc()).all()
+
+    def obtener_por_usuario(self, user_id: str) -> list[PlanVisitaModel]:
+        return (
+            PlanVisitaModel.query
+            .filter(PlanVisitaModel.id_usuario == user_id)
+            .order_by(PlanVisitaModel.fecha_inicio.desc())
+            .all()
+        )
