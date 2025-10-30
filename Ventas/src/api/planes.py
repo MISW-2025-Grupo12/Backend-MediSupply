@@ -45,9 +45,10 @@ def crear_plan():
         )
 
         resultado = ejecutar_comando(comando)
+        status_code = 201 if resultado.get('success') else resultado.get('code', 400)
         return Response(
             json.dumps(resultado),
-            status=201 if resultado.get('success') else 400,
+            status=status_code,
             mimetype='application/json'
         )
 

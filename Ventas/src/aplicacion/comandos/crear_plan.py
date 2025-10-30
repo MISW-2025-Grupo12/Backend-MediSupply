@@ -33,11 +33,33 @@ class CrearPlanHandler:
         """Crear un nuevo plan de visitas con las visitas asociadas"""
         try:
             # Validar datos mínimos
-            if not comando.nombre or not comando.id_usuario:
-                return {'success': False, 'error': 'nombre e id_usuario son obligatorios'}
+            if not comando.nombre or not isinstance(comando.nombre, str):
+                return {'success': False, 'error': 'El nombre del plan es obligatorio y debe ser texto', 'code': 400}
+            if len(comando.nombre) > 100:
+                return {'success': False, 'error': 'El nombre del plan no debe exceder 100 caracteres', 'code': 400}
+            if not comando.id_usuario:
+                return {'success': False, 'error': 'id_usuario es obligatorio', 'code': 400}
 
             if not comando.visitas_clientes or len(comando.visitas_clientes) == 0:
-                return {'success': False, 'error': 'Debe incluir al menos un cliente con fechas de visita'}
+                return {'success': False, 'error': 'Debe incluir al menos un cliente con fechas de visita', 'code': 400}
+
+            # Validar y convertir fechas de plan
+            try:
+                fecha_inicio_dt = datetime.fromisoformat(comando.fecha_inicio)
+                fecha_fin_dt = datetime.fromisoformat(comando.fecha_fin)
+            except Exception:
+                return {
+                    'success': False,
+                    'error': 'Formato de fecha inválido. Use ISO 8601: YYYY-MM-DDTHH:MM:SS',
+                    'code': 400
+                }
+
+            if fecha_inicio_dt > fecha_fin_dt:
+                return {
+                    'success': False,
+                    'error': 'La fecha y hora de inicio no pueden ser posteriores a la fecha y hora de fin',
+                    'code': 400
+                }
 
             # Crear plan
             plan_id = str(uuid.uuid4())
@@ -45,8 +67,8 @@ class CrearPlanHandler:
                 id=plan_id,
                 nombre=comando.nombre,
                 id_usuario=comando.id_usuario,
-                fecha_inicio=datetime.fromisoformat(comando.fecha_inicio),
-                fecha_fin=datetime.fromisoformat(comando.fecha_fin)
+                fecha_inicio=fecha_inicio_dt,
+                fecha_fin=fecha_fin_dt
             )
 
             db.session.add(plan_model)
@@ -67,17 +89,35 @@ class CrearPlanHandler:
                 datos_cliente = cache_clientes[cliente_id]
 
                 for fecha in cliente.visitas:
+                    # Validar fecha de visita
+                    try:
+                        fecha_programada_dt = datetime.fromisoformat(fecha)
+                    except Exception:
+                        db.session.rollback()
+                        return {
+                            'success': False,
+                            'error': 'Formato de fecha de visita inválido. Use ISO 8601: YYYY-MM-DDTHH:MM:SS',
+                            'code': 400
+                        }
+
                     visita_model = VisitaModel(
                         id=str(uuid.uuid4()),
                         vendedor_id=comando.id_usuario,
                         cliente_id=cliente_id,
-                        fecha_programada=datetime.fromisoformat(fecha),
+                        fecha_programada=fecha_programada_dt,
                         direccion=datos_cliente.get("direccion", "N/A"),
                         telefono=datos_cliente.get("telefono", "N/A"),
                         estado="pendiente",
                         descripcion=f"Visita programada del plan {comando.nombre}",
                         plan_id=plan_id
                     )
+                    # Validar dirección no vacía y longitud máxima
+                    if not visita_model.direccion or len(visita_model.direccion) == 0:
+                        db.session.rollback()
+                        return {'success': False, 'error': 'La dirección de la visita no puede estar vacía', 'code': 400}
+                    if len(visita_model.direccion) > 200:
+                        db.session.rollback()
+                        return {'success': False, 'error': 'La dirección de la visita no debe exceder 200 caracteres', 'code': 400}
                     db.session.add(visita_model)
 
             db.session.commit()

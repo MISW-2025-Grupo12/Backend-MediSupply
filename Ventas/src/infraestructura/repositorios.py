@@ -1,4 +1,7 @@
 from config.db import db
+from sqlalchemy.orm import joinedload
+from sqlalchemy import func, desc
+from sqlalchemy.sql import expression as sql_expr
 from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel, EvidenciaVisitaModel, PlanVisitaModel
 from aplicacion.dto import VisitaDTO, PedidoDTO, ItemPedidoDTO, EvidenciaVisitaDTO
 from dominio.entidades import Pedido, ItemPedido
@@ -403,7 +406,22 @@ class RepositorioPlanes:
 
     def obtener_todos(self) -> list[dict]:
         """Obtener todos los planes incluyendo las visitas agrupadas por cliente"""
-        planes = PlanVisitaModel.query.all()
+        # Ordenar por la fecha de creación más reciente de sus visitas (fallback si no hay visitas)
+        subquery = (
+            db.session.query(VisitaModel.plan_id, func.max(VisitaModel.created_at).label('ultimo'))
+            .group_by(VisitaModel.plan_id)
+            .subquery()
+        )
+
+        # Ordenar con nulls last de forma portable
+        orden = sql_expr.nullslast(subquery.c.ultimo.desc())
+        planes = (
+            PlanVisitaModel.query
+            .options(joinedload(PlanVisitaModel.plan_visitas))
+            .outerjoin(subquery, subquery.c.plan_id == PlanVisitaModel.id)
+            .order_by(orden)
+            .all()
+        )
         resultado = []
 
         for plan in planes:
@@ -438,7 +456,21 @@ class RepositorioPlanes:
 
     def obtener_por_usuario(self, user_id: str) -> list[dict]:
         """Obtener los planes de un usuario específico incluyendo las visitas agrupadas por cliente"""
-        planes = PlanVisitaModel.query.filter_by(id_usuario=user_id).all()
+        subquery = (
+            db.session.query(VisitaModel.plan_id, func.max(VisitaModel.created_at).label('ultimo'))
+            .group_by(VisitaModel.plan_id)
+            .subquery()
+        )
+
+        orden = sql_expr.nullslast(subquery.c.ultimo.desc())
+        planes = (
+            PlanVisitaModel.query
+            .options(joinedload(PlanVisitaModel.plan_visitas))
+            .outerjoin(subquery, subquery.c.plan_id == PlanVisitaModel.id)
+            .filter(PlanVisitaModel.id_usuario == user_id)
+            .order_by(orden)
+            .all()
+        )
         resultado = []
 
         for plan in planes:
