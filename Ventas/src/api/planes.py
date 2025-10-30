@@ -1,7 +1,7 @@
 import seedwork.presentacion.api as api
 import json
 from flask import request, Response
-from aplicacion.comandos.crear_plan import CrearPlan
+from aplicacion.comandos.crear_plan import CrearPlan, ClienteVisita
 from aplicacion.consultas.obtener_planes import ObtenerPlanes, ObtenerPlanesPorUsuario
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
@@ -26,12 +26,22 @@ def crear_plan():
                 mimetype='application/json'
             )
 
+        # Convertir diccionarios de visitas_clientes a objetos ClienteVisita
+        visitas_clientes_raw = data.get('visitas_clientes', [])
+        visitas_clientes = [
+            ClienteVisita(
+                id_cliente=cliente_dict.get('id_cliente', ''),
+                visitas=cliente_dict.get('visitas', [])
+            )
+            for cliente_dict in visitas_clientes_raw
+        ]
+
         comando = CrearPlan(
             nombre=data.get('nombre', ''),
             id_usuario=data.get('id_usuario', ''),
             fecha_inicio=data.get('fecha_inicio'),
             fecha_fin=data.get('fecha_fin'),
-            visitas_clientes=data.get('visitas_clientes', [])
+            visitas_clientes=visitas_clientes
         )
 
         resultado = ejecutar_comando(comando)

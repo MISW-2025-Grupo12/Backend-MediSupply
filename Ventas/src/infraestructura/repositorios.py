@@ -401,22 +401,64 @@ RepositorioPedido = RepositorioPedidoSQLite
 class RepositorioPlanes:
     """Repositorio para gestionar Planes de Visita."""
 
-    def agregar(self, plan: PlanVisitaModel) -> PlanVisitaModel:
-        db.session.add(plan)
-        db.session.commit()
-        db.session.refresh(plan)
-        return plan
+    def obtener_todos(self) -> list[dict]:
+        """Obtener todos los planes incluyendo las visitas agrupadas por cliente"""
+        planes = PlanVisitaModel.query.all()
+        resultado = []
 
-    def obtener_por_id(self, plan_id: str) -> PlanVisitaModel | None:
-        return PlanVisitaModel.query.filter_by(id=plan_id).first()
+        for plan in planes:
+            # Agrupar visitas por cliente
+            visitas_por_cliente = {}
+            for visita in plan.plan_visitas:
+                if visita.cliente_id not in visitas_por_cliente:
+                    visitas_por_cliente[visita.cliente_id] = []
+                visitas_por_cliente[visita.cliente_id].append(
+                    visita.fecha_programada.isoformat()
+                )
 
-    def obtener_todos(self) -> list[PlanVisitaModel]:
-        return PlanVisitaModel.query.order_by(PlanVisitaModel.fecha_inicio.desc()).all()
+            visitas_clientes = [
+                {"id_cliente": cid, "visitas": fechas}
+                for cid, fechas in visitas_por_cliente.items()
+            ]
 
-    def obtener_por_usuario(self, user_id: str) -> list[PlanVisitaModel]:
-        return (
-            PlanVisitaModel.query
-            .filter(PlanVisitaModel.id_usuario == user_id)
-            .order_by(PlanVisitaModel.fecha_inicio.desc())
-            .all()
-        )
+            resultado.append({
+                "id": plan.id,
+                "nombre": plan.nombre,
+                "id_usuario": plan.id_usuario,
+                "fecha_inicio": plan.fecha_inicio.isoformat(),
+                "fecha_fin": plan.fecha_fin.isoformat(),
+                "visitas_clientes": visitas_clientes
+            })
+
+        return resultado
+
+    def obtener_por_usuario(self, user_id: str) -> list[dict]:
+        """Obtener los planes de un usuario específico incluyendo las visitas agrupadas por cliente"""
+        planes = PlanVisitaModel.query.filter_by(id_usuario=user_id).all()
+        resultado = []
+
+        for plan in planes:
+            # Agrupar visitas por cliente
+            visitas_por_cliente = {}
+            for visita in plan.plan_visitas:
+                if visita.cliente_id not in visitas_por_cliente:
+                    visitas_por_cliente[visita.cliente_id] = []
+                visitas_por_cliente[visita.cliente_id].append(
+                    visita.fecha_programada.isoformat()
+                )
+
+            visitas_clientes = [
+                {"id_cliente": cid, "visitas": fechas}
+                for cid, fechas in visitas_por_cliente.items()
+            ]
+
+            resultado.append({
+                "id": plan.id,
+                "nombre": plan.nombre,
+                "id_usuario": plan.id_usuario,
+                "fecha_inicio": plan.fecha_inicio.isoformat(),
+                "fecha_fin": plan.fecha_fin.isoformat(),
+                "visitas_clientes": visitas_clientes
+            })
+
+        return resultado
