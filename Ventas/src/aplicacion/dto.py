@@ -47,3 +47,11 @@ class EvidenciaVisitaDTO(DTO):
     vendedor_id: str
     created_at: datetime
     id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+@dataclass(frozen=True)
+class PlanDTO(DTO):
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+    nombre: str = ""
+    id_usuario: str = ""
+    fecha_inicio: datetime = None
+    fecha_fin: datetime = None

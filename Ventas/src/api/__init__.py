@@ -42,10 +42,11 @@ def create_app(configuracion=None):
         from . import pedidos
         from . import visita
         from . import informes
+        from . import planes
         app.register_blueprint(pedidos.bp)
         app.register_blueprint(visita.bp)
         app.register_blueprint(informes.bp)
-
+        app.register_blueprint(planes.bp)
 
         @app.route("/")
         def root():
