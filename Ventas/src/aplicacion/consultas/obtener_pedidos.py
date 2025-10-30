@@ -53,6 +53,7 @@ class ObtenerPedidosHandler:
                     'cliente_id': pedido.cliente_id,
                     'estado': pedido.estado.estado,
                     'total': pedido.total.valor,
+                    'fecha_creacion': getattr(pedido, '_created_at_model', None).isoformat() if getattr(pedido, '_created_at_model', None) else None,
                     'items': items_data
                 })
             
