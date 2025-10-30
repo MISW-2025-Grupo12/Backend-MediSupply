@@ -40,6 +40,7 @@
   "PUT:/ventas/api/pedidos/[^/]+/estado/?$": ["VENDEDOR", "REPARTIDOR", "ADMINISTRADOR"],
   "POST:/ventas/api/planes/?$": ["VENDEDOR", "ADMINISTRADOR"],
   "GET:/ventas/api/planes/?$": ["VENDEDOR", "ADMINISTRADOR"],
+  "GET:/ventas/api/planes/?.*$": ["VENDEDOR", "ADMINISTRADOR"],
   "GET:/ventas/api/informes/ventas/?$": ["VENDEDOR", "ADMINISTRADOR"],
   
   "POST:/productos/api/productos/?$": ["PROVEEDOR", "ADMINISTRADOR"],
