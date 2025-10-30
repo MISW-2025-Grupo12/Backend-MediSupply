@@ -28,34 +28,22 @@ class ObtenerPlanesHandler:
         """Obtener todos los planes de visita"""
         try:
             planes = self._repo.obtener_todos()
-            # El repositorio ya retorna diccionarios con la estructura completa
-            # Solo necesitamos formatear las fechas a solo fecha (sin hora)
+            # El repositorio retorna estructura completa; formateamos solo fecha_inicio/fin a YYYY-MM-DD
             data = []
             for plan in planes:
-                # Convertir fechas ISO completas a solo fecha
                 fecha_inicio = datetime.fromisoformat(plan["fecha_inicio"]).date().isoformat()
                 fecha_fin = datetime.fromisoformat(plan["fecha_fin"]).date().isoformat()
-                
-                # Formatear fechas de visitas también
-                visitas_clientes_formateadas = []
-                for cliente_visita in plan.get("visitas_clientes", []):
-                    visitas_fechas = [
-                        datetime.fromisoformat(fecha).date().isoformat() 
-                        if 'T' in fecha else fecha
-                        for fecha in cliente_visita.get("visitas", [])
-                    ]
-                    visitas_clientes_formateadas.append({
-                        "id_cliente": cliente_visita["id_cliente"],
-                        "visitas": visitas_fechas
-                    })
-                
+
+                # Mantener visitas tal como vienen (ya son objetos enriquecidos con fecha_programada ISO)
+                visitas_clientes = plan.get("visitas_clientes", [])
+
                 data.append({
                     "id": plan["id"],
                     "nombre": plan["nombre"],
                     "id_usuario": plan["id_usuario"],
                     "fecha_inicio": fecha_inicio,
                     "fecha_fin": fecha_fin,
-                    "visitas_clientes": visitas_clientes_formateadas
+                    "visitas_clientes": visitas_clientes
                 })
             
             logger.info(f"✅ Retornando {len(data)} planes")
@@ -73,34 +61,21 @@ class ObtenerPlanesPorUsuarioHandler:
         """Obtener los planes de un vendedor específico"""
         try:
             planes = self._repo.obtener_por_usuario(consulta.user_id)
-            # El repositorio ya retorna diccionarios con la estructura completa
-            # Solo necesitamos formatear las fechas a solo fecha (sin hora)
+            # El repositorio retorna estructura completa; formateamos solo fecha_inicio/fin a YYYY-MM-DD
             data = []
             for plan in planes:
-                # Convertir fechas ISO completas a solo fecha
                 fecha_inicio = datetime.fromisoformat(plan["fecha_inicio"]).date().isoformat()
                 fecha_fin = datetime.fromisoformat(plan["fecha_fin"]).date().isoformat()
-                
-                # Formatear fechas de visitas también
-                visitas_clientes_formateadas = []
-                for cliente_visita in plan.get("visitas_clientes", []):
-                    visitas_fechas = [
-                        datetime.fromisoformat(fecha).date().isoformat() 
-                        if 'T' in fecha else fecha
-                        for fecha in cliente_visita.get("visitas", [])
-                    ]
-                    visitas_clientes_formateadas.append({
-                        "id_cliente": cliente_visita["id_cliente"],
-                        "visitas": visitas_fechas
-                    })
-                
+
+                visitas_clientes = plan.get("visitas_clientes", [])
+
                 data.append({
                     "id": plan["id"],
                     "nombre": plan["nombre"],
                     "id_usuario": plan["id_usuario"],
                     "fecha_inicio": fecha_inicio,
                     "fecha_fin": fecha_fin,
-                    "visitas_clientes": visitas_clientes_formateadas
+                    "visitas_clientes": visitas_clientes
                 })
             
             logger.info(f"✅ Retornando {len(data)} planes del usuario {consulta.user_id}")

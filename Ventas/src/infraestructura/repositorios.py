@@ -407,18 +407,22 @@ class RepositorioPlanes:
         resultado = []
 
         for plan in planes:
-            # Agrupar visitas por cliente
+            # Agrupar visitas por cliente con objetos de visita completos
             visitas_por_cliente = {}
             for visita in plan.plan_visitas:
                 if visita.cliente_id not in visitas_por_cliente:
                     visitas_por_cliente[visita.cliente_id] = []
-                visitas_por_cliente[visita.cliente_id].append(
-                    visita.fecha_programada.isoformat()
-                )
+                visitas_por_cliente[visita.cliente_id].append({
+                    "id": visita.id,
+                    "fecha_programada": visita.fecha_programada.isoformat(),
+                    "direccion": visita.direccion,
+                    "telefono": visita.telefono,
+                    "estado": visita.estado
+                })
 
             visitas_clientes = [
-                {"id_cliente": cid, "visitas": fechas}
-                for cid, fechas in visitas_por_cliente.items()
+                {"id_cliente": cid, "visitas": visitas}
+                for cid, visitas in visitas_por_cliente.items()
             ]
 
             resultado.append({
@@ -438,18 +442,22 @@ class RepositorioPlanes:
         resultado = []
 
         for plan in planes:
-            # Agrupar visitas por cliente
+            # Agrupar visitas por cliente con objetos de visita completos
             visitas_por_cliente = {}
             for visita in plan.plan_visitas:
                 if visita.cliente_id not in visitas_por_cliente:
                     visitas_por_cliente[visita.cliente_id] = []
-                visitas_por_cliente[visita.cliente_id].append(
-                    visita.fecha_programada.isoformat()
-                )
+                visitas_por_cliente[visita.cliente_id].append({
+                    "id": visita.id,
+                    "fecha_programada": visita.fecha_programada.isoformat(),
+                    "direccion": visita.direccion,
+                    "telefono": visita.telefono,
+                    "estado": visita.estado
+                })
 
             visitas_clientes = [
-                {"id_cliente": cid, "visitas": fechas}
-                for cid, fechas in visitas_por_cliente.items()
+                {"id_cliente": cid, "visitas": visitas}
+                for cid, visitas in visitas_por_cliente.items()
             ]
 
             resultado.append({

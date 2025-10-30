@@ -3,6 +3,7 @@ from typing import List, Dict
 from seedwork.aplicacion.comandos import Comando
 from seedwork.aplicacion.comandos import ejecutar_comando as comando
 from infraestructura.modelos import PlanVisitaModel, VisitaModel
+from infraestructura.servicio_usuarios import ServicioUsuarios
 from config.db import db
 import uuid
 import logging
@@ -50,17 +51,29 @@ class CrearPlanHandler:
 
             db.session.add(plan_model)
 
-            # Crear visitas asociadas
+            # Crear visitas asociadas (enriqueciendo direccion/telefono desde Usuarios)
+            cache_clientes: Dict[str, dict] = {}
+            servicio_usuarios = ServicioUsuarios()
+
             for cliente in comando.visitas_clientes:
                 cliente_id = cliente.id_cliente
+
+                if cliente_id not in cache_clientes:
+                    cliente_data = servicio_usuarios.obtener_cliente_por_id(cliente_id)
+                    if not cliente_data:
+                        db.session.rollback()
+                        return {'success': False, 'error': 'Cliente no encontrado', 'code': 404}
+                    cache_clientes[cliente_id] = cliente_data
+                datos_cliente = cache_clientes[cliente_id]
+
                 for fecha in cliente.visitas:
                     visita_model = VisitaModel(
                         id=str(uuid.uuid4()),
                         vendedor_id=comando.id_usuario,
                         cliente_id=cliente_id,
                         fecha_programada=datetime.fromisoformat(fecha),
-                        direccion=f"Visita automática del plan {comando.nombre}",
-                        telefono="N/A",
+                        direccion=datos_cliente.get("direccion", "N/A"),
+                        telefono=datos_cliente.get("telefono", "N/A"),
                         estado="pendiente",
                         descripcion=f"Visita programada del plan {comando.nombre}",
                         plan_id=plan_id
