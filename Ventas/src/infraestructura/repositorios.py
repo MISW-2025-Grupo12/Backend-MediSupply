@@ -172,6 +172,8 @@ class RepositorioPedidoSQLite:
             estado=EstadoPedido(pedido_model.estado),
             total=Precio(pedido_model.total)
         )
+        # Propagar timestamp de creación del modelo hacia la entidad para respuestas
+        pedido._created_at_model = pedido_model.created_at
         
         return pedido
     
@@ -181,7 +183,7 @@ class RepositorioPedidoSQLite:
         logger = logging.getLogger(__name__)
         logger.info("Obteniendo todos los pedidos")
         
-        pedidos_model = PedidoModel.query.all()
+        pedidos_model = PedidoModel.query.order_by(PedidoModel.created_at.desc()).all()
         pedidos = []
         
         for pedido_model in pedidos_model:
@@ -209,6 +211,8 @@ class RepositorioPedidoSQLite:
                 estado=EstadoPedido(pedido_model.estado),
                 total=Precio(pedido_model.total)
             )
+            # Propagar timestamp de creación
+            pedido._created_at_model = pedido_model.created_at
             pedidos.append(pedido)
         
         logger.info(f"Encontrados {len(pedidos)} pedidos")
