@@ -1829,8 +1829,8 @@
 				{
 					"name": "Planes",
 					"item": [
-						{
-							"name": "Crear Plan de Visitas",
+                        {
+                            "name": "Crear Plan de Visitas",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -1870,8 +1870,28 @@
 									]
 								},
 								"description": "Crea un nuevo plan de ventas con sus visitas asociadas. El plan incluye un nombre, usuario asignado, rango de fechas y una lista de clientes con sus respectivas fechas de visita programadas."
-							},
-							"response": []
+                            },
+                            "response": [
+                                {
+                                    "name": "201 Created",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "url": {
+                                            "raw": "{{base_url_ventas}}/api/planes/"
+                                        }
+                                    },
+                                    "status": "Created",
+                                    "code": 201,
+                                    "_postman_previewlanguage": "json",
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"success\": true,\n  \"message\": \"Plan creado exitosamente\",\n  \"plan_id\": \"1daa796e-0481-4052-abe2-692dfe063c10\"\n}"
+                                }
+                            ]
 						},
 						{
 							"name": "Obtener Todos los Planes",
@@ -1906,8 +1926,25 @@
 									]
 								},
 								"description": "Obtiene todos los planes de visita. Requiere rol de ADMINISTRADOR. Si no se proporciona el header X-User-Role o es diferente de ADMINISTRADOR, se filtrará automáticamente por el usuario autenticado."
-							},
-							"response": []
+                            },
+                            "response": [
+                                {
+                                    "name": "200 OK",
+                                    "originalRequest": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{base_url_ventas}}/api/planes/"
+                                        }
+                                    },
+                                    "status": "OK",
+                                    "code": 200,
+                                    "_postman_previewlanguage": "json",
+                                    "header": [
+                                        {"key": "Content-Type", "value": "application/json"}
+                                    ],
+                                    "body": "{\n  \"success\": true,\n  \"planes\": [\n    {\n      \"id\": \"1daa796e-0481-4052-abe2-692dfe063c10\",\n      \"nombre\": \"Plan de Visitas Octubre 2025\",\n      \"id_usuario\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"fecha_inicio\": \"2025-10-01\",\n      \"fecha_fin\": \"2025-10-31\",\n      \"visitas_clientes\": [\n        {\n          \"id_cliente\": \"550e8400-e29b-41d4-a716-446655440002\",\n          \"visitas\": [\n            {\n              \"id\": \"37862994-d197-4844-b372-2fa3a7d00fd7\",\n              \"fecha_programada\": \"2025-10-05T10:00:00\",\n              \"direccion\": \"Carrera 7 #32-16, Bogotá\",\n              \"telefono\": \"3109876543\",\n              \"estado\": \"pendiente\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}"
+                                }
+                            ]
 						},
 						{
 							"name": "Obtener Planes por Usuario",
@@ -1943,8 +1980,25 @@
 									]
 								},
 								"description": "Obtiene los planes de visita de un usuario específico. Si no se proporciona user_id, se utilizará el usuario del token de autenticación."
-							},
-							"response": []
+                            },
+                            "response": [
+                                {
+                                    "name": "200 OK",
+                                    "originalRequest": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{base_url_ventas}}/api/planes/?user_id={{vendedor_id}}"
+                                        }
+                                    },
+                                    "status": "OK",
+                                    "code": 200,
+                                    "_postman_previewlanguage": "json",
+                                    "header": [
+                                        {"key": "Content-Type", "value": "application/json"}
+                                    ],
+                                    "body": "{\n  \"success\": true,\n  \"planes\": [\n    {\n      \"id\": \"1daa796e-0481-4052-abe2-692dfe063c10\",\n      \"nombre\": \"Plan de Visitas Octubre 2025\",\n      \"id_usuario\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"fecha_inicio\": \"2025-10-01\",\n      \"fecha_fin\": \"2025-10-31\",\n      \"visitas_clientes\": [\n        {\n          \"id_cliente\": \"550e8400-e29b-41d4-a716-446655440002\",\n          \"visitas\": [\n            {\n              \"id\": \"37862994-d197-4844-b372-2fa3a7d00fd7\",\n              \"fecha_programada\": \"2025-10-05T10:00:00\",\n              \"direccion\": \"Carrera 7 #32-16, Bogotá\",\n              \"telefono\": \"3109876543\",\n              \"estado\": \"pendiente\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}"
+                                }
+                            ]
 						}
 					]
 				},
