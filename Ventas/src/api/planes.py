@@ -5,6 +5,7 @@ from aplicacion.comandos.crear_plan import CrearPlan, ClienteVisita
 from aplicacion.consultas.obtener_planes import ObtenerPlanes, ObtenerPlanesPorUsuario
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -74,8 +75,13 @@ def obtener_planes():
             consulta = ObtenerPlanesPorUsuario(user_id=user_id)
 
         planes = ejecutar_consulta(consulta)
+
+        # Paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        resultado_paginado = paginar_resultados(planes, page=page, page_size=page_size)
+
         return Response(
-            json.dumps({'success': True, 'planes': planes}),
+            json.dumps(resultado_paginado),
             status=200,
             mimetype='application/json'
         )

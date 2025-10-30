@@ -1914,17 +1914,21 @@
 										"description": "Rol del usuario (ADMINISTRADOR para ver todos los planes)"
 									}
 								],
-								"url": {
-									"raw": "{{base_url_ventas}}/api/planes/",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"planes",
-										""
-									]
-								},
+                                "url": {
+                                    "raw": "{{base_url_ventas}}/api/planes/?page=1&page_size=10",
+                                    "host": [
+                                        "{{base_url_ventas}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "planes",
+                                        ""
+                                    ],
+                                    "query": [
+                                        {"key": "page", "value": "1"},
+                                        {"key": "page_size", "value": "10"}
+                                    ]
+                                },
 								"description": "Obtiene todos los planes de visita. Requiere rol de ADMINISTRADOR. Si no se proporciona el header X-User-Role o es diferente de ADMINISTRADOR, se filtrará automáticamente por el usuario autenticado."
                             },
                             "response": [
@@ -1961,24 +1965,26 @@
 								},
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{base_url_ventas}}/api/planes/?user_id={{vendedor_id}}",
-									"host": [
-										"{{base_url_ventas}}"
-									],
-									"path": [
-										"api",
-										"planes",
-										""
-									],
-									"query": [
-										{
-											"key": "user_id",
-											"value": "{{vendedor_id}}",
-											"description": "ID del usuario/vendedor para filtrar los planes"
-										}
-									]
-								},
+                                "url": {
+                                    "raw": "{{base_url_ventas}}/api/planes/?user_id={{vendedor_id}}&page=1&page_size=10",
+                                    "host": [
+                                        "{{base_url_ventas}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "planes",
+                                        ""
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "user_id",
+                                            "value": "{{vendedor_id}}",
+                                            "description": "ID del usuario/vendedor para filtrar los planes"
+                                        },
+                                        {"key": "page", "value": "1"},
+                                        {"key": "page_size", "value": "10"}
+                                    ]
+                                },
 								"description": "Obtiene los planes de visita de un usuario específico. Si no se proporciona user_id, se utilizará el usuario del token de autenticación."
                             },
                             "response": [
