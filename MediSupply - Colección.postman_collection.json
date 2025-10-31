@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "bf408684-f5fb-4553-9b83-2f5504b6bcf6",
 		"name": "MediSupply - Colección",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}, PUT/{id}/estado\n    \n- **Autenticación**: POST /registro-vendedor, POST /registro-cliente, POST /registro-proveedor, POST /registro-administrador, POST /registro-repartidor, POST /login\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas, pedidos y planes de venta\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}, PUT/{id}/estado\n    \n- **Autenticación**: POST /registro-vendedor, POST /registro-cliente, POST /registro-proveedor, POST /registro-administrador, POST /registro-repartidor, POST /login\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n- Planes: POST, GET, GET/?user_id={id}\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
 		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-bf408684-f5fb-4553-9b83-2f5504b6bcf6?action=share&source=collection_link&creator=30409960"
@@ -1823,6 +1823,188 @@
 								"description": "Busca productos disponibles para agregar a pedidos"
 							},
 							"response": []
+						}
+					]
+				},
+				{
+					"name": "Planes",
+					"item": [
+                        {
+                            "name": "Crear Plan de Visitas",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Plan de Visitas Octubre 2025\",\n    \"id_usuario\": \"{{vendedor_id}}\",\n    \"fecha_inicio\": \"2025-10-01T00:00:00\",\n    \"fecha_fin\": \"2025-10-31T23:59:59\",\n    \"visitas_clientes\": [\n        {\n            \"id_cliente\": \"{{cliente_id}}\",\n            \"visitas\": [\n                \"2025-10-05T10:00:00\",\n                \"2025-10-15T14:00:00\",\n                \"2025-10-25T09:00:00\"\n            ]\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/planes/",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"planes",
+										""
+									]
+								},
+								"description": "Crea un nuevo plan de ventas con sus visitas asociadas. El plan incluye un nombre, usuario asignado, rango de fechas y una lista de clientes con sus respectivas fechas de visita programadas."
+                            },
+                            "response": [
+                                {
+                                    "name": "201 Created",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "url": {
+                                            "raw": "{{base_url_ventas}}/api/planes/"
+                                        }
+                                    },
+                                    "status": "Created",
+                                    "code": 201,
+                                    "_postman_previewlanguage": "json",
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json"
+                                        }
+                                    ],
+                                    "body": "{\n  \"success\": true,\n  \"message\": \"Plan creado exitosamente\",\n  \"plan_id\": \"1daa796e-0481-4052-abe2-692dfe063c10\"\n}"
+                                }
+                            ]
+						},
+						{
+							"name": "Obtener Todos los Planes",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Role",
+										"value": "ADMINISTRADOR",
+										"description": "Rol del usuario (ADMINISTRADOR para ver todos los planes)"
+									}
+								],
+                                "url": {
+                                    "raw": "{{base_url_ventas}}/api/planes/?page=1&page_size=10",
+                                    "host": [
+                                        "{{base_url_ventas}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "planes",
+                                        ""
+                                    ],
+                                    "query": [
+                                        {"key": "page", "value": "1"},
+                                        {"key": "page_size", "value": "10"}
+                                    ]
+                                },
+								"description": "Obtiene todos los planes de visita. Requiere rol de ADMINISTRADOR. Si no se proporciona el header X-User-Role o es diferente de ADMINISTRADOR, se filtrará automáticamente por el usuario autenticado."
+                            },
+                            "response": [
+                                {
+                                    "name": "200 OK",
+                                    "originalRequest": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{base_url_ventas}}/api/planes/"
+                                        }
+                                    },
+                                    "status": "OK",
+                                    "code": 200,
+                                    "_postman_previewlanguage": "json",
+                                    "header": [
+                                        {"key": "Content-Type", "value": "application/json"}
+                                    ],
+                                    "body": "{\n  \"success\": true,\n  \"planes\": [\n    {\n      \"id\": \"1daa796e-0481-4052-abe2-692dfe063c10\",\n      \"nombre\": \"Plan de Visitas Octubre 2025\",\n      \"id_usuario\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"fecha_inicio\": \"2025-10-01\",\n      \"fecha_fin\": \"2025-10-31\",\n      \"visitas_clientes\": [\n        {\n          \"id_cliente\": \"550e8400-e29b-41d4-a716-446655440002\",\n          \"visitas\": [\n            {\n              \"id\": \"37862994-d197-4844-b372-2fa3a7d00fd7\",\n              \"fecha_programada\": \"2025-10-05T10:00:00\",\n              \"direccion\": \"Carrera 7 #32-16, Bogotá\",\n              \"telefono\": \"3109876543\",\n              \"estado\": \"pendiente\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}"
+                                }
+                            ]
+						},
+						{
+							"name": "Obtener Planes por Usuario",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+                                "url": {
+                                    "raw": "{{base_url_ventas}}/api/planes/?user_id={{vendedor_id}}&page=1&page_size=10",
+                                    "host": [
+                                        "{{base_url_ventas}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "planes",
+                                        ""
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "user_id",
+                                            "value": "{{vendedor_id}}",
+                                            "description": "ID del usuario/vendedor para filtrar los planes"
+                                        },
+                                        {"key": "page", "value": "1"},
+                                        {"key": "page_size", "value": "10"}
+                                    ]
+                                },
+								"description": "Obtiene los planes de visita de un usuario específico. Si no se proporciona user_id, se utilizará el usuario del token de autenticación."
+                            },
+                            "response": [
+                                {
+                                    "name": "200 OK",
+                                    "originalRequest": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{base_url_ventas}}/api/planes/?user_id={{vendedor_id}}"
+                                        }
+                                    },
+                                    "status": "OK",
+                                    "code": 200,
+                                    "_postman_previewlanguage": "json",
+                                    "header": [
+                                        {"key": "Content-Type", "value": "application/json"}
+                                    ],
+                                    "body": "{\n  \"success\": true,\n  \"planes\": [\n    {\n      \"id\": \"1daa796e-0481-4052-abe2-692dfe063c10\",\n      \"nombre\": \"Plan de Visitas Octubre 2025\",\n      \"id_usuario\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"fecha_inicio\": \"2025-10-01\",\n      \"fecha_fin\": \"2025-10-31\",\n      \"visitas_clientes\": [\n        {\n          \"id_cliente\": \"550e8400-e29b-41d4-a716-446655440002\",\n          \"visitas\": [\n            {\n              \"id\": \"37862994-d197-4844-b372-2fa3a7d00fd7\",\n              \"fecha_programada\": \"2025-10-05T10:00:00\",\n              \"direccion\": \"Carrera 7 #32-16, Bogotá\",\n              \"telefono\": \"3109876543\",\n              \"estado\": \"pendiente\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}"
+                                }
+                            ]
 						}
 					]
 				},

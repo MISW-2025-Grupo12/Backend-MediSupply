@@ -1,5 +1,8 @@
 from config.db import db
-from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel, EvidenciaVisitaModel
+from sqlalchemy.orm import joinedload
+from sqlalchemy import func, desc
+from sqlalchemy.sql import expression as sql_expr
+from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel, EvidenciaVisitaModel, PlanVisitaModel
 from aplicacion.dto import VisitaDTO, PedidoDTO, ItemPedidoDTO, EvidenciaVisitaDTO
 from dominio.entidades import Pedido, ItemPedido
 from dominio.objetos_valor import EstadoPedido, Cantidad, Precio
@@ -401,3 +404,105 @@ class RepositorioEvidenciaVisita:
 # Alias para compatibilidad
 RepositorioVisita = RepositorioVisitaSQLite
 RepositorioPedido = RepositorioPedidoSQLite
+
+class RepositorioPlanes:
+    """Repositorio para gestionar Planes de Visita."""
+
+    def obtener_todos(self) -> list[dict]:
+        """Obtener todos los planes incluyendo las visitas agrupadas por cliente"""
+        # Ordenar por la fecha de creación más reciente de sus visitas (fallback si no hay visitas)
+        subquery = (
+            db.session.query(VisitaModel.plan_id, func.max(VisitaModel.created_at).label('ultimo'))
+            .group_by(VisitaModel.plan_id)
+            .subquery()
+        )
+
+        # Ordenar con nulls last de forma portable
+        orden = sql_expr.nullslast(subquery.c.ultimo.desc())
+        planes = (
+            PlanVisitaModel.query
+            .options(joinedload(PlanVisitaModel.plan_visitas))
+            .outerjoin(subquery, subquery.c.plan_id == PlanVisitaModel.id)
+            .order_by(orden)
+            .all()
+        )
+        resultado = []
+
+        for plan in planes:
+            # Agrupar visitas por cliente con objetos de visita completos
+            visitas_por_cliente = {}
+            for visita in plan.plan_visitas:
+                if visita.cliente_id not in visitas_por_cliente:
+                    visitas_por_cliente[visita.cliente_id] = []
+                visitas_por_cliente[visita.cliente_id].append({
+                    "id": visita.id,
+                    "fecha_programada": visita.fecha_programada.isoformat(),
+                    "direccion": visita.direccion,
+                    "telefono": visita.telefono,
+                    "estado": visita.estado
+                })
+
+            visitas_clientes = [
+                {"id_cliente": cid, "visitas": visitas}
+                for cid, visitas in visitas_por_cliente.items()
+            ]
+
+            resultado.append({
+                "id": plan.id,
+                "nombre": plan.nombre,
+                "id_usuario": plan.id_usuario,
+                "fecha_inicio": plan.fecha_inicio.isoformat(),
+                "fecha_fin": plan.fecha_fin.isoformat(),
+                "visitas_clientes": visitas_clientes
+            })
+
+        return resultado
+
+    def obtener_por_usuario(self, user_id: str) -> list[dict]:
+        """Obtener los planes de un usuario específico incluyendo las visitas agrupadas por cliente"""
+        subquery = (
+            db.session.query(VisitaModel.plan_id, func.max(VisitaModel.created_at).label('ultimo'))
+            .group_by(VisitaModel.plan_id)
+            .subquery()
+        )
+
+        orden = sql_expr.nullslast(subquery.c.ultimo.desc())
+        planes = (
+            PlanVisitaModel.query
+            .options(joinedload(PlanVisitaModel.plan_visitas))
+            .outerjoin(subquery, subquery.c.plan_id == PlanVisitaModel.id)
+            .filter(PlanVisitaModel.id_usuario == user_id)
+            .order_by(orden)
+            .all()
+        )
+        resultado = []
+
+        for plan in planes:
+            # Agrupar visitas por cliente con objetos de visita completos
+            visitas_por_cliente = {}
+            for visita in plan.plan_visitas:
+                if visita.cliente_id not in visitas_por_cliente:
+                    visitas_por_cliente[visita.cliente_id] = []
+                visitas_por_cliente[visita.cliente_id].append({
+                    "id": visita.id,
+                    "fecha_programada": visita.fecha_programada.isoformat(),
+                    "direccion": visita.direccion,
+                    "telefono": visita.telefono,
+                    "estado": visita.estado
+                })
+
+            visitas_clientes = [
+                {"id_cliente": cid, "visitas": visitas}
+                for cid, visitas in visitas_por_cliente.items()
+            ]
+
+            resultado.append({
+                "id": plan.id,
+                "nombre": plan.nombre,
+                "id_usuario": plan.id_usuario,
+                "fecha_inicio": plan.fecha_inicio.isoformat(),
+                "fecha_fin": plan.fecha_fin.isoformat(),
+                "visitas_clientes": visitas_clientes
+            })
+
+        return resultado

@@ -42,10 +42,11 @@ def create_app(configuracion=None):
         from . import pedidos
         from . import visita
         from . import informes
+        from . import planes
         app.register_blueprint(pedidos.bp)
         app.register_blueprint(visita.bp)
         app.register_blueprint(informes.bp)
-
+        app.register_blueprint(planes.bp)
 
         @app.route("/")
         def root():
@@ -66,7 +67,10 @@ def create_app(configuracion=None):
                     "DELETE /ventas/api/pedidos/<pedido_id>/items/<item_id>",
                     "POST /ventas/api/pedidos/<pedido_id>/confirmar",
                     "POST /ventas/api/pedidos/completo",
-                    "GET /ventas/api/pedidos/productos/buscar"
+                    "GET /ventas/api/pedidos/productos/buscar",
+                    "POST /ventas/api/planes/",
+                    "GET /ventas/api/planes/",
+                    "GET /ventas/api/planes?vendedor_id=<id>",
                 ],
                 "pagination": {
                     "default_page": 1,
@@ -105,6 +109,8 @@ def create_app(configuracion=None):
                     "POST /ventas/api/pedidos/completo",
                     "GET /ventas/api/pedidos/productos/buscar",
                     "GET /ventas/api/informes/ventas?vendedor_id=<id>&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+                    "POST /ventas/api/planes/",
+                    "GET /ventas/api/planes/",
 
                 ]
             }

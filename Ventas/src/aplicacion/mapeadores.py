@@ -1,7 +1,8 @@
-from aplicacion.dto import VisitaDTO
+from aplicacion.dto import VisitaDTO, PlanDTO
 from aplicacion.dto_agregacion import VisitaAgregacionDTO
 from dominio.entidades import Visita
 from dominio.objetos_valor import EstadoVisita, FechaProgramada, Direccion, Telefono, Descripcion, FechaRealizada, HoraRealizada, Novedades, PedidoGenerado
+from infraestructura.modelos import PlanVisitaModel
 
 class MapeadorVisitaDTOJson:
     def dto_a_externo(self, dto: VisitaDTO) -> dict:
@@ -81,3 +82,27 @@ class MapeadorVisita:
             novedades=entidad.novedades.novedades if entidad.novedades else None,
             pedido_generado=entidad.pedido_generado.pedido_generado if entidad.pedido_generado else None
         )
+    
+
+class MapeadorPlanDTOJson:
+    def modelo_a_dto(self, modelo: PlanVisitaModel) -> PlanDTO:
+        return PlanDTO(
+            id=modelo.id,
+            nombre=modelo.nombre,
+            id_usuario=modelo.id_usuario,
+            fecha_inicio=modelo.fecha_inicio,
+            fecha_fin=modelo.fecha_fin
+        )
+
+    def dto_a_json(self, dto: PlanDTO) -> dict:
+        return {
+            "id": str(dto.id),
+            "nombre": dto.nombre,
+            "id_usuario": dto.id_usuario,
+            "fecha_inicio": dto.fecha_inicio.isoformat() if dto.fecha_inicio else None,
+            "fecha_fin": dto.fecha_fin.isoformat() if dto.fecha_fin else None
+        }
+
+    def modelos_a_json(self, modelos: list[PlanVisitaModel]) -> list[dict]:
+        return [self.dto_a_json(self.modelo_a_dto(m)) for m in modelos]
+

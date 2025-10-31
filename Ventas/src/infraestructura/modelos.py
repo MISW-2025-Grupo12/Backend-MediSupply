@@ -2,6 +2,21 @@ from config.db import db
 import uuid
 from datetime import datetime, date, time
 
+class PlanVisitaModel(db.Model):
+    __tablename__ = 'planes'
+
+    id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    nombre = db.Column(db.String(100), nullable=False)
+    fecha_inicio = db.Column(db.DateTime, nullable=False)
+    fecha_fin = db.Column(db.DateTime, nullable=False)
+    id_usuario = db.Column(db.String, nullable=False)  # Usuario creador (vendedor)
+    # relación 1:N con visitas
+    plan_visitas = db.relationship(
+        'VisitaModel',
+        back_populates='plan',
+        cascade='all, delete-orphan'
+    )
+
 class VisitaModel(db.Model):
     __tablename__ = 'visitas'
     
@@ -19,7 +34,9 @@ class VisitaModel(db.Model):
     pedido_generado = db.Column(db.Boolean, nullable=True, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+    plan_id = db.Column(db.String, db.ForeignKey('planes.id'), nullable=True)
+    plan = db.relationship('PlanVisitaModel', back_populates='plan_visitas')
+
     def to_dict(self):
         return {
             'id': self.id,
