@@ -4,9 +4,6 @@ metadata:
   name: medisupply-ingress
   namespace: medisupply
   annotations:
-    # Usar NGINX Ingress Controller
-    kubernetes.io/ingress.class: "nginx"
-    
     # Tamaño máximo del cuerpo del request (para subir videos/evidencias)
     nginx.ingress.kubernetes.io/proxy-body-size: "100m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
@@ -51,6 +48,7 @@ metadata:
     nginx.ingress.kubernetes.io/cors-max-age: "3600"
 
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     - api.medisupplyg4.online
