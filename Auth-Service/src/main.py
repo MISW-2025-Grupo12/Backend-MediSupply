@@ -2,7 +2,6 @@
 Auth-Service: Servicio centralizado de autenticación y autorización
 """
 from flask import Flask, request, Response, jsonify
-from flask_cors import CORS
 import jwt
 from datetime import datetime, timedelta
 import os
@@ -20,7 +19,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)
 
 # Configuración JWT
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'medisupply-jwt-secret-key-production-2024')

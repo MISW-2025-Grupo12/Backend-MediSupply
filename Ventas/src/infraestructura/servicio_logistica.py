@@ -88,3 +88,30 @@ class ServicioLogistica:
                 'success': False,
                 'error': f'Error interno: {str(e)}'
             }
+    
+    def consumir_reserva(self, items: list[dict]) -> dict:
+        """Consumir (entregar) inventario previamente reservado"""
+        try:
+            url = f"{self.base_url}/inventario/descontar"
+            data = {'items': items}
+            logger.info(f"Consumir reserva en Logística: {url} con data: {data}")
+            
+            response = requests.post(url, json=data, timeout=10)
+            logger.info(f"Respuesta Logística (consumir_reserva): {response.status_code}")
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                try:
+                    error_response = response.json()
+                    error_message = error_response.get('error', f'Error consumiendo reserva: {response.status_code}')
+                    logger.error(f"Error consumiendo reserva: {error_message}")
+                    return {'success': False, 'error': error_message}
+                except:
+                    logger.error(f"Error consumiendo reserva: {response.status_code}")
+                    return {'success': False, 'error': f'Error consumiendo reserva: {response.status_code}'}
+                    
+        except Exception as e:
+            logger.error(f"Error consumiendo reserva: {e}")
+            return {'success': False, 'error': f'Error interno: {str(e)}'}
+

@@ -7,6 +7,7 @@ from aplicacion.consultas.obtener_proveedor_por_id import ObtenerProveedorPorId
 from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from aplicacion.mapeadores import MapeadorProveedorDTOJson
+from seedwork.presentacion.paginacion import paginar_resultados, extraer_parametros_paginacion
 import logging
 
 logger = logging.getLogger(__name__)
@@ -42,13 +43,19 @@ def crear_proveedor():
 @bp.route('/', methods=['GET'])
 def obtener_proveedores():
     try:
+        # Obtener parámetros de paginación
+        page, page_size = extraer_parametros_paginacion(request.args)
+        
         consulta = ObtenerProveedores()
         proveedores = ejecutar_consulta(consulta)
         
         mapeador = MapeadorProveedorDTOJson()
         proveedores_json = [mapeador.dto_a_externo(p) for p in proveedores]
         
-        return Response(json.dumps(proveedores_json), status=200, mimetype='application/json')
+        # Aplicar paginación
+        resultado_paginado = paginar_resultados(proveedores_json, page=page, page_size=page_size)
+        
+        return Response(json.dumps(resultado_paginado), status=200, mimetype='application/json')
     except Exception as e:
         logger.error(f"Error obteniendo proveedores: {e}")
         return Response(json.dumps({'error': f'Error interno del servidor: {str(e)}'}), status=500, mimetype='application/json')

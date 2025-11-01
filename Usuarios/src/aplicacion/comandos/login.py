@@ -7,6 +7,7 @@ import logging
 from aplicacion.dto import TokenDTO
 from dominio.excepciones import CredencialesInvalidasError, UsuarioInactivoError
 from infraestructura.repositorios import RepositorioUsuario
+from infraestructura.modelos import ProveedorModel, VendedorModel, ClienteModel, AdministradorModel, RepartidorModel
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,33 @@ class LoginHandler:
     
     def __init__(self, repositorio_usuario=None):
         self.repositorio_usuario = repositorio_usuario or RepositorioUsuario()
+    
+    def _obtener_nombre_entidad(self, tipo_usuario: str, entidad_id: str) -> str:
+        """Obtiene el nombre de la entidad según el tipo de usuario"""
+        try:
+            tipo_usuario_upper = tipo_usuario.upper()
+            
+            if tipo_usuario_upper == 'PROVEEDOR':
+                entidad = ProveedorModel.query.get(entidad_id)
+                return entidad.nombre if entidad else ''
+            elif tipo_usuario_upper == 'VENDEDOR':
+                entidad = VendedorModel.query.get(entidad_id)
+                return entidad.nombre if entidad else ''
+            elif tipo_usuario_upper == 'CLIENTE':
+                entidad = ClienteModel.query.get(entidad_id)
+                return entidad.nombre if entidad else ''
+            elif tipo_usuario_upper == 'ADMINISTRADOR':
+                entidad = AdministradorModel.query.get(entidad_id)
+                return entidad.nombre if entidad else ''
+            elif tipo_usuario_upper == 'REPARTIDOR':
+                entidad = RepartidorModel.query.get(entidad_id)
+                return entidad.nombre if entidad else ''
+            else:
+                logger.warning(f'Tipo de usuario desconocido: {tipo_usuario}')
+                return ''
+        except Exception as e:
+            logger.error(f'Error obteniendo nombre de entidad: {e}')
+            return ''
     
     def handle(self, comando: Login) -> TokenDTO:
         """
@@ -47,16 +75,20 @@ class LoginHandler:
                 logger.warning(f"Intento de login con contraseña incorrecta: {comando.email}")
                 raise CredencialesInvalidasError()
             
-            # 5. Preparar información del usuario (sin datos sensibles)
+            # 5. Obtener el nombre desde la entidad correspondiente
+            nombre_usuario = self._obtener_nombre_entidad(usuario.tipo_usuario, usuario.entidad_id)
+            
+            # 6. Preparar información del usuario (sin datos sensibles)
             user_info = {
                 'id': usuario.id,
+                'nombre': nombre_usuario,
                 'email': usuario.email,
                 'tipo_usuario': usuario.tipo_usuario,
                 'identificacion': usuario.identificacion,
                 'entidad_id': usuario.entidad_id
             }
             
-            # 6. Crear TokenDTO (sin token real - solo para compatibilidad)
+            # 7. Crear TokenDTO (sin token real - solo para compatibilidad)
             # El Auth-Service generará el token JWT real
             token_dto = TokenDTO(
                 access_token='',  # Token vacío - será generado por Auth-Service

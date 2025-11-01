@@ -119,8 +119,22 @@ class RepositorioClienteSQLite:
             estado=cliente_model.estado
         )
     
-    def obtener_todos(self) -> list[ClienteDTO]:
-        clientes_model = ClienteModel.query.all()
+    def obtener_todos(self, *, sort_by: Optional[str] = None, order: Optional[str] = None) -> list[ClienteDTO]:
+        # Normalizar parámetros
+        allowed_fields = {
+            'nombre': ClienteModel.nombre,
+            'email': ClienteModel.email,
+            'identificacion': ClienteModel.identificacion,
+            'created_at': ClienteModel.created_at
+        }
+
+        # Valores por defecto
+        sort_field = allowed_fields.get((sort_by or 'nombre').lower(), ClienteModel.nombre)
+        sort_order_desc = (order or 'asc').lower() == 'desc'
+
+        query = ClienteModel.query
+        query = query.order_by(sort_field.desc() if sort_order_desc else sort_field.asc())
+        clientes_model = query.all()
         return [
             ClienteDTO(
                 id=uuid.UUID(c.id),

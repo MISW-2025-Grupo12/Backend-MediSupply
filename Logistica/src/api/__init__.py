@@ -2,7 +2,6 @@ import os
 import sys
 import logging
 import threading
-from flask_cors import CORS
 
 # Agregar el directorio src al path de Python para que las importaciones funcionen
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -57,7 +56,6 @@ def create_app(configuracion=None):
     try:
         # Crear la aplicación Flask
         app = Flask(__name__, instance_relative_config=True)
-        CORS(app)
         logger.info("🚀 Aplicación Flask creada")
 
         # Configurar Flask para no redirigir automáticamente URLs sin barra final
@@ -97,7 +95,11 @@ def create_app(configuracion=None):
         app.register_blueprint(bodegas.bp)
         
         # Importar consumidores de eventos
+        print("🔔 Importando consumidores de eventos...")
         from aplicacion.eventos.consumidor_pedido_confirmado import manejador
+        print("✅ ManejadorPedidoConfirmado importado")
+        from aplicacion.eventos.consumidor_pedido_entregado import manejador as manejador_entregado
+        print("✅ ManejadorPedidoEntregado importado")
 
         # Endpoint de verificación de estado
         @app.route("/")

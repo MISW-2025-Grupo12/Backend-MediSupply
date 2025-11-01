@@ -104,3 +104,25 @@ output "static_ip_address" {
   description = "IP estática global asignada al ingress"
   value       = google_compute_global_address.medisupply_static_ip.address
 }
+
+# Outputs de Storage
+output "evidencias_bucket_name" {
+  description = "Nombre del bucket para evidencias de visitas"
+  value       = google_storage_bucket.evidencias.name
+}
+
+output "evidencias_bucket_url" {
+  description = "URL del bucket de evidencias"
+  value       = google_storage_bucket.evidencias.url
+}
+
+output "storage_info" {
+  description = "Información del bucket de evidencias"
+  value = {
+    bucket_name    = google_storage_bucket.evidencias.name
+    bucket_url     = google_storage_bucket.evidencias.url
+    location       = google_storage_bucket.evidencias.location
+    storage_class  = google_storage_bucket.evidencias.storage_class
+    permissions    = "Service account tiene roles/storage.objectAdmin"
+  }
+}

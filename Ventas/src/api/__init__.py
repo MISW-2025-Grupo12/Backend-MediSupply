@@ -6,7 +6,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, jsonify
 from flask_swagger import swagger
-from flask_cors import CORS
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,7 +13,6 @@ logger = logging.getLogger(__name__)
 def create_app(configuracion=None):
     try:
         app = Flask(__name__, instance_relative_config=True)
-        CORS(app)
         logger.info("Aplicación Flask creada")
 
         app.url_map.strict_slashes = False
@@ -44,10 +42,11 @@ def create_app(configuracion=None):
         from . import pedidos
         from . import visita
         from . import informes
+        from . import planes
         app.register_blueprint(pedidos.bp)
         app.register_blueprint(visita.bp)
         app.register_blueprint(informes.bp)
-
+        app.register_blueprint(planes.bp)
 
         @app.route("/")
         def root():
@@ -57,18 +56,28 @@ def create_app(configuracion=None):
                 "service": "ventas",
                 "endpoints": [
                     "POST /ventas/api/visitas/", 
-                    "GET /ventas/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17&vendedor_id=<id>",
-                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+                    "GET /ventas/api/visitas/?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17&vendedor_id=<id>&page=1&page_size=20",
+                    "GET /ventas/api/visitas/vendedor/<vendedor_id>?estado=pendiente&fecha_inicio=2025-10-13&fecha_fin=2025-10-17&page=1&page_size=20",
                     "PUT /ventas/api/visitas/<visita_id>",
                     "POST /ventas/api/pedidos/",
+                    "GET /ventas/api/pedidos/?vendedor_id=<id>&cliente_id=<id>&estado=<estado>&page=1&page_size=20",
                     "GET /ventas/api/pedidos/<pedido_id>",
                     "POST /ventas/api/pedidos/<pedido_id>/items",
                     "PUT /ventas/api/pedidos/<pedido_id>/items/<item_id>",
                     "DELETE /ventas/api/pedidos/<pedido_id>/items/<item_id>",
                     "POST /ventas/api/pedidos/<pedido_id>/confirmar",
                     "POST /ventas/api/pedidos/completo",
-                    "GET /ventas/api/pedidos/productos/buscar"
-                ]
+                    "GET /ventas/api/pedidos/productos/buscar",
+                    "POST /ventas/api/planes/",
+                    "GET /ventas/api/planes/",
+                    "GET /ventas/api/planes?vendedor_id=<id>",
+                ],
+                "pagination": {
+                    "default_page": 1,
+                    "default_page_size": 20,
+                    "max_page_size": 100,
+                    "info": "Todos los endpoints GET que retornan listas soportan paginación con parámetros 'page' y 'page_size'"
+                }
             }
 
         @app.route("/health")
@@ -100,6 +109,8 @@ def create_app(configuracion=None):
                     "POST /ventas/api/pedidos/completo",
                     "GET /ventas/api/pedidos/productos/buscar",
                     "GET /ventas/api/informes/ventas?vendedor_id=<id>&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
+                    "POST /ventas/api/planes/",
+                    "GET /ventas/api/planes/",
 
                 ]
             }

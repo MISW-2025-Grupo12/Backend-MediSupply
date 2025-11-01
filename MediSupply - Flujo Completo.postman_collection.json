@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "84dd19ad-d2c5-46da-a0b4-678b2e82ad82",
+		"_postman_id": "28eeee66-2db1-4bb8-9563-ba165006958f",
 		"name": "MediSupply - Flujo Completo",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Autenticación JWT** - Registrar usuarios y obtener tokens (vendedores, clientes, proveedores)\n    \n3. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n4. **Crear Productos** - Con y sin inventario\n    \n5. **Crear Visitas** - Programar visitas de venta\n    \n6. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n7. **Gestionar Inventario** - Reservas y descuentos\n    \n8. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n9. **Consultar Entregas** - Ver entregas programadas\n    \n10. **Informes de Ventas** - Consultar datos de ventas por vendedor y fechas",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\nColección completa de endpoints para MediSupply con flujo de ejecución automático.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de planes de visitas, visitas y pedidos\n    \n- **Logística** (Puerto 5003) - Control de inventario, entregas y bodegas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📋 Flujo de Ejecución\n\n1. **Configuración Inicial** - Verificar servicios\n    \n2. **Autenticación JWT** - Registrar usuarios y obtener tokens (vendedores, clientes, proveedores)\n    \n3. **Crear Entidades Base** - Proveedores, Categorías, Vendedores, Clientes\n    \n4. **Crear Productos** - Con y sin inventario\n    \n5. **Crear Planes y Visitas** - Crear planes de visitas (que generan visitas automáticamente) y visitas individuales\n    \n6. **Crear Pedidos** - Con items y confirmación (incluye pedido completo)\n    \n7. **Gestionar Inventario** - Reservas y descuentos\n    \n8. **Gestionar Bodegas** - Inicializar y consultar ubicaciones\n    \n9. **Consultar Entregas** - Ver entregas programadas\n    \n10. **Informes de Ventas** - Consultar datos de ventas por vendedor y fechas",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-84dd19ad-d2c5-46da-a0b4-678b2e82ad82?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-28eeee66-2db1-4bb8-9563-ba165006958f?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -985,11 +985,13 @@
 									"pm.test('Productos listados exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.items).to.be.an('array');",
 									"    console.log('Total de productos:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1027,6 +1029,162 @@
 		{
 			"name": "📅 5. Crear Visitas",
 			"item": [
+				{
+					"name": "Crear Plan de Visitas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Plan creado exitosamente', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.success).to.be.true;",
+									"    pm.expect(response.plan_id).to.exist;",
+									"    ",
+									"    // Guardar plan_id para uso en flujos siguientes",
+									"    pm.collectionVariables.set('plan_id', response.plan_id);",
+									"    pm.environment.set('plan_id', response.plan_id);",
+									"    ",
+									"    console.log('✅ Plan creado con ID:', response.plan_id);",
+									"    console.log('✅ El plan ha creado automáticamente las visitas asociadas');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Plan de Visitas Octubre 2025\",\n    \"id_usuario\": \"{{vendedor_id}}\",\n    \"fecha_inicio\": \"2025-10-01T00:00:00\",\n    \"fecha_fin\": \"2025-10-31T23:59:59\",\n    \"visitas_clientes\": [\n        {\n            \"id_cliente\": \"{{cliente_id}}\",\n            \"visitas\": [\n                \"2025-10-05T10:00:00\",\n                \"2025-10-15T14:00:00\",\n                \"2025-10-25T09:00:00\"\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_ventas}}/api/planes/",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"planes",
+								""
+							]
+						},
+						"description": "Crea un nuevo plan de ventas con sus visitas asociadas. El plan agrupa múltiples visitas programadas para diferentes clientes.\n\n**Características:**\n- Las visitas se crean automáticamente con dirección y teléfono obtenidos del servicio de Usuarios\n- El plan_id se guarda automáticamente para uso en flujos siguientes\n- Un plan puede tener múltiples clientes, cada cliente puede tener múltiples visitas\n\n**Flujo:** Este endpoint debe ejecutarse ANTES de crear visitas individuales si quieres agruparlas en un plan."
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Planes Creados",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Planes obtenidos exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('items');",
+									"    pm.expect(response).to.have.property('pagination');",
+									"    pm.expect(response.items).to.be.an('array');",
+									"    ",
+									"    if (response.items.length > 0) {",
+									"        const plan = response.items[0];",
+									"        pm.expect(plan).to.have.property('id');",
+									"        pm.expect(plan).to.have.property('visitas_clientes');",
+									"        pm.expect(plan.visitas_clientes).to.be.an('array');",
+									"        ",
+									"        console.log('✅ Plan encontrado:', plan.nombre);",
+									"        console.log('✅ Total de clientes en el plan:', plan.visitas_clientes.length);",
+									"        ",
+									"        // Mostrar visitas agrupadas por cliente",
+									"        plan.visitas_clientes.forEach((cliente, index) => {",
+									"            console.log(`   Cliente ${index + 1}: ${cliente.id_cliente} tiene ${cliente.visitas.length} visitas`);",
+									"        });",
+									"    } else {",
+									"        console.log('⚠️ No hay planes creados aún');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Role",
+								"value": "VENDEDOR",
+								"description": "Rol del usuario (ADMINISTRADOR para ver todos, VENDEDOR para ver solo los suyos)"
+							}
+						],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/planes/?user_id={{vendedor_id}}&page=1&page_size=10",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"planes",
+								""
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{vendedor_id}}",
+									"description": "ID del vendedor para filtrar sus planes"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene los planes de visita del vendedor autenticado. Los planes incluyen todas las visitas agrupadas por cliente con información completa (id, fecha_programada, direccion, telefono, estado). Soporta paginación."
+					},
+					"response": []
+				},
 				{
 					"name": "Crear Visita de Venta",
 					"event": [
@@ -1100,11 +1258,13 @@
 									"pm.test('Visitas pendientes listadas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.items).to.be.an('array');",
 									"    console.log('Total de visitas pendientes:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1138,7 +1298,7 @@
 								}
 							]
 						},
-						"description": "Lista las visitas en estado pendiente"
+						"description": "Lista las visitas en estado pendiente. Soporta paginación con parámetros ?page=1&page_size=20"
 					},
 					"response": []
 				},
@@ -1152,11 +1312,13 @@
 									"pm.test('Visitas por rango de fechas listadas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.items).to.be.an('array');",
 									"    console.log('Total de visitas en el rango:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1174,7 +1336,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url_ventas}}/api/visitas/?fecha_inicio=2025-10-13&fecha_fin=2025-10-17&estado=pendiente",
+							"raw": "{{base_url_ventas}}/api/visitas/?fecha_inicio=2025-10-13&fecha_fin=2027-10-17&estado=pendiente",
 							"host": [
 								"{{base_url_ventas}}"
 							],
@@ -1191,7 +1353,7 @@
 								},
 								{
 									"key": "fecha_fin",
-									"value": "2025-10-17",
+									"value": "2027-10-17",
 									"description": "Fecha de fin del rango (YYYY-MM-DD)"
 								},
 								{
@@ -1201,7 +1363,7 @@
 								}
 							]
 						},
-						"description": "Lista las visitas programadas en un rango de fechas específico, filtradas por estado"
+						"description": "Lista las visitas programadas en un rango de fechas específico, filtradas por estado. Soporta paginación con parámetros ?page=1&page_size=20"
 					},
 					"response": []
 				},
@@ -1215,11 +1377,13 @@
 									"pm.test('Visitas por vendedor y fechas listadas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
+									"    pm.expect(response.items).to.be.an('array');",
 									"    console.log('Total de visitas del vendedor en el rango:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1237,7 +1401,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?fecha_inicio=2025-10-13&fecha_fin=2025-10-17&estado=pendiente",
+							"raw": "{{base_url_ventas}}/api/visitas/vendedor/{{vendedor_id}}?fecha_inicio=2025-10-13&fecha_fin=2027-10-17&estado=pendiente",
 							"host": [
 								"{{base_url_ventas}}"
 							],
@@ -1255,7 +1419,7 @@
 								},
 								{
 									"key": "fecha_fin",
-									"value": "2025-10-17",
+									"value": "2027-10-17",
 									"description": "Fecha de fin del rango (YYYY-MM-DD)"
 								},
 								{
@@ -1265,12 +1429,12 @@
 								}
 							]
 						},
-						"description": "Lista las visitas de un vendedor específico en un rango de fechas, filtradas por estado"
+						"description": "Lista las visitas de un vendedor específico en un rango de fechas, filtradas por estado. Soporta paginación con parámetros ?page=1&page_size=20"
 					},
 					"response": []
 				}
 			],
-			"description": "Crear visitas de venta programadas"
+			"description": "Crear planes de visitas (que generan visitas automáticamente) y visitas de venta programadas individuales. El flujo recomienda crear primero un plan que agrupa múltiples visitas, y luego consultar los planes creados."
 		},
 		{
 			"name": "🛒 6. Crear Pedidos",
@@ -1558,6 +1722,69 @@
 						"description": "Confirma el pedido y lo envía a logística para procesamiento"
 					},
 					"response": []
+				},
+				{
+					"name": "Obtener Pedidos por Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Pedidos del cliente obtenidos exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const response = pm.response.json();",
+									"    ",
+									"    // Puede ser array simple o con paginación",
+									"    if (response.items) {",
+									"        pm.expect(response.items).to.be.an('array');",
+									"        pm.expect(response).to.have.property('pagination');",
+									"        console.log('Pedidos del cliente (paginados):', response.items.length);",
+									"        console.log('Total de pedidos:', response.pagination.total_items);",
+									"    } else {",
+									"        pm.expect(response).to.be.an('array');",
+									"        console.log('Pedidos del cliente:', response.length);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_ventas}}/api/pedidos/?cliente_id={{cliente_id}}",
+							"host": [
+								"{{base_url_ventas}}"
+							],
+							"path": [
+								"api",
+								"pedidos",
+								""
+							],
+							"query": [
+								{
+									"key": "cliente_id",
+									"value": "{{cliente_id}}"
+								}
+							]
+						},
+						"description": "Obtiene todos los pedidos de un cliente específico. Soporta paginación con parámetros page y page_size."
+					},
+					"response": []
 				}
 			],
 			"description": "Crear pedidos con items y confirmarlos"
@@ -1778,7 +2005,7 @@
 								"exec": [
 									"pm.test('Lista de bodegas obtenida exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    pm.expect(response).to.be.an('array');",
 									"    pm.expect(response.length).to.be.greaterThan(0);",
 									"    pm.collectionVariables.set('bodega_id', response[0].id);",
@@ -1830,14 +2057,14 @@
 									"pm.test('Todos los productos obtenidos exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
 									"    const response = pm.response.json();",
-									"    pm.expect(response).to.be.an('array');",
-									"    pm.expect(response.length).to.be.greaterThan(0);",
+									"    pm.expect(response.items).to.be.an('array');",
+									"    pm.expect(response.items.length).to.be.greaterThan(0);",
 									"    console.log('Total productos encontrados:', response.length);",
 									"});",
 									"",
 									"pm.test('Estructura de productos válida', function () {",
 									"    const response = pm.response.json();",
-									"    const producto = response[0];",
+									"    const producto = response.items[0];",
 									"    pm.expect(producto).to.have.property('id');",
 									"    pm.expect(producto).to.have.property('nombre');",
 									"    pm.expect(producto).to.have.property('stock');",
@@ -1849,7 +2076,7 @@
 									"",
 									"pm.test('Estructura de ubicaciones válida', function () {",
 									"    const response = pm.response.json();",
-									"    const ubicacion = response[0].ubicaciones[0];",
+									"    const ubicacion = response.items[0].ubicaciones[0];",
 									"    pm.expect(ubicacion).to.have.property('nombre');",
 									"    pm.expect(ubicacion).to.have.property('pasillo');",
 									"    pm.expect(ubicacion).to.have.property('estante');",
@@ -1905,14 +2132,14 @@
 								"exec": [
 									"pm.test('Productos en bodega obtenidos exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    pm.expect(response).to.be.an('array');",
 									"    pm.expect(response.length).to.be.greaterThan(0);",
 									"    console.log('Productos en bodega:', response.length);",
 									"});",
 									"",
 									"pm.test('Estructura de productos válida', function () {",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    const producto = response[0];",
 									"    pm.expect(producto).to.have.property('producto_id');",
 									"    pm.expect(producto).to.have.property('cantidad_total');",
@@ -1923,7 +2150,7 @@
 									"});",
 									"",
 									"pm.test('Estructura de ubicaciones válida', function () {",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    const ubicacion = response[0].ubicaciones[0];",
 									"    pm.expect(ubicacion).to.have.property('pasillo');",
 									"    pm.expect(ubicacion).to.have.property('estante');",
@@ -2128,12 +2355,14 @@
 								"exec": [
 									"pm.test('Entregas obtenidas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    pm.expect(response).to.be.an('array');",
 									"    console.log('Total de entregas:', response.length);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -2174,7 +2403,7 @@
 								"exec": [
 									"pm.test('Entregas por rango de fechas obtenidas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json();",
+									"    const response = pm.response.json().items;",
 									"    pm.expect(response).to.be.an('array');",
 									"    console.log('Entregas en el rango de fechas:', response.length);",
 									"});"

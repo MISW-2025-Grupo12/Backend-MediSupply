@@ -2,7 +2,10 @@ from dataclasses import dataclass
 from seedwork.aplicacion.comandos import Comando
 from seedwork.aplicacion.comandos import ejecutar_comando as comando
 from infraestructura.repositorios import RepositorioPedidoSQLite
+from seedwork.dominio.eventos import despachador_eventos
 import logging
+from infraestructura.servicio_logistica import ServicioLogistica
+
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +19,7 @@ class CambiarEstadoPedido(Comando):
 class CambiarEstadoPedidoHandler:
     def __init__(self):
         self._repositorio: RepositorioPedidoSQLite = RepositorioPedidoSQLite()
+        self._servicio_logistica = ServicioLogistica()
     
     def handle(self, comando: CambiarEstadoPedido) -> dict:
         """Cambia el estado de un pedido con validaciones básicas"""
@@ -43,6 +47,9 @@ class CambiarEstadoPedidoHandler:
                     'error': 'Pedido no encontrado'
                 }
             
+            # Guardar estado anterior
+            estado_anterior = pedido.estado.estado
+            
             # Validar transición de estado
             transicion_valida, error_transicion = self._validar_transicion_estado(
                 pedido.estado.estado, 
@@ -65,11 +72,16 @@ class CambiarEstadoPedidoHandler:
             # Actualizar en repositorio
             pedido_actualizado = self._repositorio.actualizar(pedido)
             
+            # Disparar evento si el pedido se marcó como entregado
+            if comando.nuevo_estado == 'entregado':
+                evento_entrega = pedido_actualizado.disparar_evento_entrega()
+                despachador_eventos.publicar_evento(evento_entrega)
+            
             return {
                 'success': True,
                 'message': f'Estado del pedido actualizado a {comando.nuevo_estado}',
                 'pedido_id': str(pedido_actualizado.id),
-                'estado_anterior': pedido.estado.estado,
+                'estado_anterior': estado_anterior,
                 'estado_nuevo': comando.nuevo_estado,
                 'vendedor_id': pedido_actualizado.vendedor_id,
                 'cliente_id': pedido_actualizado.cliente_id,
@@ -123,13 +135,21 @@ class CambiarEstadoPedidoHandler:
                 return {'success': False, 'error': 'No se pudo marcar el pedido como en tránsito'}
         
         elif nuevo_estado == 'entregado':
+            # Construir items a partir del pedido (mismo estilo que confirmación)
+            items = [{'producto_id': it.producto_id, 'cantidad': it.cantidad.valor} for it in pedido.items]
+
+            # 1) Entrega de inventario en Logística (descontar desde reserva)
+            r = self._servicio_logistica.consumir_reserva(items)
+            if not r.get('success', False):
+                return {'success': False, 'error': f"No se pudo consumir la reserva: {r.get('error', 'error desconocido')}"}
+
+            # 2) Si Logística OK → ahora sí marcamos el pedido como entregado
             if pedido.marcar_entregado():
-                return {'success': True}
-            else:
-                return {'success': False, 'error': 'No se pudo marcar el pedido como entregado'}
-        
-        else:
-            return {'success': False, 'error': f'Estado {nuevo_estado} no soportado'}
+                actualizado = self._repositorio.actualizar(pedido)
+                return {'success': True, 'pedido_id': str(actualizado.id), 'estado': actualizado.estado.estado}
+
+            return {'success': False, 'error': 'No se pudo marcar el pedido como entregado'}
+
 
 @comando.register(CambiarEstadoPedido)
 def ejecutar_cambiar_estado_pedido(comando: CambiarEstadoPedido):
