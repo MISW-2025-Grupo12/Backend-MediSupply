@@ -348,30 +348,69 @@ kubectl get services -n medisupply
 kubectl logs -f deployment/logistica-deployment -n medisupply
 ```
 
-## 🌐 Configuración del Ingress
+## 🌐 Configuración del Ingress y SSL
 
-### 1. Crear IP Estática
+### 1. Crear IP Estática Regional
 ```bash
-# Crear IP estática global
-gcloud compute addresses create medisupply-ip --global
+# Crear IP estática regional (requerida para NGINX Ingress Controller)
+gcloud compute addresses create medisupply-nginx-ip \
+  --region=us-central1 \
+  --addresses=34.173.29.81
 
 # Verificar IP creada
-gcloud compute addresses list --filter="name=medisupply-ip"
+gcloud compute addresses list --filter="name=medisupply-nginx-ip"
 ```
 
-### 2. Aplicar Ingress
+### 2. Instalar cert-manager
 ```bash
-# Aplicar configuración del Ingress
+# Instalar cert-manager para gestión automática de certificados SSL
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
+
+# Verificar que cert-manager esté listo
+kubectl get pods -n cert-manager
+# Deben aparecer 3 pods en estado Running: cert-manager, cert-manager-cainjector, cert-manager-webhook
+```
+
+### 3. Configurar NGINX Service con IP Estática
+```bash
+# Aplicar configuración del Service de NGINX con IP estática
+kubectl apply -f k8s/nginx-service-static-ip.yaml
+
+# Verificar que el Service tenga la IP asignada (puede tardar 2-5 minutos)
+kubectl get svc ingress-nginx-controller -n ingress-nginx
+# Debe mostrar EXTERNAL-IP: 34.173.29.81
+```
+
+### 4. Configurar ClusterIssuer de Let's Encrypt
+```bash
+# Aplicar ClusterIssuer para Let's Encrypt
+kubectl apply -f k8s/letsencrypt-issuer.yaml
+
+# Verificar que el ClusterIssuer esté listo
+kubectl get clusterissuer letsencrypt-prod
+# Debe mostrar READY: True
+```
+
+### 5. Aplicar Ingress con SSL
+```bash
+# Aplicar configuración del Ingress (ya incluye configuración SSL)
 kubectl apply -f k8s/ingress.yaml
 
 # Verificar estado del Ingress
 kubectl get ingress -n medisupply
+
+# Verificar certificado SSL (puede tardar 1-2 minutos en emitirse)
+kubectl get certificate -n medisupply
+# Debe mostrar READY: True cuando esté listo
 ```
 
-### 3. Esperar Configuración (IMPORTANTE)
+### 6. Verificar Certificado SSL
 ```bash
-# El Ingress tarda aproximadamente 10 minutos en configurarse completamente
-kubectl describe ingress medisupply-ingress -n medisupply
+# Ver estado del certificado
+kubectl describe certificate medisupply-tls -n medisupply
+
+# Verificar que el secret del certificado esté creado
+kubectl get secret medisupply-tls -n medisupply
 ```
 
 ## ✅ Verificación del Despliegue
@@ -431,8 +470,10 @@ k8s/
 ├── usuarios-deployment.yaml       # Deployment y Service de Usuarios
 ├── ventas-deployment.yaml         # Deployment y Service de Ventas
 ├── logistica-deployment.yaml      # Deployment y Service de Logística
-├── ingress.yaml                   # Configuración del Ingress
-├── ssl-certificate.yaml           # Certificado SSL para HTTPS
+├── nginx-service-static-ip.yaml   # 🔒 Service de NGINX con IP estática regional
+├── ingress.yaml                   # 🌐 Configuración del Ingress con SSL
+├── letsencrypt-issuer.yaml        # 🔐 ClusterIssuer de Let's Encrypt (cert-manager)
+├── ssl-certificate.yaml           # ⚠️ ManagedCertificate de GKE (no usado, se usa cert-manager)
 └── README-DEPLOYMENT.md           # Esta guía
 ```
 
@@ -440,24 +481,28 @@ k8s/
 
 Una vez desplegado correctamente, la aplicación estará disponible en:
 
-### URLs Principales
-- **🏠 Página Principal**: `http://[INGRESS_IP]/`
-- **👥 Usuarios**: `http://[INGRESS_IP]/usuarios`
-- **📦 Productos**: `http://[INGRESS_IP]/productos`
-- **🛒 Ventas**: `http://[INGRESS_IP]/ventas`
-- **🚚 Logística**: `http://[INGRESS_IP]/logistica`
+### URLs Principales (HTTPS con SSL)
+- **🏠 Página Principal**: `https://api.medisupplyg4.online/`
+- **👥 Usuarios**: `https://api.medisupplyg4.online/usuarios`
+- **📦 Productos**: `https://api.medisupplyg4.online/productos`
+- **🛒 Ventas**: `https://api.medisupplyg4.online/ventas`
+- **🚚 Logística**: `https://api.medisupplyg4.online/logistica`
 
 ### URLs de Salud
-- **👥 Usuarios Health**: `http://[INGRESS_IP]/usuarios/health`
-- **📦 Productos Health**: `http://[INGRESS_IP]/productos/health`
-- **🛒 Ventas Health**: `http://[INGRESS_IP]/ventas/health`
-- **🚚 Logística Health**: `http://[INGRESS_IP]/logistica/health`
+- **👥 Usuarios Health**: `https://api.medisupplyg4.online/usuarios/health`
+- **📦 Productos Health**: `https://api.medisupplyg4.online/productos/health`
+- **🛒 Ventas Health**: `https://api.medisupplyg4.online/ventas/health`
+- **🚚 Logística Health**: `https://api.medisupplyg4.online/logistica/health`
+- **🔐 Auth Health**: `https://api.medisupplyg4.online/auth/health`
 
 ### URLs de API
-- **👥 Usuarios API**: `http://[INGRESS_IP]/usuarios/api/`
-- **📦 Productos API**: `http://[INGRESS_IP]/productos/api/`
-- **🛒 Ventas API**: `http://[INGRESS_IP]/ventas/api/`
-- **🚚 Logística API**: `http://[INGRESS_IP]/logistica/api/`
+- **👥 Usuarios API**: `https://api.medisupplyg4.online/usuarios/api/`
+- **📦 Productos API**: `https://api.medisupplyg4.online/productos/api/`
+- **🛒 Ventas API**: `https://api.medisupplyg4.online/ventas/api/`
+- **🚚 Logística API**: `https://api.medisupplyg4.online/logistica/api/`
+
+### ⚠️ Nota Importante sobre DNS
+Para que HTTPS funcione correctamente, asegúrate de que el dominio `api.medisupplyg4.online` apunte a la IP estática `34.173.29.81` en tu configuración DNS.
 
 ### URLs de Port Forward (Desarrollo)
 - **👥 Usuarios**: `http://localhost:5001/`

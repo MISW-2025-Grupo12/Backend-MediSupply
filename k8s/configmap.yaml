@@ -15,6 +15,7 @@ data:
   
   # Configuración de GCP
   GCP_PROJECT_ID: "desarrolloswcloud"
+  GCP_BUCKET_NAME: "evidencias-g12"
   
   # Cloud SQL Proxy
   CLOUD_SQL_CONNECTION_NAME: "desarrolloswcloud:us-central1:medisupply-db-prod"
