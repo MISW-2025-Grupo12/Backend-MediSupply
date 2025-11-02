@@ -42,23 +42,9 @@ metadata:
         return 204;
       }
       
-      # Permitir rutas públicas de autenticación sin auth_request
-      # Usar $uri en lugar de $request_uri en auth-snippet context
-      if ($uri ~* "^/auth/login") {
-        return 202;
-      }
-      if ($uri ~* "^/auth/(health|version)") {
-        return 202;
-      }
-      if ($uri ~* "^/usuarios/api/auth/(registrar-|registro-|login)") {
-        return 202;
-      }
-      if ($uri ~* "^/(productos|ventas|logistica|usuarios)/health") {
-        return 202;
-      }
-      if ($uri = "/") {
-        return 202;
-      }
+      # NOTA: Las rutas públicas se manejan por el servicio de autenticación
+      # El ingress envía X-Original-URI al servicio, que consulta permissions.json
+      # No podemos usar variables URI ($uri, $request_uri) en auth-snippet
 
     # --- Snippet de configuración para CORS y rewrite para /auth ---
     nginx.ingress.kubernetes.io/configuration-snippet: |
