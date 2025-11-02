@@ -10,6 +10,12 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    
+    # Enable regex matching for path patterns (needed for rewrite-target)
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    
+    # Rewrite target: strip /auth prefix, only applies to paths with regex pattern
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 
     # --- Autenticación ---
     nginx.ingress.kubernetes.io/auth-url: "http://auth-service.medisupply.svc.cluster.local:5004/verify"
@@ -95,10 +101,6 @@ metadata:
       add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
       add_header 'Access-Control-Allow-Credentials' 'true' always;
       add_header 'Vary' 'Origin' always;
-    
-    # --- Rewrite path para /auth: strip /auth prefix al forwardear a auth-service
-    # /auth/login -> /login
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
 
     # --- Inyectar headers también en respuestas 401/403 (auth_request fallido) ---
     nginx.ingress.kubernetes.io/server-snippet: |
