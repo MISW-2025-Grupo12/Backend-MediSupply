@@ -19,7 +19,8 @@ metadata:
     nginx.ingress.kubernetes.io/auth-cache-duration: "200 202 401 5m"
     
     # Excluir rutas públicas de auth_request (bypass completo)
-    nginx.ingress.kubernetes.io/no-auth-locations: "/auth/login,/auth/version,/auth/health,/usuarios/api/auth/registro-vendedor,/usuarios/api/auth/registro-cliente,/usuarios/api/auth/registro-proveedor,/usuarios/api/auth/registro-administrador,/usuarios/api/auth/registro-repartidor,/usuarios/health,/productos/health,/ventas/health,/logistica/health"
+    # IMPORTANTE: Las rutas deben coincidir exactamente, sin trailing slash a menos que sea parte del path
+    nginx.ingress.kubernetes.io/no-auth-locations: "/auth/login,/auth/version,/auth/health"
 
     # --- Autenticación selectiva (rutas públicas) ---
     nginx.ingress.kubernetes.io/auth-snippet: |
@@ -109,6 +110,40 @@ metadata:
       # Match localhost for development
       if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
         set $cors_allowed_origin $http_origin;
+      }
+      
+      # Location blocks para rutas públicas (sin auth_request) - tienen mayor precedencia
+      # Estos location blocks se ejecutan antes que la configuración del ingress
+      location ~ ^/auth/(login|version|health)$ {
+        # Sin auth_request directive = bypass completo de autenticación
+        
+        # Rewrite para quitar el prefijo /auth
+        rewrite ^/auth/(.+)$ /$1 break;
+        rewrite ^/auth$ / break;
+        
+        # Proxy directo al servicio sin pasar por verify
+        proxy_pass http://auth-service.medisupply.svc.cluster.local:5004;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # CORS headers
+        set $cors_origin_loc "";
+        if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
+          set $cors_origin_loc $http_origin;
+        }
+        if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
+          set $cors_origin_loc $http_origin;
+        }
+        if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
+          set $cors_origin_loc $http_origin;
+        }
+        add_header 'Access-Control-Allow-Origin' $cors_origin_loc always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Vary' 'Origin' always;
       }
       
       error_page 401 403 = @error401;
