@@ -20,19 +20,20 @@ metadata:
 
     # --- Autenticación selectiva (rutas públicas) ---
     nginx.ingress.kubernetes.io/auth-snippet: |
+      # Validar origen CORS antes de cualquier if
+      set $cors_origin_preflight "";
+      if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
+        set $cors_origin_preflight $http_origin;
+      }
+      if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
+        set $cors_origin_preflight $http_origin;
+      }
+      if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
+        set $cors_origin_preflight $http_origin;
+      }
+      
       # Permitir todas las peticiones OPTIONS (preflight CORS) sin autenticación
-      # Y agregar headers CORS directamente aquí para que funcionen antes de auth_request
       if ($request_method = 'OPTIONS') {
-        set $cors_origin_preflight "";
-        if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
-          set $cors_origin_preflight $http_origin;
-        }
-        if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
-          set $cors_origin_preflight $http_origin;
-        }
-        if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
-          set $cors_origin_preflight $http_origin;
-        }
         add_header 'Access-Control-Allow-Origin' $cors_origin_preflight always;
         add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
         add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
@@ -40,12 +41,9 @@ metadata:
         add_header 'Access-Control-Max-Age' 3600 always;
         return 204;
       }
+      
       # Permitir rutas públicas de autenticación sin auth_request
-      # Usar ^/auth/login sin trailing slash opcional para matching más específico
-      if ($request_uri = "/auth/login") {
-        return 202;
-      }
-      if ($request_uri ~ "^/auth/login/") {
+      if ($request_uri = "/auth/login" || $request_uri ~ "^/auth/login/") {
         return 202;
       }
       if ($request_uri ~* "^/auth/(health|version)") {
@@ -54,7 +52,7 @@ metadata:
       if ($request_uri ~* "^/usuarios/api/auth/(registrar-|registro-|login)") {
         return 202;
       }
-      if ($request_uri ~* "^/(productos|ventas|logistica|usuarios)/health(/)?$") {
+      if ($request_uri ~* "^/(productos|ventas|logistica|usuarios)/health") {
         return 202;
       }
       if ($request_uri = "/") {
