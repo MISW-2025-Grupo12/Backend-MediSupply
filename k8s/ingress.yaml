@@ -42,26 +42,8 @@ metadata:
         return 204;
       }
       
-      # Permitir rutas públicas de autenticación sin auth_request
-      # Retornar 202 bypasea el auth_request para estas rutas
-      if ($request_uri ~ "^/auth/login") {
-        return 202;
-      }
-      if ($request_uri ~ "^/auth/health") {
-        return 202;
-      }
-      if ($request_uri ~ "^/auth/version") {
-        return 202;
-      }
-      if ($request_uri ~ "^/usuarios/api/auth/(registrar-|registro-|login)") {
-        return 202;
-      }
-      if ($request_uri ~ "^/(productos|ventas|logistica|usuarios)/health") {
-        return 202;
-      }
-      if ($request_uri = "/" || $request_uri = "/auth") {
-        return 202;
-      }
+      # Las rutas públicas se manejan mediante location blocks en server-snippet
+      # que tienen precedencia y no requieren auth_request
 
     # --- Snippet de configuración para CORS y rewrite para /auth ---
     nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -135,7 +117,7 @@ metadata:
         return 401;
       }
       
-
+      
 spec:
   ingressClassName: nginx
   tls:
