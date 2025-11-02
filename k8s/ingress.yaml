@@ -6,7 +6,6 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 
-    # --- Timeouts y tamaño de request ---
     nginx.ingress.kubernetes.io/proxy-body-size: "100m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
@@ -19,31 +18,8 @@ metadata:
     nginx.ingress.kubernetes.io/auth-cache-key: "$http_authorization"
     nginx.ingress.kubernetes.io/auth-cache-duration: "200 202 401 5m"
 
-    # --- CORS: headers siempre presentes ---
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      # Headers CORS (siempre)
-      add_header 'Access-Control-Allow-Origin' "$http_origin" always;
-      add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
-      add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
-      add_header 'Access-Control-Allow-Credentials' 'true' always;
-      add_header 'Vary' 'Origin' always;
-
-      # Preflight global
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Max-Age' 3600;
-        add_header 'Content-Length' 0;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        return 204;
-      }
-
-      # Reescribir rutas /auth (Flask interno)
-      if ($request_uri ~* ^/auth/(.*)$) {
-        rewrite ^/auth/(.*)$ /$1 break;
-      }
-
-    # --- Autenticación selectiva (permitir rutas públicas) ---
+    # --- Autenticación selectiva (rutas públicas) ---
     nginx.ingress.kubernetes.io/auth-snippet: |
-      # Permitir sin autenticación
       if ($request_uri ~* "^/(auth/(login|health|version)|usuarios/api/auth/(registrar-|registro-|login))(/)?$") {
         return 202;
       }
@@ -52,6 +28,35 @@ metadata:
       }
       if ($request_uri = "/") {
         return 202;
+      }
+
+    # --- Snippet de configuración para CORS ---
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # CORS para todas las peticiones
+      add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+      add_header 'Access-Control-Allow-Credentials' 'true' always;
+      add_header 'Vary' 'Origin' always;
+
+      # Manejo de preflight
+      if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Max-Age' 3600;
+        add_header 'Content-Length' 0;
+        add_header 'Content-Type' 'text/plain; charset=UTF-8';
+        return 204;
+      }
+
+    # --- Inyectar headers también en respuestas 401/403 (auth_request fallido) ---
+    nginx.ingress.kubernetes.io/server-snippet: |
+      error_page 401 403 = @error401;
+      location @error401 {
+        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Vary' 'Origin' always;
+        return 401;
       }
 
 spec:
