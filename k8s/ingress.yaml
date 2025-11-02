@@ -4,46 +4,38 @@ metadata:
   name: medisupply-ingress
   namespace: medisupply
   annotations:
-    # Tamaño máximo del cuerpo del request (para subir videos/evidencias)
     nginx.ingress.kubernetes.io/proxy-body-size: "100m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 
-    # Autenticación con Auth-Service (por defecto para TODAS las rutas)
+    # --- 🔐 Autenticación global ---
     nginx.ingress.kubernetes.io/auth-url: "http://auth-service.medisupply.svc.cluster.local:5004/verify"
     nginx.ingress.kubernetes.io/auth-method: "POST"
     nginx.ingress.kubernetes.io/auth-response-headers: "X-Usuario-Id,X-Usuario-Tipo,X-Usuario-Email"
     nginx.ingress.kubernetes.io/auth-cache-key: "$http_authorization"
     nginx.ingress.kubernetes.io/auth-cache-duration: "200 202 401 5m"
 
-    # 🔑 SNIPPET: Desactivar autenticación para rutas públicas específicas
+    # --- 🚫 Excepciones de autenticación ---
     nginx.ingress.kubernetes.io/auth-snippet: |
-      # Rutas públicas - bypass auth (return 202 = skip auth)
-      if ($request_uri ~* "^/(auth/(login|health|version)|usuarios/api/auth/registrar-cliente)(/)?$") {
+      # Permitir sin autenticación
+      if ($request_uri ~* "^/(auth/(login|health|version)|usuarios/api/auth/(registrar-|registro-|login))(/)?$") {
         return 202;
       }
-      if ($request_uri ~* "^/(usuarios|productos|ventas|logistica)/health(/)?$") {
+      if ($request_uri ~* "^/(productos|ventas|logistica|usuarios)/health(/)?$") {
         return 202;
       }
       if ($request_uri = "/") {
         return 202;
       }
 
-    # 🔧 Configuration snippet unificado: rewrite + CORS headers
+    # --- 🧩 CORS + OPTIONS ---
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      # Reescribir rutas /auth
-      if ($request_uri ~* ^/auth/(.*)$) {
-        rewrite ^/auth/(.*)$ /$1 break;
-      }
-
-      # Headers CORS globales
       add_header 'Access-Control-Allow-Origin' "$http_origin" always;
       add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
       add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
       add_header 'Access-Control-Allow-Credentials' 'true' always;
 
-      # Manejar preflight (OPTIONS)
       if ($request_method = 'OPTIONS') {
         add_header 'Access-Control-Max-Age' 3600;
         add_header 'Content-Length' 0;
@@ -51,7 +43,12 @@ metadata:
         return 204;
       }
 
-    # SSL/TLS
+      # 🔄 Reescribir rutas de /auth para evitar duplicación en backend Flask
+      if ($request_uri ~* ^/auth/(.*)$) {
+        rewrite ^/auth/(.*)$ /$1 break;
+      }
+
+    # --- 🔒 SSL ---
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 
 spec:
@@ -64,7 +61,6 @@ spec:
     - host: api.medisupplyg4.online
       http:
         paths:
-          # Auth Service
           - path: /auth
             pathType: Prefix
             backend:
@@ -73,7 +69,6 @@ spec:
                 port:
                   number: 5004
 
-          # Usuarios
           - path: /usuarios
             pathType: Prefix
             backend:
@@ -82,7 +77,6 @@ spec:
                 port:
                   number: 5001
 
-          # Productos
           - path: /productos
             pathType: Prefix
             backend:
@@ -91,7 +85,6 @@ spec:
                 port:
                   number: 5000
 
-          # Ventas
           - path: /ventas
             pathType: Prefix
             backend:
@@ -100,7 +93,6 @@ spec:
                 port:
                   number: 5002
 
-          # Logística
           - path: /logistica
             pathType: Prefix
             backend:
@@ -109,7 +101,6 @@ spec:
                 port:
                   number: 5003
 
-          # Root (health check general)
           - path: /
             pathType: Prefix
             backend:
