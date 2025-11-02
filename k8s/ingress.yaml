@@ -36,38 +36,60 @@ metadata:
 
     # --- Snippet de configuración para CORS ---
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      # Validar origen permitido (frontend)
+      # Validar y establecer origen permitido (frontend)
       set $cors_origin "";
-      if ($http_origin ~* "^https?://(medisupplyg4\.online|localhost)(:[0-9]+)?$") {
+      # Match medisupplyg4.online (with or without subdomain, with or without trailing slash)
+      if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
+        set $cors_origin $http_origin;
+      }
+      # Match hosted app domain
+      if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
+        set $cors_origin $http_origin;
+      }
+      # Match localhost for development
+      if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
         set $cors_origin $http_origin;
       }
       
-      # CORS para todas las peticiones
+      # Manejar preflight OPTIONS PRIMERO - antes que cualquier otra cosa
+      if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Max-Age' 3600 always;
+        add_header 'Content-Length' 0 always;
+        add_header 'Content-Type' 'text/plain' always;
+        return 204;
+      }
+      
+      # CORS para todas las demás peticiones
       add_header 'Access-Control-Allow-Origin' $cors_origin always;
       add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
       add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
       add_header 'Access-Control-Allow-Credentials' 'true' always;
       add_header 'Vary' 'Origin' always;
 
-      # Manejo de preflight OPTIONS
-      if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Max-Age' 3600;
-        add_header 'Content-Length' 0;
-        add_header 'Content-Type' 'text/plain; charset=UTF-8';
-        return 204;
-      }
-
     # --- Inyectar headers también en respuestas 401/403 (auth_request fallido) ---
     nginx.ingress.kubernetes.io/server-snippet: |
-      # Validar origen permitido para errores
-      set $cors_error_origin "";
-      if ($http_origin ~* "^https?://(medisupplyg4\.online|localhost)(:[0-9]+)?$") {
-        set $cors_error_origin $http_origin;
+      # Validar origen permitido
+      set $cors_allowed_origin "";
+      # Match medisupplyg4.online (with or without subdomain, with or without trailing slash)
+      if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
+        set $cors_allowed_origin $http_origin;
+      }
+      # Match hosted app domain
+      if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
+        set $cors_allowed_origin $http_origin;
+      }
+      # Match localhost for development
+      if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
+        set $cors_allowed_origin $http_origin;
       }
       
       error_page 401 403 = @error401;
       location @error401 {
-        add_header 'Access-Control-Allow-Origin' $cors_error_origin always;
+        add_header 'Access-Control-Allow-Origin' $cors_allowed_origin always;
         add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
         add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
         add_header 'Access-Control-Allow-Credentials' 'true' always;
