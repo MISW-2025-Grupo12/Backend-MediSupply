@@ -95,6 +95,10 @@ metadata:
       add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
       add_header 'Access-Control-Allow-Credentials' 'true' always;
       add_header 'Vary' 'Origin' always;
+    
+    # --- Rewrite path para /auth: strip /auth prefix al forwardear a auth-service
+    # /auth/login -> /login
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 
     # --- Inyectar headers también en respuestas 401/403 (auth_request fallido) ---
     nginx.ingress.kubernetes.io/server-snippet: |
@@ -134,8 +138,8 @@ spec:
     - host: api.medisupplyg4.online
       http:
         paths:
-          - path: /auth
-            pathType: Prefix
+          - path: /auth(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: auth-service
