@@ -10,12 +10,6 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-    
-    # Enable regex matching for path patterns (needed for rewrite-target)
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    
-    # Rewrite target: strip /auth prefix, only applies to paths with regex pattern
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
 
     # --- Autenticación ---
     nginx.ingress.kubernetes.io/auth-url: "http://auth-service.medisupply.svc.cluster.local:5004/verify"
@@ -66,7 +60,7 @@ metadata:
         return 202;
       }
 
-    # --- Snippet de configuración para CORS ---
+    # --- Snippet de configuración para CORS y rewrite para /auth ---
     nginx.ingress.kubernetes.io/configuration-snippet: |
       # Validar y establecer origen permitido (frontend)
       set $cors_origin "";
@@ -81,6 +75,15 @@ metadata:
       # Match localhost for development
       if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
         set $cors_origin $http_origin;
+      }
+      
+      # Rewrite SOLO para paths /auth: strip /auth prefix
+      # /auth/login -> /login (solo aplica a location /auth)
+      if ($uri ~* "^/auth/(.+)$") {
+        rewrite ^/auth/(.+)$ /$1 break;
+      }
+      if ($uri = "/auth") {
+        rewrite ^/auth$ / break;
       }
       
       # Manejar preflight OPTIONS PRIMERO - antes que cualquier otra cosa
@@ -140,8 +143,8 @@ spec:
     - host: api.medisupplyg4.online
       http:
         paths:
-          - path: /auth(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /auth
+            pathType: Prefix
             backend:
               service:
                 name: auth-service
