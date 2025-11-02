@@ -43,20 +43,21 @@ metadata:
       }
       
       # Permitir rutas públicas de autenticación sin auth_request
-      # Usar $uri en lugar de $request_uri en auth-snippet context
-      if ($uri ~* "^/auth/login") {
-        return 202;
+      # Usar $request_uri para asegurar que coincida con la URI original
+      set $skip_auth 0;
+      if ($request_uri ~* "^/auth/(login|health|version)") {
+        set $skip_auth 1;
       }
-      if ($uri ~* "^/auth/(health|version)") {
-        return 202;
+      if ($request_uri ~* "^/usuarios/api/auth/(registrar-|registro-|login)") {
+        set $skip_auth 1;
       }
-      if ($uri ~* "^/usuarios/api/auth/(registrar-|registro-|login)") {
-        return 202;
+      if ($request_uri ~* "^/(productos|ventas|logistica|usuarios)/health") {
+        set $skip_auth 1;
       }
-      if ($uri ~* "^/(productos|ventas|logistica|usuarios)/health") {
-        return 202;
+      if ($request_uri = "/" || $request_uri = "/auth") {
+        set $skip_auth 1;
       }
-      if ($uri = "/") {
+      if ($skip_auth = 1) {
         return 202;
       }
 
