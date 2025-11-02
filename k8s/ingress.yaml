@@ -17,6 +17,9 @@ metadata:
     nginx.ingress.kubernetes.io/auth-response-headers: "X-Usuario-Id,X-Usuario-Tipo,X-Usuario-Email"
     nginx.ingress.kubernetes.io/auth-cache-key: "$http_authorization"
     nginx.ingress.kubernetes.io/auth-cache-duration: "200 202 401 5m"
+    
+    # Excluir rutas públicas de auth_request (bypass completo)
+    nginx.ingress.kubernetes.io/no-auth-locations: "/auth/login,/auth/version,/auth/health,/usuarios/api/auth/registro-vendedor,/usuarios/api/auth/registro-cliente,/usuarios/api/auth/registro-proveedor,/usuarios/api/auth/registro-administrador,/usuarios/api/auth/registro-repartidor,/usuarios/health,/productos/health,/ventas/health,/logistica/health"
 
     # --- Autenticación selectiva (rutas públicas) ---
     nginx.ingress.kubernetes.io/auth-snippet: |
