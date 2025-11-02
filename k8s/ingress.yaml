@@ -42,8 +42,23 @@ metadata:
         return 204;
       }
       
-      # Las rutas públicas se manejan mediante location blocks en server-snippet
-      # que tienen precedencia y no requieren auth_request
+      # Permitir rutas públicas de autenticación sin auth_request
+      # Usar $uri en lugar de $request_uri en auth-snippet context
+      if ($uri ~* "^/auth/login") {
+        return 202;
+      }
+      if ($uri ~* "^/auth/(health|version)") {
+        return 202;
+      }
+      if ($uri ~* "^/usuarios/api/auth/(registrar-|registro-|login)") {
+        return 202;
+      }
+      if ($uri ~* "^/(productos|ventas|logistica|usuarios)/health") {
+        return 202;
+      }
+      if ($uri = "/") {
+        return 202;
+      }
 
     # --- Snippet de configuración para CORS y rewrite para /auth ---
     nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -90,7 +105,7 @@ metadata:
       add_header 'Access-Control-Allow-Credentials' 'true' always;
       add_header 'Vary' 'Origin' always;
 
-    # --- Configuración adicional del servidor ---
+    # --- Inyectar headers también en respuestas 401/403 (auth_request fallido) ---
     nginx.ingress.kubernetes.io/server-snippet: |
       # Validar origen permitido
       set $cors_allowed_origin "";
@@ -116,8 +131,7 @@ metadata:
         add_header 'Vary' 'Origin' always;
         return 401;
       }
-      
-      
+
 spec:
   ingressClassName: nginx
   tls:
