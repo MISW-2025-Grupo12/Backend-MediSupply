@@ -20,6 +20,10 @@ metadata:
 
     # --- Autenticación selectiva (rutas públicas) ---
     nginx.ingress.kubernetes.io/auth-snippet: |
+      # Permitir todas las peticiones OPTIONS (preflight CORS) sin autenticación
+      if ($request_method = 'OPTIONS') {
+        return 202;
+      }
       if ($request_uri ~* "^/(auth/(login|health|version)|usuarios/api/auth/(registrar-|registro-|login))(/)?$") {
         return 202;
       }
@@ -32,14 +36,20 @@ metadata:
 
     # --- Snippet de configuración para CORS ---
     nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Validar origen permitido (frontend)
+      set $cors_origin "";
+      if ($http_origin ~* "^https?://(medisupplyg4\.online|localhost)(:[0-9]+)?$") {
+        set $cors_origin $http_origin;
+      }
+      
       # CORS para todas las peticiones
-      add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+      add_header 'Access-Control-Allow-Origin' $cors_origin always;
       add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
       add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
       add_header 'Access-Control-Allow-Credentials' 'true' always;
       add_header 'Vary' 'Origin' always;
 
-      # Manejo de preflight
+      # Manejo de preflight OPTIONS
       if ($request_method = 'OPTIONS') {
         add_header 'Access-Control-Max-Age' 3600;
         add_header 'Content-Length' 0;
@@ -49,9 +59,15 @@ metadata:
 
     # --- Inyectar headers también en respuestas 401/403 (auth_request fallido) ---
     nginx.ingress.kubernetes.io/server-snippet: |
+      # Validar origen permitido para errores
+      set $cors_error_origin "";
+      if ($http_origin ~* "^https?://(medisupplyg4\.online|localhost)(:[0-9]+)?$") {
+        set $cors_error_origin $http_origin;
+      }
+      
       error_page 401 403 = @error401;
       location @error401 {
-        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Allow-Origin' $cors_error_origin always;
         add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
         add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
         add_header 'Access-Control-Allow-Credentials' 'true' always;
