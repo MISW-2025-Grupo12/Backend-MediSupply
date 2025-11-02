@@ -43,21 +43,23 @@ metadata:
       }
       
       # Permitir rutas públicas de autenticación sin auth_request
-      # Usar $uri en auth-snippet (única variable URI disponible en este contexto)
-      set $skip_auth 0;
-      if ($uri ~* "^/auth/(login|health|version)") {
-        set $skip_auth 1;
+      # Retornar 202 bypasea el auth_request para estas rutas
+      if ($request_uri ~ "^/auth/login") {
+        return 202;
       }
-      if ($uri ~* "^/usuarios/api/auth/(registrar-|registro-|login)") {
-        set $skip_auth 1;
+      if ($request_uri ~ "^/auth/health") {
+        return 202;
       }
-      if ($uri ~* "^/(productos|ventas|logistica|usuarios)/health") {
-        set $skip_auth 1;
+      if ($request_uri ~ "^/auth/version") {
+        return 202;
       }
-      if ($uri = "/" || $uri = "/auth") {
-        set $skip_auth 1;
+      if ($request_uri ~ "^/usuarios/api/auth/(registrar-|registro-|login)") {
+        return 202;
       }
-      if ($skip_auth = 1) {
+      if ($request_uri ~ "^/(productos|ventas|logistica|usuarios)/health") {
+        return 202;
+      }
+      if ($request_uri = "/" || $request_uri = "/auth") {
         return 202;
       }
 
@@ -106,7 +108,7 @@ metadata:
       add_header 'Access-Control-Allow-Credentials' 'true' always;
       add_header 'Vary' 'Origin' always;
 
-    # --- Inyectar headers también en respuestas 401/403 (auth_request fallido) ---
+    # --- Configuración adicional del servidor ---
     nginx.ingress.kubernetes.io/server-snippet: |
       # Validar origen permitido
       set $cors_allowed_origin "";
@@ -132,6 +134,7 @@ metadata:
         add_header 'Vary' 'Origin' always;
         return 401;
       }
+      
 
 spec:
   ingressClassName: nginx
