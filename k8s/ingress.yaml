@@ -4,62 +4,169 @@ metadata:
   name: medisupply-ingress
   namespace: medisupply
   annotations:
-    # Usar NGINX Ingress Controller
-    kubernetes.io/ingress.class: "nginx"
-    
-    # Tamaño máximo del cuerpo del request (para subir videos/evidencias)
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+
     nginx.ingress.kubernetes.io/proxy-body-size: "100m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-    
-    # Autenticación con Auth-Service (por defecto para TODAS las rutas)
+
+    # --- Autenticación ---
     nginx.ingress.kubernetes.io/auth-url: "http://auth-service.medisupply.svc.cluster.local:5004/verify"
     nginx.ingress.kubernetes.io/auth-method: "POST"
     nginx.ingress.kubernetes.io/auth-response-headers: "X-Usuario-Id,X-Usuario-Tipo,X-Usuario-Email"
     nginx.ingress.kubernetes.io/auth-cache-key: "$http_authorization"
     nginx.ingress.kubernetes.io/auth-cache-duration: "200 202 401 5m"
     
-    # 🔑 SNIPPET: Desactivar autenticación para rutas públicas específicas
+    # Excluir rutas públicas de auth_request (bypass completo)
+    # IMPORTANTE: Las rutas deben coincidir exactamente, sin trailing slash a menos que sea parte del path
+    nginx.ingress.kubernetes.io/no-auth-locations: "/auth/login,/auth/version,/auth/health"
+
+    # --- Autenticación selectiva (rutas públicas) ---
     nginx.ingress.kubernetes.io/auth-snippet: |
-      # Rutas públicas - bypass auth (return 202 = skip auth)
-      if ($request_uri ~* "^/(auth/(login|health|version)|usuarios/api/auth/registrar-cliente)(/)?$") {
-        return 202;
+      # Validar origen CORS antes de cualquier if
+      set $cors_origin_preflight "";
+      if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
+        set $cors_origin_preflight $http_origin;
       }
-      if ($request_uri ~* "^/(usuarios|productos|ventas|logistica)/health(/)?$") {
-        return 202;
+      if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
+        set $cors_origin_preflight $http_origin;
       }
-      if ($request_uri = "/") {
-        return 202;
+      if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
+        set $cors_origin_preflight $http_origin;
       }
-    
-    # Configuration snippet: Solo aplicar rewrite a rutas /auth
+      
+      # Permitir todas las peticiones OPTIONS (preflight CORS) sin autenticación
+      if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Allow-Origin' $cors_origin_preflight always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Max-Age' 3600 always;
+        return 204;
+      }
+      
+      # NOTA: Las rutas públicas se manejan por el servicio de autenticación
+      # El ingress envía X-Original-URI al servicio, que consulta permissions.json
+      # No podemos usar variables URI ($uri, $request_uri) en auth-snippet
+
+    # --- Snippet de configuración para CORS y rewrite para /auth ---
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($request_uri ~* ^/auth/(.*)$) {
-        rewrite ^/auth/(.*)$ /$1 break;
+      # Validar y establecer origen permitido (frontend)
+      set $cors_origin "";
+      # Match medisupplyg4.online (with or without subdomain, with or without trailing slash)
+      if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
+        set $cors_origin $http_origin;
       }
-    
-    # SSL/TLS
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    
-    # CORS (manejado por nginx)
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://medisupplyg4.online,https://api.medisupplyg4.online,http://localhost:3000,http://localhost:5173"
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type,Authorization,Accept,Origin,X-Requested-With"
-    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
-    nginx.ingress.kubernetes.io/cors-max-age: "3600"
+      # Match hosted app domain
+      if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
+        set $cors_origin $http_origin;
+      }
+      # Match localhost for development
+      if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
+        set $cors_origin $http_origin;
+      }
+      
+      # Rewrite SOLO para paths /auth: strip /auth prefix
+      # /auth/login -> /login (solo aplica a location /auth)
+      if ($uri ~* "^/auth/(.+)$") {
+        rewrite ^/auth/(.+)$ /$1 break;
+      }
+      if ($uri = "/auth") {
+        rewrite ^/auth$ / break;
+      }
+      
+      # Manejar preflight OPTIONS PRIMERO - antes que cualquier otra cosa
+      if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Max-Age' 3600 always;
+        add_header 'Content-Length' 0 always;
+        add_header 'Content-Type' 'text/plain' always;
+        return 204;
+      }
+      
+      # CORS para todas las demás peticiones
+      add_header 'Access-Control-Allow-Origin' $cors_origin always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+      add_header 'Access-Control-Allow-Credentials' 'true' always;
+      add_header 'Vary' 'Origin' always;
+
+    # --- Inyectar headers también en respuestas 401/403 (auth_request fallido) ---
+    nginx.ingress.kubernetes.io/server-snippet: |
+      # Validar origen permitido
+      set $cors_allowed_origin "";
+      # Match medisupplyg4.online (with or without subdomain, with or without trailing slash)
+      if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
+        set $cors_allowed_origin $http_origin;
+      }
+      # Match hosted app domain
+      if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
+        set $cors_allowed_origin $http_origin;
+      }
+      # Match localhost for development
+      if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
+        set $cors_allowed_origin $http_origin;
+      }
+      
+      # Location blocks para rutas públicas (sin auth_request) - tienen mayor precedencia
+      # Estos location blocks se ejecutan antes que la configuración del ingress
+      location ~ ^/auth/(login|version|health)$ {
+        # Sin auth_request directive = bypass completo de autenticación
+        
+        # Rewrite para quitar el prefijo /auth
+        rewrite ^/auth/(.+)$ /$1 break;
+        rewrite ^/auth$ / break;
+        
+        # Proxy directo al servicio sin pasar por verify
+        proxy_pass http://auth-service.medisupply.svc.cluster.local:5004;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # CORS headers
+        set $cors_origin_loc "";
+        if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
+          set $cors_origin_loc $http_origin;
+        }
+        if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
+          set $cors_origin_loc $http_origin;
+        }
+        if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
+          set $cors_origin_loc $http_origin;
+        }
+        add_header 'Access-Control-Allow-Origin' $cors_origin_loc always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Vary' 'Origin' always;
+      }
+      
+      error_page 401 403 = @error401;
+      location @error401 {
+        add_header 'Access-Control-Allow-Origin' $cors_allowed_origin always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Vary' 'Origin' always;
+        return 401;
+      }
 
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
-    - api.medisupplyg4.online
+      - api.medisupplyg4.online
     secretName: medisupply-tls
+
   rules:
     - host: api.medisupplyg4.online
       http:
         paths:
-          # Auth Service
           - path: /auth
             pathType: Prefix
             backend:
@@ -67,8 +174,6 @@ spec:
                 name: auth-service
                 port:
                   number: 5004
-          
-          # Usuarios
           - path: /usuarios
             pathType: Prefix
             backend:
@@ -76,8 +181,6 @@ spec:
                 name: usuarios-service
                 port:
                   number: 5001
-          
-          # Productos
           - path: /productos
             pathType: Prefix
             backend:
@@ -85,8 +188,6 @@ spec:
                 name: productos-service
                 port:
                   number: 5000
-          
-          # Ventas
           - path: /ventas
             pathType: Prefix
             backend:
@@ -94,8 +195,6 @@ spec:
                 name: ventas-service
                 port:
                   number: 5002
-          
-          # Logística
           - path: /logistica
             pathType: Prefix
             backend:
@@ -103,8 +202,6 @@ spec:
                 name: logistica-service
                 port:
                   number: 5003
-          
-          # Root (health check general)
           - path: /
             pathType: Prefix
             backend:
