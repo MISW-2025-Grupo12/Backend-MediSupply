@@ -29,6 +29,10 @@ try:
     # Suscribirse al topic de productos-stock-actualizado
     consumidor_pubsub.suscribirse_a_topic('productos-stock-actualizado', 'logistica-inventario-subscription')
     logger.info("Consumidor suscrito al topic productos-stock-actualizado")
+
+    # Suscribirse al topic de pedidos-confirmados
+    consumidor_pubsub.suscribirse_a_topic('pedidos-confirmados', 'logistica-pedidos-confirmados-subscription')
+    logger.info("Consumidor suscrito al topic pedidos-confirmados")
     
     # Función para iniciar el consumidor
     def iniciar_consumidor():

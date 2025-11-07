@@ -252,7 +252,24 @@ class ConsumidorPubSub:
                 )
                 
                 return evento
-            
+
+            elif tipo_evento == 'PedidoConfirmado':
+                # Importar evento PedidoConfirmado local
+                from dominio.eventos import PedidoConfirmado
+
+                datos_evento = data.get('datos', {})
+
+                # Crear instancia del evento PedidoConfirmado
+                evento = PedidoConfirmado(
+                    pedido_id=datos_evento.get('pedido_id', ''),
+                    cliente_id=datos_evento.get('cliente_id', ''),
+                    vendedor_id=datos_evento.get('vendedor_id', ''),
+                    items=datos_evento.get('items', []),
+                    total=float(datos_evento.get('total', 0))
+                )
+
+                return evento
+
             elif tipo_evento == 'InventarioAsignado':
                 # Importar el evento InventarioAsignado
                 from dominio.eventos import InventarioAsignado
