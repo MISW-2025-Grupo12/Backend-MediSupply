@@ -104,9 +104,14 @@ services:
       - DB_PASSWORD=productos_pass
       - SQLALCHEMY_DATABASE_URI=postgresql://productos_user:productos_pass@productos-db:5432/productos_db
       - USUARIOS_SERVICE_URL=http://usuarios:5001/usuarios/api
+      # Configuración de PubSub (emulador local)
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
+      # Configuración de GCP Storage (real)
+      - GCP_BUCKET_NAME_PRODUCTOS=evidencias-g12
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
+      - GCP_CREDENTIALS_PATH=/app/gcp-credentials.json
     networks:
       - medi-supply-network
     depends_on:

@@ -18,6 +18,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar código fuente
 COPY src/ ./src/
 
+# Copiar credenciales de GCP (si existen)
+COPY gcp-credentials.json /app/gcp-credentials.json
+
 # Exponer puerto
 EXPOSE 5000
 
@@ -25,6 +28,7 @@ EXPOSE 5000
 ENV FLASK_APP=src/main.py
 ENV FLASK_ENV=production
 ENV PYTHONPATH=/app
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
 
 # Comando para ejecutar la aplicación
 CMD ["python", "src/main.py"]

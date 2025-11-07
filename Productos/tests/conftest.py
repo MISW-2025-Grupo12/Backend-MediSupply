@@ -46,13 +46,28 @@ SERVICE_URLS = {
 
 @pytest.fixture(scope='session')
 def app():
+    # Configurar entorno de testing
+    original_testing = os.environ.get('TESTING')
+    original_db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    
     os.environ['TESTING'] = 'True'
-    app = create_app()
-    with app.app_context():
-        db.create_all()
-    yield app
-    with app.app_context():
-        db.drop_all()
+    os.environ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    
+    try:
+        # create_app ya llama a init_db que crea las tablas dentro de un contexto
+        app = create_app()
+        yield app
+    finally:
+        # Restaurar variables de entorno originales
+        if original_testing is not None:
+            os.environ['TESTING'] = original_testing
+        elif 'TESTING' in os.environ:
+            del os.environ['TESTING']
+            
+        if original_db_uri is not None:
+            os.environ['SQLALCHEMY_DATABASE_URI'] = original_db_uri
+        elif 'SQLALCHEMY_DATABASE_URI' in os.environ:
+            del os.environ['SQLALCHEMY_DATABASE_URI']
 
 @pytest.fixture(scope='function')
 def client(app):

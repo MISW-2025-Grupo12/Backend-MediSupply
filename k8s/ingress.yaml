@@ -23,32 +23,19 @@ metadata:
     nginx.ingress.kubernetes.io/no-auth-locations: "/auth/login,/auth/version,/auth/health"
 
     # --- Autenticación selectiva (rutas públicas) ---
+    # NOTA: Las rutas públicas se manejan por:
+    # 1. no-auth-locations: excluye auth_request completamente
+    # 2. server-snippet location block: maneja OPTIONS y proxy directo
+    # 3. auth-snippet: excluye OPTIONS del auth_request (preflight no necesita autenticación)
+    # El servicio de autenticación también consulta permissions.json para rutas públicas
+    
+    # --- Excluir OPTIONS del auth_request (preflight no necesita autenticación) ---
     nginx.ingress.kubernetes.io/auth-snippet: |
-      # Validar origen CORS antes de cualquier if
-      set $cors_origin_preflight "";
-      if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
-        set $cors_origin_preflight $http_origin;
-      }
-      if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
-        set $cors_origin_preflight $http_origin;
-      }
-      if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
-        set $cors_origin_preflight $http_origin;
-      }
-      
       # Permitir todas las peticiones OPTIONS (preflight CORS) sin autenticación
+      # Esto es crítico porque el preflight no debe pasar por auth_request
       if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' $cors_origin_preflight always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
-        add_header 'Access-Control-Allow-Credentials' 'true' always;
-        add_header 'Access-Control-Max-Age' 3600 always;
-        return 204;
+        return 202;
       }
-      
-      # NOTA: Las rutas públicas se manejan por el servicio de autenticación
-      # El ingress envía X-Original-URI al servicio, que consulta permissions.json
-      # No podemos usar variables URI ($uri, $request_uri) en auth-snippet
 
     # --- Snippet de configuración para CORS y rewrite para /auth ---
     nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -67,16 +54,9 @@ metadata:
         set $cors_origin $http_origin;
       }
       
-      # Rewrite SOLO para paths /auth: strip /auth prefix
-      # /auth/login -> /login (solo aplica a location /auth)
-      if ($uri ~* "^/auth/(.+)$") {
-        rewrite ^/auth/(.+)$ /$1 break;
-      }
-      if ($uri = "/auth") {
-        rewrite ^/auth$ / break;
-      }
-      
-      # Manejar preflight OPTIONS PRIMERO - antes que cualquier otra cosa
+      # CRÍTICO: Manejar preflight OPTIONS ANTES de cualquier procesamiento
+      # TODAS las peticiones OPTIONS deben manejarse directamente sin auth_request
+      # Esto aplica tanto para rutas públicas como protegidas
       if ($request_method = 'OPTIONS') {
         add_header 'Access-Control-Allow-Origin' $cors_origin always;
         add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
@@ -88,7 +68,16 @@ metadata:
         return 204;
       }
       
-      # CORS para todas las demás peticiones
+      # Rewrite SOLO para paths /auth: strip /auth prefix
+      # /auth/login -> /login (solo aplica a location /auth)
+      if ($uri ~* "^/auth/(.+)$") {
+        rewrite ^/auth/(.+)$ /$1 break;
+      }
+      if ($uri = "/auth") {
+        rewrite ^/auth$ / break;
+      }
+      
+      # CORS para todas las peticiones
       add_header 'Access-Control-Allow-Origin' $cors_origin always;
       add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
       add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
@@ -112,14 +101,26 @@ metadata:
         set $cors_allowed_origin $http_origin;
       }
       
-      # Location blocks para rutas públicas (sin auth_request) - tienen mayor precedencia
-      # Estos location blocks se ejecutan antes que la configuración del ingress
-      location ~ ^/auth/(login|version|health)$ {
-        # Sin auth_request directive = bypass completo de autenticación
+      # CRÍTICO: Location blocks con máxima precedencia para rutas públicas
+      # Estos se ejecutan ANTES del auth_request y manejan OPTIONS directamente
+      
+      # Location exacto para /auth/login (máxima precedencia)
+      location = /auth/login {
+        # Manejar OPTIONS (preflight) directamente sin auth_request
+        if ($request_method = 'OPTIONS') {
+          add_header 'Access-Control-Allow-Origin' $cors_allowed_origin always;
+          add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+          add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+          add_header 'Access-Control-Allow-Credentials' 'true' always;
+          add_header 'Access-Control-Max-Age' 3600 always;
+          add_header 'Content-Length' 0 always;
+          add_header 'Content-Type' 'text/plain' always;
+          return 204;
+        }
         
+        # Sin auth_request directive = bypass completo de autenticación
         # Rewrite para quitar el prefijo /auth
-        rewrite ^/auth/(.+)$ /$1 break;
-        rewrite ^/auth$ / break;
+        rewrite ^/auth/login$ /login break;
         
         # Proxy directo al servicio sin pasar por verify
         proxy_pass http://auth-service.medisupply.svc.cluster.local:5004;
@@ -128,18 +129,41 @@ metadata:
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         
-        # CORS headers
-        set $cors_origin_loc "";
-        if ($http_origin ~* "^https?://([a-zA-Z0-9-]+\.)?medisupplyg4\.online/?$") {
-          set $cors_origin_loc $http_origin;
+        # CORS headers para respuestas normales
+        add_header 'Access-Control-Allow-Origin' $cors_allowed_origin always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Vary' 'Origin' always;
+      }
+      
+      # Location para /auth/version y /auth/health
+      location ~ ^/auth/(version|health)$ {
+        # Manejar OPTIONS (preflight) directamente sin auth_request
+        if ($request_method = 'OPTIONS') {
+          add_header 'Access-Control-Allow-Origin' $cors_allowed_origin always;
+          add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+          add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
+          add_header 'Access-Control-Allow-Credentials' 'true' always;
+          add_header 'Access-Control-Max-Age' 3600 always;
+          add_header 'Content-Length' 0 always;
+          add_header 'Content-Type' 'text/plain' always;
+          return 204;
         }
-        if ($http_origin ~* "^https?://medisupply-web--medisupply-web\.us-east4\.hosted\.app/?$") {
-          set $cors_origin_loc $http_origin;
-        }
-        if ($http_origin ~* "^https?://localhost(:[0-9]+)?/?$") {
-          set $cors_origin_loc $http_origin;
-        }
-        add_header 'Access-Control-Allow-Origin' $cors_origin_loc always;
+        
+        # Sin auth_request directive = bypass completo de autenticación
+        # Rewrite para quitar el prefijo /auth
+        rewrite ^/auth/(.+)$ /$1 break;
+        
+        # Proxy directo al servicio sin pasar por verify
+        proxy_pass http://auth-service.medisupply.svc.cluster.local:5004;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # CORS headers para respuestas normales
+        add_header 'Access-Control-Allow-Origin' $cors_allowed_origin always;
         add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
         add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,X-Requested-With' always;
         add_header 'Access-Control-Allow-Credentials' 'true' always;
