@@ -196,25 +196,8 @@ class CrearPedidoCompletoHandler:
             # Actualizar total del pedido
             pedido.total = Precio(total_pedido)
             
-            # Preparar items para reservar inventario
-            items_para_reservar = []
-            for item in items_procesados:
-                items_para_reservar.append({
-                    'producto_id': item.producto_id,
-                    'cantidad': item.cantidad.valor
-                })
-            
-            # Reservar inventario
-            resultado_reserva = self._servicio_logistica.reservar_inventario(items_para_reservar)
-            
-            if not resultado_reserva.get('success', False):
-                error_detalle = resultado_reserva.get("error", "Error desconocido")
-                return {
-                    'success': False,
-                    'error': f'❌ Error reservando inventario: {error_detalle}',
-                    'detalle': 'Error inesperado durante la reserva de inventario',
-                    'items_pedido': items_validos
-                }
+            # La reserva de inventario se realiza automáticamente en Logística
+            # cuando recibe el evento PedidoConfirmado (event-driven)
             
             # Confirmar el pedido
             if not pedido.confirmar():

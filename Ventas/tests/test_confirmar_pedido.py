@@ -261,55 +261,6 @@ class TestConfirmarPedido:
         # Con stock disponible de 5, solo producto-3 es válido
         assert resultado['resumen']['productos_stock_insuficiente'] == 2
     
-    # ========== PRUEBAS DE RESERVA DE INVENTARIO ==========
-    
-    def test_confirmar_pedido_error_reserva_inventario(self):
-        """Test confirmar pedido con error en reserva de inventario"""
-        comando = ConfirmarPedido(pedido_id=str(uuid.uuid4()))
-        
-        # Crear pedido mock válido
-        mock_pedido = self._crear_pedido_mock_valido()
-        self.mock_repositorio.obtener_por_id.return_value = mock_pedido
-        
-        # Mock servicio logística - inventario válido pero error en reserva
-        self.mock_servicio_logistica.obtener_inventario_producto.return_value = {
-            'total_disponible': 20
-        }
-        self.mock_servicio_logistica.reservar_inventario.return_value = {
-            'success': False,
-            'error': 'Error de conexión'
-        }
-        
-        resultado = self.handler.handle(comando)
-        
-        assert resultado['success'] == False
-        assert 'Error reservando inventario' in resultado['error']
-        assert 'Error de conexión' in resultado['error']
-        assert 'items_pedido' in resultado
-    
-    def test_confirmar_pedido_error_reserva_sin_detalle(self):
-        """Test confirmar pedido con error en reserva sin detalle específico"""
-        comando = ConfirmarPedido(pedido_id=str(uuid.uuid4()))
-        
-        # Crear pedido mock válido
-        mock_pedido = self._crear_pedido_mock_valido()
-        self.mock_repositorio.obtener_por_id.return_value = mock_pedido
-        
-        # Mock servicio logística - inventario válido pero error en reserva sin detalle
-        self.mock_servicio_logistica.obtener_inventario_producto.return_value = {
-            'total_disponible': 20
-        }
-        self.mock_servicio_logistica.reservar_inventario.return_value = {
-            'success': False
-            # Sin campo 'error'
-        }
-        
-        resultado = self.handler.handle(comando)
-        
-        assert resultado['success'] == False
-        assert 'Error reservando inventario' in resultado['error']
-        assert 'Error desconocido' in resultado['error']
-    
     def test_confirmar_pedido_error_confirmacion(self):
         """Test confirmar pedido con error en confirmación"""
         comando = ConfirmarPedido(pedido_id=str(uuid.uuid4()))

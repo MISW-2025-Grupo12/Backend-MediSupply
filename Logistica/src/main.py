@@ -30,8 +30,6 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# El consumidor PubSub se configura en api/__init__.py DESPUÉS de crear la app Flask
-# para tener acceso al contexto de la aplicación
 
 def main():
     """Función principal para ejecutar el microservicio"""
