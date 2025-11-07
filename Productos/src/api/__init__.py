@@ -28,6 +28,12 @@ def create_app(configuracion=None):
         from . import categoria
         app.register_blueprint(producto.bp)
         app.register_blueprint(categoria.bp)
+        
+        # Iniciar JobsManager para procesar trabajos asíncronos
+        from infraestructura.jobs_manager import get_jobs_manager
+        jobs_manager = get_jobs_manager(app)
+        # get_jobs_manager ya inicia el manager si se pasa app
+        logger.info("✅ JobsManager iniciado para carga masiva")
 
 
         @app.route("/")

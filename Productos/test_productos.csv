@@ -1,0 +1,501 @@
+nombre,descripcion,precio,stock,fecha_vencimiento,categoria,proveedor
+Paracetamol 500mg,Analgesico y antipiretico para el alivio del dolor y la fiebre,5000,100,2025-12-31,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 400mg,Antiinflamatorio no esteroideo para el alivio del dolor,3500,50,2025-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Aspirina 500mg,Analgesico y antipiretico,2500,75,2025-10-15,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 500mg,Analgesico y antipiretico de acción rápida,4800,120,2025-12-31,Medicinas,Distribuidora MediPro S.A.S.
+Naproxeno 250mg,Antiinflamatorio no esteroideo para dolor muscular,4200,80,2025-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 50mg,Antiinflamatorio tópico para dolor articular,3800,90,2025-12-15,Medicinas,Distribuidora MediPro S.A.S.
+Omeprazol 20mg,Protector gástrico para acidez estomacal,5500,150,2026-01-31,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 30mg,Inhibidor de bomba de protones,6000,100,2026-02-28,Medicinas,Distribuidora MediPro S.A.S.
+Ranitidina 150mg,Antihistamínico H2 para acidez,3200,110,2025-12-31,Medicinas,Distribuidora MediPro S.A.S.
+Amoxicilina 500mg,Antibiótico de amplio espectro,8500,75,2025-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Azitromicina 500mg,Antibiótico macrólido,9200,60,2025-12-15,Medicinas,Distribuidora MediPro S.A.S.
+Ciprofloxacino 500mg,Antibiótico fluoroquinolona,8800,70,2025-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 500mg,Antibiótico para infecciones anaerobias,7500,65,2025-12-31,Medicinas,Distribuidora MediPro S.A.S.
+Doxiciclina 100mg,Antibiótico tetraciclina,7800,55,2025-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 500mg,Antibiótico cefalosporina,8200,85,2025-12-15,Medicinas,Distribuidora MediPro S.A.S.
+Loratadina 10mg,Antihistamínico para alergias,4500,200,2026-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Cetirizina 10mg,Antihistamínico de segunda generación,4800,180,2026-02-28,Medicinas,Distribuidora MediPro S.A.S.
+Desloratadina 5mg,Antihistamínico no sedante,5200,170,2026-04-30,Medicinas,Distribuidora MediPro S.A.S.
+Fexofenadina 120mg,Antihistamínico de acción prolongada,5500,160,2026-03-15,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol Inhalador,Broncodilatador para asma,15000,45,2025-12-31,Medicinas,Distribuidora MediPro S.A.S.
+Beclometasona Inhalador,Corticoide inhalado para asma,18000,40,2025-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Fluticasona Inhalador,Corticoide inhalado de acción prolongada,20000,35,2025-12-15,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 50mg,Antihipertensivo bloqueador de angiotensina,6200,130,2026-01-31,Medicinas,Distribuidora MediPro S.A.S.
+Enalapril 10mg,Inhibidor de la enzima convertidora,5800,140,2026-02-28,Medicinas,Distribuidora MediPro S.A.S.
+Amlodipino 5mg,Bloqueador de canales de calcio,6500,125,2026-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 50mg,Bloqueador beta para hipertensión,5500,135,2026-01-15,Medicinas,Distribuidora MediPro S.A.S.
+Metformina 500mg,Antidiabético oral para diabetes tipo 2,4500,160,2026-02-28,Medicinas,Distribuidora MediPro S.A.S.
+Glibenclamida 5mg,Antidiabético estimulante de insulina,4800,150,2026-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Insulina Glargina,Insulina de acción prolongada,45000,25,2025-12-31,Medicinas,Distribuidora MediPro S.A.S.
+Insulina Rápida,Insulina de acción rápida,42000,30,2025-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Atorvastatina 20mg,Estatinas para reducir colesterol,7200,120,2026-04-30,Medicinas,Distribuidora MediPro S.A.S.
+Simvastatina 20mg,Estatinas para control de colesterol,6800,125,2026-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 10mg,Estatinas de última generación,8500,115,2026-05-31,Medicinas,Distribuidora MediPro S.A.S.
+Levotiroxina 50mcg,Hormona tiroidea sintética,3800,145,2026-02-28,Medicinas,Distribuidora MediPro S.A.S.
+Levotiroxina 100mcg,Hormona tiroidea dosis estándar,4200,140,2026-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 20mg,Antidepresivo inhibidor de recaptación,6800,95,2026-01-31,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 50mg,Antidepresivo ISRS,7200,90,2026-02-28,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 10mg,Antidepresivo de nueva generación,7800,85,2026-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 5mg,Ansiolítico benzodiazepina,4500,70,2025-12-31,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 0.5mg,Ansiolítico de acción rápida,5200,65,2025-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Clonazepam 2mg,Ansiolítico de acción prolongada,4800,75,2025-12-15,Medicinas,Distribuidora MediPro S.A.S.
+Morfina 10mg,Analgésico opioide para dolor severo,12000,30,2025-12-31,Medicinas,Distribuidora MediPro S.A.S.
+Tramadol 50mg,Analgésico opioide sintético,6800,80,2025-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Codeína 30mg,Analgésico opioide y antitusivo,7500,60,2025-12-15,Medicinas,Distribuidora MediPro S.A.S.
+Carbamazepina 200mg,Antiepiléptico y estabilizador del ánimo,7200,55,2026-01-31,Medicinas,Distribuidora MediPro S.A.S.
+Gabapentina 300mg,Antiepiléptico para dolor neuropático,6800,70,2026-02-28,Medicinas,Distribuidora MediPro S.A.S.
+Pregabalina 75mg,Antiepiléptico para neuropatía,8500,65,2026-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Warfarina 5mg,Anticoagulante oral,3800,100,2026-04-30,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,7200,110,2026-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Ácido Acetilsalicílico 100mg,Antiagregante y cardioprotector,2500,200,2026-05-31,Medicinas,Distribuidora MediPro S.A.S.
+Tensiómetro Digital,Dispositivo para medir presión arterial,89000,25,2027-12-31,Equipos Médicos,Distribuidora MediPro S.A.S.
+Estetoscopio,Instrumento médico para auscultación,125000,20,2027-11-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Infrarrojo,Termómetro digital sin contacto,75000,30,2027-10-15,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Digital,Termómetro electrónico de alta precisión,35000,50,2027-12-31,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico,Instrumento cortante para cirugía,45000,40,2027-11-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas,Instrumento de precisión para cirugía,38000,45,2027-10-15,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas,Instrumento cortante para procedimientos,42000,35,2027-12-31,Equipos Médicos,Distribuidora MediPro S.A.S.
+Guantes de Látex Talla M,Guantes desechables estériles,28000,500,2026-12-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Guantes de Látex Talla L,Guantes desechables estériles,30000,450,2026-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Guantes de Nitrilo Talla M,Guantes libres de látex,35000,400,2026-12-15,Insumos Médicos,Distribuidora MediPro S.A.S.
+Jeringas Desechables 5ml,Jeringas estériles de un solo uso,35000,300,2026-10-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Jeringas Desechables 10ml,Jeringas estériles de mayor capacidad,40000,280,2026-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Jeringas Desechables 20ml,Jeringas estériles de gran capacidad,45000,250,2026-12-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Agujas Hipodérmicas 21G,Agujas estériles para inyección,25000,400,2026-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Agujas Hipodérmicas 23G,Agujas finas estériles,28000,380,2026-12-15,Insumos Médicos,Distribuidora MediPro S.A.S.
+Gasas Estériles 10x10cm,Gasas estériles para curaciones,22000,600,2026-10-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Gasas Estériles 20x20cm,Gasas estériles de mayor tamaño,35000,500,2026-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Vendas Elásticas 10cm,Vendas elásticas para compresión,18000,400,2027-12-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Vendas Elásticas 15cm,Vendas elásticas de mayor ancho,25000,350,2027-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Apósitos Adhesivos,Apósitos estériles para heridas,15000,800,2026-12-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Alcohol en Gel 500ml,Desinfectante de manos en gel,18000,200,2026-10-15,Insumos Médicos,Distribuidora MediPro S.A.S.
+Alcohol Etílico 500ml,Alcohol desinfectante líquido,22000,180,2026-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Yodo Povidona 500ml,Antiséptico tópico,28000,150,2026-12-15,Insumos Médicos,Distribuidora MediPro S.A.S.
+Clorhexidina 500ml,Antiséptico de amplio espectro,32000,140,2026-10-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Solución Salina 500ml,Solución estéril de cloruro de sodio,15000,300,2026-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Solución Salina 1000ml,Solución salina de mayor volumen,25000,250,2026-12-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Agua Destilada 500ml,Agua destilada estéril,12000,350,2026-10-15,Insumos Médicos,Distribuidora MediPro S.A.S.
+Jabón Antiséptico 500ml,Jabón líquido con propiedades antimicrobianas,18000,200,2026-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Mascarillas Quirúrgicas Caja 50,Mascarillas desechables de protección,45000,150,2026-12-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Mascarillas N95 Caja 20,Mascarillas de alta protección,85000,100,2026-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Batas Quirúrgicas Desechables,Batas estériles de un solo uso,65000,80,2026-12-15,Insumos Médicos,Distribuidora MediPro S.A.S.
+Gorros Quirúrgicos Desechables,Gorros estériles para procedimientos,12000,200,2026-10-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Cubrecalzado Desechable,Cubrecalzado estéril de protección,15000,250,2026-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Campos Quirúrgicos Estériles,Campos estériles para cirugía,95000,40,2026-12-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Suturas No Absorbibles 3-0,Suturas de nylon para cierre,85000,60,2027-12-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Suturas Absorbibles 4-0,Suturas que se reabsorben,78000,70,2027-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Catéter Venoso 18G,Catéter para acceso venoso,55000,90,2027-10-15,Insumos Médicos,Distribuidora MediPro S.A.S.
+Catéter Urinario Foley 14F,Catéter de retención urinaria,45000,75,2027-12-31,Insumos Médicos,Distribuidora MediPro S.A.S.
+Sonda Nasogástrica 16F,Sonda para alimentación enteral,38000,85,2027-11-30,Insumos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso,Dispositivo para medir saturación de oxígeno,65000,30,2027-10-15,Equipos Médicos,Distribuidora MediPro S.A.S.
+Nebulizador Portátil,Nebulizador para administración de medicamentos,120000,25,2027-12-31,Equipos Médicos,Distribuidora MediPro S.A.S.
+Desfibrilador Manual,Equipo de emergencia para reanimación,2500000,5,2027-11-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Monitor de Signos Vitales,Monitor multiparámetro para paciente,850000,8,2027-10-15,Equipos Médicos,Distribuidora MediPro S.A.S.
+Ventilador Mecánico Portátil,Equipo de soporte respiratorio,3500000,3,2027-12-31,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión,Equipo para administración controlada de medicamentos,450000,6,2027-11-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Electrocardiógrafo Portátil,Equipo para registro de actividad cardíaca,1800000,4,2027-10-15,Equipos Médicos,Distribuidora MediPro S.A.S.
+Autoclave de Mesa,Sterilizador de vapor para instrumentos,2800000,2,2027-12-31,Equipos Médicos,Distribuidora MediPro S.A.S.
+Lámpara Quirúrgica LED,Lámpara de iluminación para procedimientos,950000,5,2027-11-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Lansoprazol 30mg,Inhibidor de bomba de protones,6207,51,2025-03-28,Medicinas,Distribuidora MediPro S.A.S.
+Atorvastatina 80mg,Estatinas para colesterol,7642,87,2025-10-01,Medicinas,Distribuidora MediPro S.A.S.
+Warfarina 5mg,Anticoagulante oral,5320,29,2027-07-19,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 100mg,Antihipertensivo,8286,172,2027-06-13,Medicinas,Distribuidora MediPro S.A.S.
+Amlodipino 5mg,Bloqueador de canales de calcio,8539,57,2025-01-11,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,8007,59,2027-09-09,Medicinas,Distribuidora MediPro S.A.S.
+Loratadina 10mg,Antihistamínico para alergias,4772,150,2027-06-12,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 20mg,Estatinas de última generación,11191,32,2025-07-24,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 200mg,Antiinflamatorio no esteroideo,5438,122,2027-07-12,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 100mg,Bloqueador beta,6086,189,2026-08-22,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 250mg,Antibiótico para infecciones,8415,152,2026-09-08,Medicinas,Distribuidora MediPro S.A.S.
+Amoxicilina 875mg,Antibiótico de amplio espectro,10722,127,2027-01-25,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 25mg,Antihipertensivo,6599,107,2027-11-08,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 500mg,Antibiótico para infecciones,10023,95,2027-03-17,Medicinas,Distribuidora MediPro S.A.S.
+Ranitidina 150mg,Antihistamínico H2,4375,82,2025-09-29,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 0.5mg,Ansiolítico de acción rápida,5250,45,2026-11-01,Medicinas,Distribuidora MediPro S.A.S.
+Ciprofloxacino 500mg,Antibiótico fluoroquinolona,9126,43,2025-03-21,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 100mg,Antihipertensivo,7699,104,2027-05-01,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 200mg,Antiinflamatorio no esteroideo,5177,80,2025-02-24,Medicinas,Distribuidora MediPro S.A.S.
+Enalapril 10mg,Inhibidor de la enzima convertidora,6872,49,2025-03-13,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 20mg,Antidepresivo ISRS,6980,78,2026-11-22,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 250mg,Antibiótico cefalosporina,8472,136,2027-01-16,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 400mg,Antiinflamatorio no esteroideo,6960,102,2026-01-02,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 5mg,Estatinas de última generación,12284,84,2027-12-27,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,8941,38,2027-03-28,Medicinas,Distribuidora MediPro S.A.S.
+Levotiroxina 25mg,Hormona tiroidea sintética,5332,183,2025-03-19,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 5mg,Antidepresivo nueva generación,8021,23,2025-02-28,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 200mg,Broncodilatador para asma,22243,96,2026-06-14,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,7891,90,2025-04-17,Medicinas,Distribuidora MediPro S.A.S.
+Warfarina 1mg,Anticoagulante oral,4605,120,2026-12-22,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 100mg,Antidepresivo,9245,155,2026-12-03,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 100mg,Broncodilatador para asma,19279,100,2025-03-24,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 30mg,Inhibidor de bomba de protones,6763,124,2027-01-26,Medicinas,Distribuidora MediPro S.A.S.
+Paracetamol 500mg,Analgesico y antipiretico,4005,30,2025-06-25,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 2mg,Ansiolítico benzodiazepina,5150,147,2027-11-12,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,9312,135,2026-09-12,Medicinas,Distribuidora MediPro S.A.S.
+Aspirina 325mg,Analgesico y antipiretico,3266,87,2025-06-30,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 50mg,Bloqueador beta,6693,182,2027-04-03,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 30mg,Inhibidor de bomba de protones,7846,73,2026-10-31,Medicinas,Distribuidora MediPro S.A.S.
+Paracetamol 1000mg,Analgesico y antipiretico,3589,41,2025-11-24,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 20mg,Antidepresivo ISRS,9220,96,2025-10-17,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 10mg,Antidepresivo nueva generación,8558,152,2027-04-21,Medicinas,Distribuidora MediPro S.A.S.
+Enalapril 20mg,Inhibidor de la enzima convertidora,8427,196,2026-01-21,Medicinas,Distribuidora MediPro S.A.S.
+Levotiroxina 75mg,Hormona tiroidea sintética,5011,76,2026-10-19,Medicinas,Distribuidora MediPro S.A.S.
+Doxiciclina 100mg,Antibiótico tetraciclina,9445,20,2025-03-17,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 10mg,Ansiolítico benzodiazepina,5028,165,2025-08-13,Medicinas,Distribuidora MediPro S.A.S.
+Glibenclamida 5mg,Antidiabético estimulante,5770,83,2025-11-14,Medicinas,Distribuidora MediPro S.A.S.
+Simvastatina 20mg,Estatinas para control,7298,143,2026-03-10,Medicinas,Distribuidora MediPro S.A.S.
+Azitromicina 500mg,Antibiótico macrólido,10573,166,2027-01-04,Medicinas,Distribuidora MediPro S.A.S.
+Atorvastatina 20mg,Estatinas para colesterol,11400,42,2025-12-03,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 20mg,Antidepresivo ISRS,8845,153,2025-07-17,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 5mg,Antidepresivo nueva generación,7996,68,2025-11-12,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 100mg,Bloqueador beta,6358,97,2027-10-29,Medicinas,Distribuidora MediPro S.A.S.
+Gabapentina 100mg,Antiepiléptico,8245,193,2025-02-02,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 100mg,Broncodilatador para asma,15639,82,2025-01-04,Medicinas,Distribuidora MediPro S.A.S.
+Glibenclamida 5mg,Antidiabético estimulante,5175,90,2025-01-08,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 50mg,Antihipertensivo,8942,35,2026-11-26,Medicinas,Distribuidora MediPro S.A.S.
+Omeprazol 20mg,Protector gástrico,8033,159,2026-05-07,Medicinas,Distribuidora MediPro S.A.S.
+Ranitidina 150mg,Antihistamínico H2,4248,98,2026-09-01,Medicinas,Distribuidora MediPro S.A.S.
+Gabapentina 300mg,Antiepiléptico,8457,69,2027-11-28,Medicinas,Distribuidora MediPro S.A.S.
+Amlodipino 5mg,Bloqueador de canales de calcio,7116,171,2025-10-12,Medicinas,Distribuidora MediPro S.A.S.
+Naproxeno 250mg,Antiinflamatorio para dolor muscular,4716,128,2025-08-29,Medicinas,Distribuidora MediPro S.A.S.
+Amoxicilina 500mg,Antibiótico de amplio espectro,11123,150,2026-04-03,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 40mg,Antidepresivo ISRS,8714,161,2026-06-15,Medicinas,Distribuidora MediPro S.A.S.
+Warfarina 2.5mg,Anticoagulante oral,5466,168,2026-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 200mg,Broncodilatador para asma,22194,173,2026-01-14,Medicinas,Distribuidora MediPro S.A.S.
+Atorvastatina 40mg,Estatinas para colesterol,10884,130,2025-11-02,Medicinas,Distribuidora MediPro S.A.S.
+Paracetamol 1000mg,Analgesico y antipiretico,3588,57,2026-06-21,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 0.25mg,Ansiolítico de acción rápida,6876,81,2027-11-30,Medicinas,Distribuidora MediPro S.A.S.
+Loratadina 10mg,Antihistamínico para alergias,5250,79,2026-11-19,Medicinas,Distribuidora MediPro S.A.S.
+Doxiciclina 100mg,Antibiótico tetraciclina,9473,175,2026-12-05,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 40mg,Antidepresivo ISRS,9480,33,2025-12-06,Medicinas,Distribuidora MediPro S.A.S.
+Enalapril 20mg,Inhibidor de la enzima convertidora,6059,82,2026-08-01,Medicinas,Distribuidora MediPro S.A.S.
+Paracetamol 750mg,Analgesico y antipiretico,4081,48,2025-08-22,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 1mg,Ansiolítico de acción rápida,6869,132,2025-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 5mg,Ansiolítico benzodiazepina,6923,64,2027-04-30,Medicinas,Distribuidora MediPro S.A.S.
+Ranitidina 300mg,Antihistamínico H2,3204,198,2027-03-28,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 1mg,Ansiolítico de acción rápida,6832,189,2027-02-14,Medicinas,Distribuidora MediPro S.A.S.
+Doxiciclina 100mg,Antibiótico tetraciclina,8893,131,2026-10-30,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 500mg,Analgesico de acción rápida,4968,128,2027-03-04,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 250mg,Antibiótico para infecciones,10710,177,2027-02-28,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 25mg,Antihipertensivo,8190,33,2027-10-26,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 500mg,Antibiótico cefalosporina,10286,190,2027-02-10,Medicinas,Distribuidora MediPro S.A.S.
+Azitromicina 500mg,Antibiótico macrólido,13907,156,2026-01-26,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 40mg,Antidepresivo ISRS,8694,162,2026-03-07,Medicinas,Distribuidora MediPro S.A.S.
+Atorvastatina 10mg,Estatinas para colesterol,7334,128,2027-03-25,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 100mg,Antidepresivo,9600,115,2025-12-12,Medicinas,Distribuidora MediPro S.A.S.
+Cetirizina 10mg,Antihistamínico de segunda generación,6151,173,2026-04-07,Medicinas,Distribuidora MediPro S.A.S.
+Aspirina 100mg,Analgesico y antipiretico,4493,200,2027-10-27,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 25mg,Bloqueador beta,6486,67,2026-03-08,Medicinas,Distribuidora MediPro S.A.S.
+Gabapentina 100mg,Antiepiléptico,7639,83,2027-04-02,Medicinas,Distribuidora MediPro S.A.S.
+Azitromicina 250mg,Antibiótico macrólido,9512,136,2027-07-22,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 400mg,Antiinflamatorio no esteroideo,6105,105,2025-01-07,Medicinas,Distribuidora MediPro S.A.S.
+Doxiciclina 100mg,Antibiótico tetraciclina,9253,29,2027-05-28,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,9256,180,2026-08-06,Medicinas,Distribuidora MediPro S.A.S.
+Amlodipino 5mg,Bloqueador de canales de calcio,7663,71,2026-09-05,Medicinas,Distribuidora MediPro S.A.S.
+Metformina 850mg,Antidiabético oral,6212,108,2027-06-27,Medicinas,Distribuidora MediPro S.A.S.
+Carbamazepina 400mg,Antiepiléptico,8115,50,2027-02-10,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 200mg,Broncodilatador para asma,24123,170,2026-09-08,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 500mg,Antibiótico para infecciones,9959,134,2026-05-31,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 10mg,Estatinas de última generación,11815,135,2027-06-26,Medicinas,Distribuidora MediPro S.A.S.
+Metformina 1000mg,Antidiabético oral,5423,74,2027-04-18,Medicinas,Distribuidora MediPro S.A.S.
+Metformina 850mg,Antidiabético oral,5959,165,2027-04-01,Medicinas,Distribuidora MediPro S.A.S.
+Glibenclamida 5mg,Antidiabético estimulante,4987,146,2027-12-30,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 400mg,Antiinflamatorio no esteroideo,3818,57,2026-01-08,Medicinas,Distribuidora MediPro S.A.S.
+Amoxicilina 250mg,Antibiótico de amplio espectro,11192,50,2025-07-21,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 30mg,Inhibidor de bomba de protones,6005,87,2027-12-10,Medicinas,Distribuidora MediPro S.A.S.
+Doxiciclina 100mg,Antibiótico tetraciclina,8588,85,2025-07-03,Medicinas,Distribuidora MediPro S.A.S.
+Omeprazol 40mg,Protector gástrico,7458,177,2027-10-17,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 30mg,Inhibidor de bomba de protones,7023,81,2027-08-01,Medicinas,Distribuidora MediPro S.A.S.
+Enalapril 5mg,Inhibidor de la enzima convertidora,6179,147,2025-09-06,Medicinas,Distribuidora MediPro S.A.S.
+Gabapentina 100mg,Antiepiléptico,7327,47,2025-10-26,Medicinas,Distribuidora MediPro S.A.S.
+Naproxeno 250mg,Antiinflamatorio para dolor muscular,4300,199,2027-01-21,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 100mg,Antiinflamatorio tópico,4531,49,2026-04-22,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 25mg,Bloqueador beta,6343,88,2026-03-26,Medicinas,Distribuidora MediPro S.A.S.
+Enalapril 20mg,Inhibidor de la enzima convertidora,6730,176,2027-04-09,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 50mg,Antihipertensivo,8803,200,2026-05-16,Medicinas,Distribuidora MediPro S.A.S.
+Amlodipino 10mg,Bloqueador de canales de calcio,6844,187,2026-02-26,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 20mg,Antidepresivo ISRS,7863,150,2027-02-02,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,7356,32,2027-01-24,Medicinas,Distribuidora MediPro S.A.S.
+Naproxeno 250mg,Antiinflamatorio para dolor muscular,4704,173,2027-06-10,Medicinas,Distribuidora MediPro S.A.S.
+Glibenclamida 5mg,Antidiabético estimulante,5157,173,2026-04-10,Medicinas,Distribuidora MediPro S.A.S.
+Cetirizina 10mg,Antihistamínico de segunda generación,5917,161,2026-11-24,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 50mg,Bloqueador beta,7374,83,2026-04-26,Medicinas,Distribuidora MediPro S.A.S.
+Aspirina 500mg,Analgesico y antipiretico,3981,118,2027-01-18,Medicinas,Distribuidora MediPro S.A.S.
+Azitromicina 500mg,Antibiótico macrólido,10712,173,2026-01-03,Medicinas,Distribuidora MediPro S.A.S.
+Cetirizina 10mg,Antihistamínico de segunda generación,5948,140,2026-01-05,Medicinas,Distribuidora MediPro S.A.S.
+Azitromicina 500mg,Antibiótico macrólido,10301,129,2025-12-15,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 15mg,Inhibidor de bomba de protones,7008,118,2025-06-02,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,8265,54,2027-03-11,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 5mg,Antidepresivo nueva generación,8314,25,2025-09-03,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 25mg,Antidepresivo,9914,29,2026-04-26,Medicinas,Distribuidora MediPro S.A.S.
+Paracetamol 1000mg,Analgesico y antipiretico,4428,113,2027-03-28,Medicinas,Distribuidora MediPro S.A.S.
+Amlodipino 10mg,Bloqueador de canales de calcio,7591,26,2027-05-24,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 25mg,Antihipertensivo,8939,66,2025-12-27,Medicinas,Distribuidora MediPro S.A.S.
+Amlodipino 5mg,Bloqueador de canales de calcio,7445,42,2026-03-19,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 20mg,Antidepresivo ISRS,7561,63,2027-11-15,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 0.5mg,Ansiolítico de acción rápida,5381,129,2026-08-02,Medicinas,Distribuidora MediPro S.A.S.
+Tramadol 100mg,Analgésico opioide sintético,9365,141,2027-03-13,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 500mg,Antibiótico para infecciones,8906,73,2027-09-20,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 100mg,Broncodilatador para asma,22832,125,2027-06-26,Medicinas,Distribuidora MediPro S.A.S.
+Paracetamol 500mg,Analgesico y antipiretico,3066,151,2025-07-07,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 20mg,Estatinas de última generación,12408,174,2025-06-12,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 200mg,Broncodilatador para asma,17688,194,2026-09-30,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 25mg,Bloqueador beta,5916,67,2025-10-30,Medicinas,Distribuidora MediPro S.A.S.
+Azitromicina 500mg,Antibiótico macrólido,9916,198,2026-05-01,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 400mg,Antiinflamatorio no esteroideo,3545,124,2026-10-28,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 100mg,Broncodilatador para asma,23855,35,2025-07-06,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 1mg,Ansiolítico de acción rápida,7032,157,2025-11-08,Medicinas,Distribuidora MediPro S.A.S.
+Atorvastatina 80mg,Estatinas para colesterol,8088,132,2027-08-26,Medicinas,Distribuidora MediPro S.A.S.
+Amlodipino 5mg,Bloqueador de canales de calcio,6861,189,2027-04-14,Medicinas,Distribuidora MediPro S.A.S.
+Loratadina 10mg,Antihistamínico para alergias,5111,75,2026-04-30,Medicinas,Distribuidora MediPro S.A.S.
+Carbamazepina 400mg,Antiepiléptico,7880,42,2027-04-05,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 30mg,Inhibidor de bomba de protones,8136,171,2027-08-05,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 400mg,Antiinflamatorio no esteroideo,4104,91,2025-06-15,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 100mg,Antiinflamatorio tópico,4516,164,2025-07-12,Medicinas,Distribuidora MediPro S.A.S.
+Atorvastatina 40mg,Estatinas para colesterol,11365,174,2027-09-28,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 500mg,Analgesico de acción rápida,5420,196,2026-08-26,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 500mg,Analgesico de acción rápida,4830,95,2026-12-11,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 500mg,Antibiótico cefalosporina,9308,149,2026-02-18,Medicinas,Distribuidora MediPro S.A.S.
+Gabapentina 400mg,Antiepiléptico,8116,71,2026-06-19,Medicinas,Distribuidora MediPro S.A.S.
+Levotiroxina 100mg,Hormona tiroidea sintética,5429,77,2026-04-15,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 500mg,Antibiótico para infecciones,10970,163,2026-07-17,Medicinas,Distribuidora MediPro S.A.S.
+Simvastatina 40mg,Estatinas para control,9162,46,2026-01-02,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 5mg,Ansiolítico benzodiazepina,5477,37,2025-05-07,Medicinas,Distribuidora MediPro S.A.S.
+Tramadol 50mg,Analgésico opioide sintético,8297,164,2026-05-28,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 0.25mg,Ansiolítico de acción rápida,6495,193,2025-08-03,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 25mg,Antidepresivo,8830,91,2027-01-09,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 50mg,Antidepresivo,8934,182,2026-02-07,Medicinas,Distribuidora MediPro S.A.S.
+Gabapentina 300mg,Antiepiléptico,7388,181,2025-01-29,Medicinas,Distribuidora MediPro S.A.S.
+Amlodipino 5mg,Bloqueador de canales de calcio,7965,48,2025-04-24,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 5mg,Antidepresivo nueva generación,7951,88,2026-08-04,Medicinas,Distribuidora MediPro S.A.S.
+Simvastatina 40mg,Estatinas para control,8950,39,2027-07-24,Medicinas,Distribuidora MediPro S.A.S.
+Loratadina 10mg,Antihistamínico para alergias,5813,74,2026-09-27,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 600mg,Antiinflamatorio no esteroideo,4229,180,2026-03-21,Medicinas,Distribuidora MediPro S.A.S.
+Enalapril 20mg,Inhibidor de la enzima convertidora,6604,151,2026-03-16,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 0.25mg,Ansiolítico de acción rápida,5665,21,2025-09-06,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 25mg,Antidepresivo,9164,125,2026-06-19,Medicinas,Distribuidora MediPro S.A.S.
+Ranitidina 150mg,Antihistamínico H2,3544,149,2027-06-19,Medicinas,Distribuidora MediPro S.A.S.
+Tramadol 50mg,Analgésico opioide sintético,8402,77,2025-02-20,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 100mg,Antiinflamatorio tópico,5206,195,2027-07-26,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 40mg,Antidepresivo ISRS,7024,181,2027-12-12,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 50mg,Bloqueador beta,6601,187,2025-11-02,Medicinas,Distribuidora MediPro S.A.S.
+Aspirina 325mg,Analgesico y antipiretico,3708,69,2026-11-18,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 250mg,Antibiótico para infecciones,9639,168,2025-09-04,Medicinas,Distribuidora MediPro S.A.S.
+Glibenclamida 2.5mg,Antidiabético estimulante,5561,28,2027-10-19,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 2mg,Ansiolítico benzodiazepina,6455,191,2026-03-21,Medicinas,Distribuidora MediPro S.A.S.
+Atorvastatina 20mg,Estatinas para colesterol,9773,49,2026-05-02,Medicinas,Distribuidora MediPro S.A.S.
+Atorvastatina 80mg,Estatinas para colesterol,8461,196,2025-02-23,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 1mg,Ansiolítico de acción rápida,6592,120,2026-11-18,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 650mg,Analgesico de acción rápida,5086,188,2026-06-29,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 10mg,Estatinas de última generación,10798,115,2025-12-23,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,9094,140,2025-05-11,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 0.25mg,Ansiolítico de acción rápida,6649,31,2027-05-20,Medicinas,Distribuidora MediPro S.A.S.
+Ranitidina 150mg,Antihistamínico H2,4154,156,2026-12-02,Medicinas,Distribuidora MediPro S.A.S.
+Simvastatina 20mg,Estatinas para control,8060,67,2026-01-29,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 5mg,Antidepresivo nueva generación,9762,34,2025-12-15,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 100mg,Broncodilatador para asma,20271,96,2026-01-18,Medicinas,Distribuidora MediPro S.A.S.
+Cetirizina 10mg,Antihistamínico de segunda generación,5389,73,2027-05-01,Medicinas,Distribuidora MediPro S.A.S.
+Azitromicina 500mg,Antibiótico macrólido,11902,157,2026-01-09,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 100mg,Antihipertensivo,7726,41,2027-04-25,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 50mg,Bloqueador beta,6681,87,2025-09-22,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 500mg,Analgesico de acción rápida,5459,159,2026-03-10,Medicinas,Distribuidora MediPro S.A.S.
+Warfarina 5mg,Anticoagulante oral,4892,165,2026-07-24,Medicinas,Distribuidora MediPro S.A.S.
+Omeprazol 20mg,Protector gástrico,7489,192,2025-09-09,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 500mg,Antibiótico cefalosporina,10724,29,2025-08-03,Medicinas,Distribuidora MediPro S.A.S.
+Ciprofloxacino 250mg,Antibiótico fluoroquinolona,12452,86,2027-01-31,Medicinas,Distribuidora MediPro S.A.S.
+Metformina 850mg,Antidiabético oral,5563,106,2026-08-19,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 25mg,Bloqueador beta,7956,138,2026-01-13,Medicinas,Distribuidora MediPro S.A.S.
+Aspirina 325mg,Analgesico y antipiretico,4367,183,2026-06-22,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,7679,59,2026-07-20,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 250mg,Antibiótico cefalosporina,8695,184,2025-06-04,Medicinas,Distribuidora MediPro S.A.S.
+Metformina 500mg,Antidiabético oral,6267,46,2026-10-09,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 20mg,Antidepresivo ISRS,8509,69,2027-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 200mg,Broncodilatador para asma,20840,174,2025-08-15,Medicinas,Distribuidora MediPro S.A.S.
+Tramadol 100mg,Analgésico opioide sintético,8713,44,2026-04-03,Medicinas,Distribuidora MediPro S.A.S.
+Levotiroxina 100mg,Hormona tiroidea sintética,3814,179,2026-04-04,Medicinas,Distribuidora MediPro S.A.S.
+Metformina 1000mg,Antidiabético oral,4838,172,2026-01-14,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 15mg,Inhibidor de bomba de protones,7117,120,2027-09-29,Medicinas,Distribuidora MediPro S.A.S.
+Losartán 100mg,Antihipertensivo,7091,108,2027-09-25,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 1mg,Ansiolítico de acción rápida,7194,177,2025-07-22,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 100mg,Antidepresivo,8286,186,2027-11-23,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 100mg,Antidepresivo,9048,62,2026-02-06,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 5mg,Antidepresivo nueva generación,8947,93,2025-09-26,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 500mg,Analgesico de acción rápida,4829,111,2027-08-31,Medicinas,Distribuidora MediPro S.A.S.
+Ranitidina 150mg,Antihistamínico H2,3967,40,2027-11-14,Medicinas,Distribuidora MediPro S.A.S.
+Aspirina 325mg,Analgesico y antipiretico,4411,42,2027-01-26,Medicinas,Distribuidora MediPro S.A.S.
+Paracetamol 500mg,Analgesico y antipiretico,3219,139,2026-01-24,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 100mg,Bloqueador beta,7853,60,2027-04-08,Medicinas,Distribuidora MediPro S.A.S.
+Aspirina 325mg,Analgesico y antipiretico,4905,187,2025-08-23,Medicinas,Distribuidora MediPro S.A.S.
+Amoxicilina 250mg,Antibiótico de amplio espectro,9909,90,2026-10-15,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 30mg,Inhibidor de bomba de protones,8753,91,2026-12-30,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 500mg,Antibiótico cefalosporina,8450,189,2027-01-21,Medicinas,Distribuidora MediPro S.A.S.
+Carbamazepina 400mg,Antiepiléptico,9831,158,2025-09-08,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 5mg,Estatinas de última generación,9559,85,2026-04-24,Medicinas,Distribuidora MediPro S.A.S.
+Enalapril 5mg,Inhibidor de la enzima convertidora,8245,148,2027-07-06,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 50mg,Antiinflamatorio tópico,4882,74,2026-03-06,Medicinas,Distribuidora MediPro S.A.S.
+Atenolol 100mg,Bloqueador beta,5984,81,2025-11-25,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 100mg,Antidepresivo,7610,77,2025-07-17,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 500mg,Antibiótico para infecciones,10649,37,2025-04-05,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 600mg,Antiinflamatorio no esteroideo,5694,26,2025-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 250mg,Antibiótico cefalosporina,9431,77,2027-05-10,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 20mg,Antidepresivo nueva generación,9968,68,2026-05-02,Medicinas,Distribuidora MediPro S.A.S.
+Carbamazepina 400mg,Antiepiléptico,7993,101,2025-02-27,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,7363,77,2027-04-01,Medicinas,Distribuidora MediPro S.A.S.
+Levotiroxina 75mg,Hormona tiroidea sintética,4355,181,2027-05-02,Medicinas,Distribuidora MediPro S.A.S.
+Fluoxetina 40mg,Antidepresivo ISRS,7953,109,2026-05-18,Medicinas,Distribuidora MediPro S.A.S.
+Azitromicina 250mg,Antibiótico macrólido,13996,149,2027-01-28,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,7918,187,2025-12-31,Medicinas,Distribuidora MediPro S.A.S.
+Clopidogrel 75mg,Antiagregante plaquetario,8755,145,2025-09-12,Medicinas,Distribuidora MediPro S.A.S.
+Ciprofloxacino 250mg,Antibiótico fluoroquinolona,9065,47,2026-10-07,Medicinas,Distribuidora MediPro S.A.S.
+Loratadina 10mg,Antihistamínico para alergias,4683,153,2027-05-24,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 250mg,Antibiótico cefalosporina,8389,190,2026-01-30,Medicinas,Distribuidora MediPro S.A.S.
+Naproxeno 250mg,Antiinflamatorio para dolor muscular,4651,141,2025-10-04,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 50mg,Antiinflamatorio tópico,4763,133,2027-07-23,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 50mg,Antidepresivo,9162,130,2025-02-07,Medicinas,Distribuidora MediPro S.A.S.
+Glibenclamida 2.5mg,Antidiabético estimulante,5100,40,2026-10-14,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 100mg,Antiinflamatorio tópico,5244,195,2025-11-04,Medicinas,Distribuidora MediPro S.A.S.
+Cefalexina 250mg,Antibiótico cefalosporina,9493,187,2026-07-29,Medicinas,Distribuidora MediPro S.A.S.
+Paracetamol 1000mg,Analgesico y antipiretico,4026,141,2026-02-27,Medicinas,Distribuidora MediPro S.A.S.
+Ibuprofeno 400mg,Antiinflamatorio no esteroideo,5237,100,2025-04-17,Medicinas,Distribuidora MediPro S.A.S.
+Metronidazol 250mg,Antibiótico para infecciones,10595,63,2026-03-11,Medicinas,Distribuidora MediPro S.A.S.
+Cetirizina 10mg,Antihistamínico de segunda generación,6490,186,2027-07-20,Medicinas,Distribuidora MediPro S.A.S.
+Gabapentina 100mg,Antiepiléptico,8955,26,2027-04-15,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 15mg,Inhibidor de bomba de protones,7340,94,2027-03-09,Medicinas,Distribuidora MediPro S.A.S.
+Naproxeno 250mg,Antiinflamatorio para dolor muscular,4360,115,2026-08-28,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 100mg,Antiinflamatorio tópico,4029,87,2026-03-21,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 10mg,Ansiolítico benzodiazepina,6585,94,2027-03-19,Medicinas,Distribuidora MediPro S.A.S.
+Omeprazol 20mg,Protector gástrico,6955,124,2027-06-15,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 75mg,Antiinflamatorio tópico,3914,191,2025-01-16,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 10mg,Ansiolítico benzodiazepina,4997,108,2025-01-26,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 30mg,Inhibidor de bomba de protones,6908,50,2027-12-21,Medicinas,Distribuidora MediPro S.A.S.
+Ciprofloxacino 750mg,Antibiótico fluoroquinolona,10722,26,2025-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Carbamazepina 200mg,Antiepiléptico,7599,157,2027-08-07,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 200mg,Broncodilatador para asma,20000,35,2027-08-06,Medicinas,Distribuidora MediPro S.A.S.
+Simvastatina 10mg,Estatinas para control,7032,160,2026-08-12,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 1mg,Ansiolítico de acción rápida,5802,55,2026-08-27,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 2mg,Ansiolítico benzodiazepina,5794,130,2027-08-08,Medicinas,Distribuidora MediPro S.A.S.
+Cetirizina 10mg,Antihistamínico de segunda generación,5482,123,2025-07-08,Medicinas,Distribuidora MediPro S.A.S.
+Escitalopram 5mg,Antidepresivo nueva generación,8713,136,2025-07-21,Medicinas,Distribuidora MediPro S.A.S.
+Ciprofloxacino 500mg,Antibiótico fluoroquinolona,12602,97,2027-03-26,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 20mg,Estatinas de última generación,9396,106,2026-08-13,Medicinas,Distribuidora MediPro S.A.S.
+Sertralina 50mg,Antidepresivo,9733,81,2027-05-31,Medicinas,Distribuidora MediPro S.A.S.
+Warfarina 5mg,Anticoagulante oral,5042,93,2025-04-26,Medicinas,Distribuidora MediPro S.A.S.
+Simvastatina 10mg,Estatinas para control,6995,131,2025-12-04,Medicinas,Distribuidora MediPro S.A.S.
+Diclofenaco 50mg,Antiinflamatorio tópico,5375,20,2026-05-21,Medicinas,Distribuidora MediPro S.A.S.
+Levotiroxina 150mg,Hormona tiroidea sintética,5082,163,2026-01-20,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 500mg,Analgesico de acción rápida,4940,118,2025-08-06,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 650mg,Analgesico de acción rápida,5411,173,2026-10-02,Medicinas,Distribuidora MediPro S.A.S.
+Levotiroxina 100mg,Hormona tiroidea sintética,4318,44,2027-03-26,Medicinas,Distribuidora MediPro S.A.S.
+Alprazolam 1mg,Ansiolítico de acción rápida,7386,166,2026-06-29,Medicinas,Distribuidora MediPro S.A.S.
+Paracetamol 750mg,Analgesico y antipiretico,5239,89,2026-08-29,Medicinas,Distribuidora MediPro S.A.S.
+Ranitidina 300mg,Antihistamínico H2,3443,34,2025-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Lansoprazol 15mg,Inhibidor de bomba de protones,6343,135,2025-03-31,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 500mg,Analgesico de acción rápida,5104,169,2027-03-14,Medicinas,Distribuidora MediPro S.A.S.
+Diazepam 2mg,Ansiolítico benzodiazepina,5624,128,2025-02-22,Medicinas,Distribuidora MediPro S.A.S.
+Acetaminofén 500mg,Analgesico de acción rápida,5464,142,2026-04-20,Medicinas,Distribuidora MediPro S.A.S.
+Salbutamol 100mg,Broncodilatador para asma,17349,86,2025-09-17,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 5mg,Estatinas de última generación,10403,132,2027-03-22,Medicinas,Distribuidora MediPro S.A.S.
+Rosuvastatina 10mg,Estatinas de última generación,9591,83,2026-01-25,Medicinas,Distribuidora MediPro S.A.S.
+Tijeras Médicas Digital,Instrumento cortante para procedimientos,80000,34,2026-05-18,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso,Dispositivo para medir saturación de oxígeno,95000,47,2026-09-20,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Digital Digital,Termómetro electrónico de alta precisión,35000,13,2025-08-22,Equipos Médicos,Distribuidora MediPro S.A.S.
+Estetoscopio Portátil,Instrumento médico para auscultación,125000,18,2027-01-18,Equipos Médicos,Distribuidora MediPro S.A.S.
+Monitor de Signos Vitales,Monitor multiparámetro para paciente,1200000,17,2027-11-17,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas Premium,Instrumento de precisión para cirugía,75000,48,2027-07-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas Profesional,Instrumento de precisión para cirugía,75000,36,2025-09-16,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Digital,Termómetro electrónico de alta precisión,75000,42,2027-01-18,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas De Mesa,Instrumento cortante para procedimientos,42000,47,2026-01-26,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Digital Premium,Termómetro electrónico de alta precisión,35000,45,2025-01-25,Equipos Médicos,Distribuidora MediPro S.A.S.
+Monitor de Signos Vitales Profesional,Monitor multiparámetro para paciente,1800000,20,2025-10-05,Equipos Médicos,Distribuidora MediPro S.A.S.
+Estetoscopio Portátil,Instrumento médico para auscultación,180000,5,2026-03-12,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Infrarrojo Digital,Termómetro digital sin contacto,180000,42,2025-07-04,Equipos Médicos,Distribuidora MediPro S.A.S.
+Estetoscopio Premium,Instrumento médico para auscultación,180000,49,2027-05-06,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico Portátil,Instrumento cortante para cirugía,85000,5,2025-04-02,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso Estándar,Dispositivo para medir saturación de oxígeno,65000,47,2027-01-09,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas Premium,Instrumento cortante para procedimientos,42000,36,2026-12-13,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión Estándar,Equipo para administración controlada,450000,17,2025-03-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Monitor de Signos Vitales,Monitor multiparámetro para paciente,1200000,20,2027-08-09,Equipos Médicos,Distribuidora MediPro S.A.S.
+Estetoscopio De Mesa,Instrumento médico para auscultación,180000,6,2025-01-10,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso Digital,Dispositivo para medir saturación de oxígeno,95000,44,2025-09-04,Equipos Médicos,Distribuidora MediPro S.A.S.
+Nebulizador Portátil De Mesa,Nebulizador para administración de medicamentos,120000,16,2027-02-04,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico Profesional,Instrumento cortante para cirugía,65000,15,2025-01-19,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas Profesional,Instrumento de precisión para cirugía,55000,45,2026-04-12,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas Premium,Instrumento cortante para procedimientos,80000,46,2026-07-19,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión Estándar,Equipo para administración controlada,850000,23,2027-11-15,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas Profesional,Instrumento cortante para procedimientos,60000,40,2026-02-21,Equipos Médicos,Distribuidora MediPro S.A.S.
+Electrocardiógrafo Portátil Digital,Equipo para registro de actividad cardíaca,1800000,35,2026-12-27,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tensiómetro Digital Profesional,Dispositivo para medir presión arterial,120000,36,2026-10-04,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tensiómetro Digital Premium,Dispositivo para medir presión arterial,89000,24,2025-06-15,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión,Equipo para administración controlada,850000,25,2026-01-19,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Digital De Mesa,Termómetro electrónico de alta precisión,55000,10,2027-05-23,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas Estándar,Instrumento de precisión para cirugía,38000,27,2025-03-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tensiómetro Digital,Dispositivo para medir presión arterial,150000,8,2027-03-12,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Digital Portátil,Termómetro electrónico de alta precisión,55000,12,2025-11-01,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso Estándar,Dispositivo para medir saturación de oxígeno,95000,18,2026-12-19,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tensiómetro Digital Profesional,Dispositivo para medir presión arterial,150000,10,2026-07-03,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Infrarrojo De Mesa,Termómetro digital sin contacto,75000,16,2027-07-04,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tensiómetro Digital,Dispositivo para medir presión arterial,120000,21,2027-03-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Monitor de Signos Vitales De Mesa,Monitor multiparámetro para paciente,1800000,19,2027-06-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico De Mesa,Instrumento cortante para cirugía,65000,38,2026-04-16,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Infrarrojo Premium,Termómetro digital sin contacto,180000,19,2027-05-14,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso Digital,Dispositivo para medir saturación de oxígeno,95000,12,2026-03-10,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Infrarrojo De Mesa,Termómetro digital sin contacto,120000,17,2027-06-28,Equipos Médicos,Distribuidora MediPro S.A.S.
+Estetoscopio Digital,Instrumento médico para auscultación,180000,22,2027-06-10,Equipos Médicos,Distribuidora MediPro S.A.S.
+Monitor de Signos Vitales Portátil,Monitor multiparámetro para paciente,850000,14,2026-11-18,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Infrarrojo De Mesa,Termómetro digital sin contacto,180000,9,2026-02-02,Equipos Médicos,Distribuidora MediPro S.A.S.
+Estetoscopio,Instrumento médico para auscultación,250000,12,2027-08-31,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico Premium,Instrumento cortante para cirugía,65000,38,2026-09-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Nebulizador Portátil Portátil,Nebulizador para administración de medicamentos,120000,28,2025-05-24,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión De Mesa,Equipo para administración controlada,650000,33,2025-10-11,Equipos Médicos,Distribuidora MediPro S.A.S.
+Monitor de Signos Vitales Digital,Monitor multiparámetro para paciente,1800000,14,2026-08-20,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Infrarrojo Profesional,Termómetro digital sin contacto,75000,48,2025-08-24,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Digital Premium,Termómetro electrónico de alta precisión,75000,12,2027-10-11,Equipos Médicos,Distribuidora MediPro S.A.S.
+Electrocardiógrafo Portátil De Mesa,Equipo para registro de actividad cardíaca,1800000,7,2025-11-04,Equipos Médicos,Distribuidora MediPro S.A.S.
+Nebulizador Portátil Portátil,Nebulizador para administración de medicamentos,180000,5,2027-11-03,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico Portátil,Instrumento cortante para cirugía,65000,35,2025-05-25,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas,Instrumento cortante para procedimientos,60000,17,2026-08-05,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico De Mesa,Instrumento cortante para cirugía,45000,50,2025-02-17,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión,Equipo para administración controlada,650000,19,2025-01-13,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas,Instrumento de precisión para cirugía,38000,12,2027-04-09,Equipos Médicos,Distribuidora MediPro S.A.S.
+Nebulizador Portátil Digital,Nebulizador para administración de medicamentos,120000,2,2026-07-22,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso De Mesa,Dispositivo para medir saturación de oxígeno,130000,10,2027-02-22,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico Portátil,Instrumento cortante para cirugía,45000,4,2025-07-20,Equipos Médicos,Distribuidora MediPro S.A.S.
+Electrocardiógrafo Portátil Portátil,Equipo para registro de actividad cardíaca,2500000,22,2026-11-18,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas De Mesa,Instrumento cortante para procedimientos,42000,39,2026-12-17,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión Estándar,Equipo para administración controlada,650000,5,2027-10-01,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas Profesional,Instrumento de precisión para cirugía,55000,8,2026-04-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Nebulizador Portátil Profesional,Nebulizador para administración de medicamentos,250000,8,2025-06-29,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tensiómetro Digital Premium,Dispositivo para medir presión arterial,89000,26,2027-12-14,Equipos Médicos,Distribuidora MediPro S.A.S.
+Monitor de Signos Vitales Profesional,Monitor multiparámetro para paciente,1200000,9,2025-09-24,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico Estándar,Instrumento cortante para cirugía,45000,31,2025-10-25,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Digital Estándar,Termómetro electrónico de alta precisión,75000,48,2025-11-09,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Infrarrojo Profesional,Termómetro digital sin contacto,75000,30,2025-06-18,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso De Mesa,Dispositivo para medir saturación de oxígeno,65000,43,2027-07-25,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Digital Portátil,Termómetro electrónico de alta precisión,75000,41,2027-05-29,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión,Equipo para administración controlada,450000,47,2026-05-30,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico Profesional,Instrumento cortante para cirugía,65000,9,2026-06-24,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso De Mesa,Dispositivo para medir saturación de oxígeno,95000,37,2026-01-27,Equipos Médicos,Distribuidora MediPro S.A.S.
+Estetoscopio Digital,Instrumento médico para auscultación,125000,7,2026-06-03,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas Profesional,Instrumento de precisión para cirugía,55000,24,2025-07-26,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión Portátil,Equipo para administración controlada,850000,10,2026-01-04,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas Profesional,Instrumento cortante para procedimientos,80000,31,2025-06-02,Equipos Médicos,Distribuidora MediPro S.A.S.
+Electrocardiógrafo Portátil Digital,Equipo para registro de actividad cardíaca,1800000,47,2026-04-23,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas Digital,Instrumento de precisión para cirugía,75000,15,2026-04-24,Equipos Médicos,Distribuidora MediPro S.A.S.
+Electrocardiógrafo Portátil,Equipo para registro de actividad cardíaca,3500000,30,2025-06-18,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso,Dispositivo para medir saturación de oxígeno,95000,42,2026-11-01,Equipos Médicos,Distribuidora MediPro S.A.S.
+Pinzas Quirúrgicas Profesional,Instrumento de precisión para cirugía,75000,43,2025-04-13,Equipos Médicos,Distribuidora MediPro S.A.S.
+Nebulizador Portátil Portátil,Nebulizador para administración de medicamentos,120000,7,2027-08-28,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bomba de Infusión De Mesa,Equipo para administración controlada,650000,32,2027-04-04,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas Profesional,Instrumento cortante para procedimientos,42000,22,2025-09-29,Equipos Médicos,Distribuidora MediPro S.A.S.
+Oxímetro de Pulso Profesional,Dispositivo para medir saturación de oxígeno,65000,37,2025-12-08,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tijeras Médicas,Instrumento cortante para procedimientos,60000,36,2027-10-28,Equipos Médicos,Distribuidora MediPro S.A.S.
+Estetoscopio Digital,Instrumento médico para auscultación,250000,18,2025-09-18,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tensiómetro Digital Premium,Dispositivo para medir presión arterial,120000,31,2025-01-11,Equipos Médicos,Distribuidora MediPro S.A.S.
+Termómetro Infrarrojo Estándar,Termómetro digital sin contacto,75000,9,2026-06-05,Equipos Médicos,Distribuidora MediPro S.A.S.
+Monitor de Signos Vitales,Monitor multiparámetro para paciente,1800000,14,2025-08-04,Equipos Médicos,Distribuidora MediPro S.A.S.
+Tensiómetro Digital De Mesa,Dispositivo para medir presión arterial,120000,32,2026-06-11,Equipos Médicos,Distribuidora MediPro S.A.S.
+Nebulizador Portátil De Mesa,Nebulizador para administración de medicamentos,180000,46,2026-12-12,Equipos Médicos,Distribuidora MediPro S.A.S.
+Bisturí Quirúrgico Premium,Instrumento cortante para cirugía,65000,12,2027-10-03,Equipos Médicos,Distribuidora MediPro S.A.S.
+Agujas Hipodérmicas 25G,Agujas estériles para inyección,31506,540,2026-11-29,Insumos Médicos,Distribuidora MediPro S.A.S.
+Solución Salina 250ml,Solución estéril de cloruro de sodio,22935,626,2025-06-10,Insumos Médicos,Distribuidora MediPro S.A.S.
