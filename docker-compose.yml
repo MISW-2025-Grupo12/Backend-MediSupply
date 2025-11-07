@@ -141,6 +141,7 @@ services:
       - DB_PASSWORD=logistica_pass
       - SQLALCHEMY_DATABASE_URI=postgresql://logistica_user:logistica_pass@logistica-db:5432/logistica_db
       - PRODUCTOS_SERVICE_URL=http://productos:5000/productos/api
+      - USUARIOS_SERVICE_URL=http://usuarios:5001/usuarios/api
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local

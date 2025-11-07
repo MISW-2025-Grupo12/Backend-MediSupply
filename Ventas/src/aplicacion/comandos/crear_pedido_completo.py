@@ -196,9 +196,6 @@ class CrearPedidoCompletoHandler:
             # Actualizar total del pedido
             pedido.total = Precio(total_pedido)
             
-            # La reserva de inventario se realiza automáticamente en Logística
-            # cuando recibe el evento PedidoConfirmado (event-driven)
-            
             # Confirmar el pedido
             if not pedido.confirmar():
                 return {
