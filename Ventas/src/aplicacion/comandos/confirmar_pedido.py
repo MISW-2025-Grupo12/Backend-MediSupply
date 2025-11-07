@@ -155,18 +155,6 @@ class ConfirmarPedidoHandler:
                     }
                 }
             
-            # Si todos los productos son válidos, proceder con la reserva
-            resultado_reserva = self._servicio_logistica.reservar_inventario(items_para_reservar)
-            
-            if not resultado_reserva.get('success', False):
-                error_detalle = resultado_reserva.get("error", "Error desconocido")
-                return {
-                    'success': False,
-                    'error': f'❌ Error reservando inventario: {error_detalle}',
-                    'detalle': 'Error inesperado durante la reserva de inventario',
-                    'items_pedido': items_info
-                }
-            
             # Confirmar el pedido
             if not pedido.confirmar():
                 return {

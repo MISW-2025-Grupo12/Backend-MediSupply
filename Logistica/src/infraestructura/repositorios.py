@@ -22,7 +22,7 @@ class RepositorioEntregaSQLite:
         return entrega_dto
 
     def obtener_todos(self) -> list[EntregaDTO]:
-        entregas_model = EntregaModel.query.all()
+        entregas_model = EntregaModel.query.order_by(EntregaModel.fecha_entrega.desc()).all()
         entregas_dto = []
 
         for entrega_model in entregas_model:
@@ -49,10 +49,14 @@ class RepositorioEntregaSQLite:
         if fecha_inicio.date() == fecha_fin.date():
             fecha_fin = datetime.combine(fecha_fin.date(), datetime.max.time())
 
-        entregas_model = EntregaModel.query.filter(
-            EntregaModel.fecha_entrega >= fecha_inicio,
-            EntregaModel.fecha_entrega <= fecha_fin
-        ).all()
+        entregas_model = (
+            EntregaModel.query.filter(
+                EntregaModel.fecha_entrega >= fecha_inicio,
+                EntregaModel.fecha_entrega <= fecha_fin
+            )
+            .order_by(EntregaModel.fecha_entrega.desc())
+            .all()
+        )
 
         entregas_dto = []
         for entrega_model in entregas_model:

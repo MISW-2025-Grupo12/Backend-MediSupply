@@ -13,44 +13,8 @@ from flask_swagger import swagger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Iniciar consumidor PubSub ANTES de crear Flask
-print("DEBUG: Antes del try del consumidor")
-try:
-    print("DEBUG: Dentro del try del consumidor")
-    from seedwork.infraestructura.consumidor_pubsub import ConsumidorPubSub
-    from seedwork.dominio.eventos import despachador_eventos
-    print("DEBUG: Imports exitosos")
-    
-    logger.info("Iniciando configuración de consumidor PubSub en api/__init__.py...")
-    
-    # Crear consumidor
-    consumidor_pubsub = ConsumidorPubSub()
-    
-    # Suscribirse al topic de productos-stock-actualizado
-    consumidor_pubsub.suscribirse_a_topic('productos-stock-actualizado', 'logistica-inventario-subscription')
-    logger.info("Consumidor suscrito al topic productos-stock-actualizado")
-    
-    # Función para iniciar el consumidor
-    def iniciar_consumidor():
-        try:
-            logger.info("Iniciando escucha del consumidor PubSub...")
-            logger.info(f"Suscripciones: {list(consumidor_pubsub._subscriptions.keys())}")
-            consumidor_pubsub.iniciar_escucha()
-        except Exception as e:
-            logger.error(f"Error en consumidor: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
-    
-    # Iniciar el hilo del consumidor
-    logger.info("Creando hilo del consumidor...")
-    thread = threading.Thread(target=iniciar_consumidor, daemon=True)
-    thread.start()
-    logger.info("Hilo del consumidor creado y iniciado")
-    
-except Exception as e:
-    logger.error(f"Error configurando consumidor PubSub: {e}")
-    import traceback
-    logger.error(traceback.format_exc())
+# Variable global para el consumidor PubSub (se inicializa después de crear la app Flask)
+consumidor_pubsub = None
 
 def create_app(configuracion=None):
     try:
@@ -162,3 +126,46 @@ def create_app(configuracion=None):
 
 # Instancia global usada por Flask
 app = create_app()
+
+# Configurar consumidor PubSub DESPUÉS de crear la app Flask para tener contexto
+try:
+    from seedwork.infraestructura.consumidor_pubsub import ConsumidorPubSub
+    
+    logger.info("Configurando consumidor PubSub en api/__init__.py...")
+    
+    # Crear consumidor
+    consumidor_pubsub = ConsumidorPubSub()
+    
+    # Suscribirse al topic de productos-stock-actualizado (para InventarioAsignado)
+    consumidor_pubsub.suscribirse_a_topic('productos-stock-actualizado', 'logistica-inventario-subscription')
+    logger.info("✅ Consumidor suscrito al topic productos-stock-actualizado")
+
+    # Suscribirse al topic de pedidos-confirmados (para PedidoConfirmado - reserva + crear entrega)
+    consumidor_pubsub.suscribirse_a_topic('pedidos-confirmados', 'logistica-pedidos-confirmados-subscription')
+    logger.info("✅ Consumidor suscrito al topic pedidos-confirmados")
+    
+    # Pasar la app Flask al consumidor para tener contexto cuando procese eventos
+    consumidor_pubsub.app = app
+    logger.info("✅ Consumidor PubSub actualizado con contexto de Flask")
+    
+    # Función para iniciar el consumidor
+    def iniciar_consumidor():
+        try:
+            logger.info("🎧 Iniciando escucha del consumidor PubSub...")
+            logger.info(f"Suscripciones configuradas: {list(consumidor_pubsub._subscriptions.keys())}")
+            consumidor_pubsub.iniciar_escucha()
+        except Exception as e:
+            logger.error(f"Error en consumidor: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+    
+    # Iniciar el hilo del consumidor
+    logger.info("Creando hilo del consumidor...")
+    thread = threading.Thread(target=iniciar_consumidor, daemon=True)
+    thread.start()
+    logger.info("✅ Hilo del consumidor creado y iniciado")
+    
+except Exception as e:
+    logger.error(f"❌ Error configurando consumidor PubSub: {e}")
+    import traceback
+    logger.error(traceback.format_exc())

@@ -57,3 +57,21 @@ class InventarioAsignado(EventoDominio):
             'stock': self.stock,
             'fecha_vencimiento': self.fecha_vencimiento
         }
+
+@dataclass
+class PedidoConfirmado(EventoDominio):
+    pedido_id: str = ""
+    cliente_id: str = ""
+    vendedor_id: str = ""
+    items: list = None
+    total: float = 0.0
+
+    def _get_datos_evento(self) -> dict:
+        """Retorna los datos estructurados del evento PedidoConfirmado"""
+        return {
+            'pedido_id': self.pedido_id,
+            'cliente_id': self.cliente_id,
+            'vendedor_id': self.vendedor_id,
+            'items': self.items or [],
+            'total': self.total
+        }

@@ -2,6 +2,13 @@ from aplicacion.dto import EntregaDTO
 from dominio.entidades import Entrega
 from dominio.objetos_valor import Direccion, FechaEntrega
 from datetime import datetime
+from typing import Optional, List
+import logging
+
+from infraestructura.servicio_usuarios import ServicioUsuarios
+from infraestructura.servicio_productos import ServicioProductos
+
+logger = logging.getLogger(__name__)
 
 
 class MapeadorEntregaDTOJson:
@@ -18,12 +25,159 @@ class MapeadorEntregaDTOJson:
 
     def dto_a_externo(self, dto: EntregaDTO) -> dict:
         """Convierte EntregaDTO a JSON externo"""
+        pedido_normalizado = self._normalizar_pedido(dto.pedido)
+
         return {
             'id': str(dto.id),
             'direccion': dto.direccion,
             'fecha_entrega': dto.fecha_entrega.isoformat(),
-            'pedido': dto.pedido if dto.pedido else None
+            'pedido': pedido_normalizado
         }
+
+    def _normalizar_pedido(self, pedido: Optional[dict]) -> Optional[dict]:
+        """Normaliza la estructura del pedido para mantener compatibilidad con el frontend."""
+        if not pedido or not isinstance(pedido, dict):
+            return pedido
+
+        # Si ya tiene la estructura legacy (con cliente y productos), retornar igual
+        if 'cliente' in pedido and 'productos' in pedido:
+            return pedido
+
+        # Si viene en el nuevo formato (cliente_id + items), transformarlo
+        if 'cliente_id' in pedido and 'items' in pedido:
+            return self._construir_pedido_legacy(pedido)
+
+        # Cualquier otro formato inesperado se retorna tal cual para evitar romper consumidores
+        return pedido
+
+    def _construir_pedido_legacy(self, pedido: dict) -> dict:
+        """Construye la estructura legacy de pedido enriqueciendo datos de cliente y productos."""
+        cliente_id = pedido.get('cliente_id')
+        items = pedido.get('items', [])
+
+        cliente = self._obtener_cliente(cliente_id)
+        productos = self._construir_productos(items)
+
+        pedido_legacy = {
+            'id': pedido.get('id'),
+            'total': pedido.get('total', 0),
+            'estado': pedido.get('estado', 'confirmado'),
+            'fecha_confirmacion': pedido.get('fecha_confirmacion'),
+            'vendedor_id': pedido.get('vendedor_id'),
+            'cliente': cliente,
+            'productos': productos
+        }
+
+        return pedido_legacy
+
+    def _obtener_cliente(self, cliente_id: str) -> dict:
+        """Obtiene información del cliente o retorna un fallback si no está disponible."""
+        cliente_placeholder = {
+            'nombre': 'Cliente desconocido',
+            'telefono': '',
+            'direccion': '',
+            'avatar': 'https://via.placeholder.com/64?text=C'
+        }
+
+        if not cliente_id:
+            return cliente_placeholder
+
+        try:
+            servicio = self._obtener_servicio_usuarios()
+            cliente = servicio.obtener_cliente_por_id(cliente_id)
+
+            if not cliente:
+                return cliente_placeholder
+
+            return {
+                'nombre': cliente.get('nombre', cliente_placeholder['nombre']),
+                'telefono': cliente.get('telefono', cliente_placeholder['telefono']),
+                'direccion': cliente.get('direccion', cliente_placeholder['direccion']),
+                'avatar': cliente.get('avatar', cliente_placeholder['avatar'])
+                    or cliente_placeholder['avatar']
+            }
+        except Exception as ex:
+            logger.warning(f"Error obteniendo cliente {cliente_id}: {ex}")
+            return cliente_placeholder
+
+    def _construir_productos(self, items: List[dict]) -> List[dict]:
+        """Enriquece los items con información de productos para mantener compatibilidad."""
+        productos = []
+        servicio_productos = self._obtener_servicio_productos()
+
+        for index, item in enumerate(items or []):
+            producto_id = item.get('producto_id')
+            cantidad = item.get('cantidad', 0)
+            info_producto = None
+
+            if producto_id and servicio_productos:
+                try:
+                    info_producto = servicio_productos.obtener_producto_por_id(producto_id)
+                except Exception as ex:
+                    logger.warning(f"Error obteniendo producto {producto_id}: {ex}")
+                    info_producto = None
+
+            nombre = (
+                item.get('nombre') or
+                (info_producto.get('nombre') if info_producto else None) or
+                'Producto'
+            )
+
+            precio_unitario = item.get('precio_unitario')
+            if precio_unitario is None and info_producto:
+                precio_unitario = (
+                    info_producto.get('precio_unitario') or
+                    info_producto.get('precio') or
+                    info_producto.get('precio_sugerido')
+                )
+
+            if precio_unitario is None:
+                precio_unitario = 0
+
+            subtotal = item.get('subtotal')
+            if subtotal is None:
+                subtotal = precio_unitario * cantidad
+
+            avatar_text = f"P{index + 1}"
+            avatar = item.get('avatar') or (info_producto.get('avatar') if info_producto else None)
+            if not avatar:
+                avatar = f'https://via.placeholder.com/64?text={avatar_text}'
+
+            productos.append({
+                'producto_id': producto_id,
+                'nombre': nombre,
+                'cantidad': cantidad,
+                'precio_unitario': precio_unitario,
+                'subtotal': subtotal,
+                'avatar': avatar
+            })
+
+        return productos
+
+    def _obtener_servicio_usuarios(self) -> Optional[ServicioUsuarios]:
+        """Obtiene (con caché simple) la instancia del servicio de usuarios."""
+        servicio = getattr(self, '_servicio_usuarios', None)
+        if servicio is None:
+            try:
+                servicio = ServicioUsuarios()
+            except Exception as ex:
+                logger.warning(f"No fue posible inicializar ServicioUsuarios: {ex}")
+                servicio = None
+            self._servicio_usuarios = servicio
+        return servicio
+
+    def _obtener_servicio_productos(self) -> Optional[ServicioProductos]:
+        """Obtiene (con caché simple) la instancia del servicio de productos."""
+        servicio = getattr(self, '_servicio_productos', None)
+        if servicio is None:
+            try:
+                servicio = ServicioProductos()
+            except Exception as ex:
+                logger.warning(f"No fue posible inicializar ServicioProductos: {ex}")
+                servicio = None
+            self._servicio_productos = servicio
+        return servicio
+
 
 
 class MapeadorEntrega:
