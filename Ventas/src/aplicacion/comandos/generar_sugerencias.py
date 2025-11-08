@@ -4,7 +4,7 @@ from seedwork.aplicacion.comandos import Comando, ejecutar_comando
 import logging
 from typing import Optional
 from aplicacion.dto import SugerenciaClienteDTO
-from infraestructura.repositorios import RepositorioSugerenciaCliente, RepositorioEvidenciaVisita
+from infraestructura.repositorios import RepositorioSugerenciaCliente, RepositorioEvidenciaVisita, RepositorioVisita
 from infraestructura.servicio_vertex_ai import ServicioVertexAI
 from infraestructura.servicio_usuarios import ServicioUsuarios
 from aplicacion.servicios.servicio_historial_cliente import ServicioHistorialCliente
@@ -13,93 +13,95 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class GenerarSugerencias(Comando):
-    cliente_id: str
-    evidencia_id: Optional[str] = None
-    evidencia_url: Optional[str] = None
+    visita_id: str
 
 class GenerarSugerenciasHandler:
     def __init__(
         self,
         repositorio_sugerencia=None,
         repositorio_evidencia=None,
+        repositorio_visita=None,
         servicio_vertex_ai=None,
         servicio_usuarios=None,
         servicio_historial=None
     ):
         self.repositorio_sugerencia = repositorio_sugerencia or RepositorioSugerenciaCliente()
         self.repositorio_evidencia = repositorio_evidencia or RepositorioEvidenciaVisita()
+        self.repositorio_visita = repositorio_visita or RepositorioVisita()
         self.servicio_vertex_ai = servicio_vertex_ai or ServicioVertexAI()
         self.servicio_usuarios = servicio_usuarios or ServicioUsuarios()
         self.servicio_historial = servicio_historial or ServicioHistorialCliente()
     
     def handle(self, comando: GenerarSugerencias) -> SugerenciaClienteDTO:
         """
-        Genera sugerencias para un cliente usando Vertex AI
+        Genera sugerencias para un cliente usando Vertex AI basado en una visita
         
         Args:
-            comando: Comando con cliente_id y opcionalmente evidencia_id o evidencia_url
+            comando: Comando con visita_id
         
         Returns:
             SugerenciaClienteDTO con las sugerencias generadas
         """
         try:
-            # 1. Obtener datos del cliente
-            logger.info(f"Obteniendo datos del cliente {comando.cliente_id}")
-            datos_cliente = self.servicio_usuarios.obtener_cliente_por_id(comando.cliente_id)
+            # 1. Obtener la visita por ID
+            logger.info(f"Obteniendo visita {comando.visita_id}")
+            visita = self.repositorio_visita.obtener_por_id(comando.visita_id)
+            
+            if not visita:
+                raise ValueError(f"Visita {comando.visita_id} no encontrada")
+            
+            cliente_id = visita.cliente_id
+            logger.info(f"Visita encontrada para cliente {cliente_id}")
+            
+            # 2. Obtener datos del cliente
+            logger.info(f"Obteniendo datos del cliente {cliente_id}")
+            datos_cliente = self.servicio_usuarios.obtener_cliente_por_id(cliente_id)
             
             if not datos_cliente:
-                raise ValueError(f"Cliente {comando.cliente_id} no encontrado")
+                raise ValueError(f"Cliente {cliente_id} no encontrado")
             
-            # 2. Obtener historial de pedidos
-            logger.info(f"Obteniendo historial de pedidos del cliente {comando.cliente_id}")
-            historial_pedidos = self.servicio_historial.obtener_historial_cliente(comando.cliente_id)
+            # 3. Obtener historial de pedidos
+            logger.info(f"Obteniendo historial de pedidos del cliente {cliente_id}")
+            historial_pedidos = self.servicio_historial.obtener_historial_cliente(cliente_id)
             
-            # 3. Procesar evidencia si se proporciona
+            # 4. Obtener evidencias de la visita
+            logger.info(f"Obteniendo evidencias de la visita {comando.visita_id}")
+            evidencias = self.repositorio_evidencia.obtener_por_visita(comando.visita_id)
+            
+            # 5. Procesar evidencias
             archivo_url = None
             mime_type = None
             comentarios_evidencia = None
             evidencia_id_final = None
             
-            if comando.evidencia_id:
-                # Obtener evidencia por ID
-                logger.info(f"Obteniendo evidencia {comando.evidencia_id}")
-                evidencia = self.repositorio_evidencia.obtener_por_id(comando.evidencia_id)
+            if evidencias:
+                # Usar la primera evidencia (la más reciente si están ordenadas por created_at)
+                # Ordenar por created_at descendente para usar la más reciente
+                evidencias_ordenadas = sorted(evidencias, key=lambda e: e.created_at, reverse=True)
+                evidencia_principal = evidencias_ordenadas[0]
                 
-                if not evidencia:
-                    raise ValueError(f"Evidencia {comando.evidencia_id} no encontrada")
-                
-                evidencia_id_final = comando.evidencia_id
-                archivo_url = evidencia.archivo_url
-                formato = evidencia.formato
-                comentarios_evidencia = evidencia.comentarios
+                evidencia_id_final = str(evidencia_principal.id)
+                archivo_url = evidencia_principal.archivo_url
+                formato = evidencia_principal.formato
                 mime_type = self.servicio_vertex_ai.obtener_mime_type(formato)
                 
-                logger.info(
-                    "Evidencia procesada (%s): mime=%s",
-                    archivo_url,
-                    mime_type,
-                )
+                # Combinar comentarios de todas las evidencias
+                comentarios_parts = []
+                for evidencia in evidencias_ordenadas:
+                    if evidencia.comentarios:
+                        comentarios_parts.append(evidencia.comentarios)
                 
-            elif comando.evidencia_url:
-                # Usar URL proporcionada directamente
-                logger.info(f"Usando URL de evidencia proporcionada: {comando.evidencia_url}")
-                archivo_url = comando.evidencia_url
-                
-                # Intentar determinar MIME type desde la URL
-                if '.' in comando.evidencia_url:
-                    extension = comando.evidencia_url.rsplit('.', 1)[-1].split('?')[0]  # Remover query params
-                    mime_type = self.servicio_vertex_ai.obtener_mime_type(extension)
-                else:
-                    mime_type = 'application/octet-stream'
+                if comentarios_parts:
+                    comentarios_evidencia = "\n".join(comentarios_parts)
                 
                 logger.info(
-                    "Evidencia URL procesada (%s): mime=%s",
-                    archivo_url,
-                    mime_type,
+                    f"Procesadas {len(evidencias)} evidencias. Usando evidencia principal: {archivo_url} (mime={mime_type})"
                 )
+            else:
+                logger.info("No se encontraron evidencias para esta visita")
             
-            # 4. Generar sugerencias con Vertex AI
-            logger.info(f"Generando sugerencias para cliente {comando.cliente_id}")
+            # 6. Generar sugerencias con Vertex AI
+            logger.info(f"Generando sugerencias para cliente {cliente_id} basado en visita {comando.visita_id}")
             sugerencias_texto = self.servicio_vertex_ai.generar_sugerencias(
                 datos_cliente=datos_cliente,
                 historial_pedidos=historial_pedidos,
@@ -108,16 +110,16 @@ class GenerarSugerenciasHandler:
                 comentarios_evidencia=comentarios_evidencia
             )
             
-            # 5. Crear DTO de sugerencia
+            # 7. Crear DTO de sugerencia
             sugerencia_dto = SugerenciaClienteDTO(
-                cliente_id=comando.cliente_id,
+                cliente_id=cliente_id,
                 evidencia_id=evidencia_id_final,
                 sugerencias_texto=sugerencias_texto,
                 modelo_usado=self.servicio_vertex_ai.base_model
             )
             
-            # 6. Guardar sugerencia en BD
-            logger.info(f"Guardando sugerencia para cliente {comando.cliente_id}")
+            # 8. Guardar sugerencia en BD
+            logger.info(f"Guardando sugerencia para cliente {cliente_id}")
             sugerencia_guardada = self.repositorio_sugerencia.crear(sugerencia_dto)
             
             logger.info(f"Sugerencia generada exitosamente: {sugerencia_guardada.id}")

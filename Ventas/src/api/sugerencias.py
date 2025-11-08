@@ -7,39 +7,25 @@ from infraestructura.repositorios import RepositorioSugerenciaCliente
 
 logger = logging.getLogger(__name__)
 
-bp = Blueprint('sugerencias', __name__, url_prefix='/ventas/api/clientes')
+# Blueprint para sugerencias basadas en visitas
+bp_visitas = Blueprint('sugerencias_visitas', __name__, url_prefix='/ventas/api/visitas')
 
-@bp.route('/<cliente_id>/sugerencias', methods=['POST'])
-def generar_sugerencias(cliente_id):
+# Blueprint para obtener sugerencias por cliente
+bp_clientes = Blueprint('sugerencias_clientes', __name__, url_prefix='/ventas/api/clientes')
+
+@bp_visitas.route('/<visita_id>/sugerencias', methods=['POST'])
+def generar_sugerencias(visita_id):
     """
-    Generar sugerencias para un cliente usando Vertex AI
+    Generar sugerencias para un cliente usando Vertex AI basado en una visita
     
-    Body opcional:
-    {
-        "evidencia_id": "uuid-opcional",  // ID de evidencia existente
-        "evidencia_url": "url-opcional"    // URL directa de evidencia
-    }
+    El endpoint obtiene automáticamente:
+    - El cliente_id desde la visita
+    - Las evidencias asociadas a la visita (si existen)
+    - El historial de compras del cliente
     """
     try:
-        # Obtener datos del body (opcional)
-        body = request.get_json() or {}
-        evidencia_id = body.get('evidencia_id')
-        evidencia_url = body.get('evidencia_url')
-        
-        # Validar que no se proporcionen ambos
-        if evidencia_id and evidencia_url:
-            return Response(
-                json.dumps({'error': 'No se puede proporcionar evidencia_id y evidencia_url al mismo tiempo'}),
-                status=400,
-                mimetype='application/json'
-            )
-        
-        # Crear comando
-        comando = GenerarSugerencias(
-            cliente_id=cliente_id,
-            evidencia_id=evidencia_id,
-            evidencia_url=evidencia_url
-        )
+        # Crear comando con visita_id
+        comando = GenerarSugerencias(visita_id=visita_id)
         
         # Ejecutar comando
         sugerencia_dto = ejecutar_comando(comando)
@@ -47,6 +33,7 @@ def generar_sugerencias(cliente_id):
         # Retornar respuesta
         respuesta = {
             'mensaje': 'Sugerencias generadas exitosamente',
+            'visita_id': visita_id,
             'sugerencia': {
                 'id': str(sugerencia_dto.id),
                 'cliente_id': sugerencia_dto.cliente_id,
@@ -78,7 +65,7 @@ def generar_sugerencias(cliente_id):
             mimetype='application/json'
         )
 
-@bp.route('/<cliente_id>/sugerencias', methods=['GET'])
+@bp_clientes.route('/<cliente_id>/sugerencias', methods=['GET'])
 def obtener_sugerencias(cliente_id):
     """Obtener todas las sugerencias de un cliente"""
     try:
