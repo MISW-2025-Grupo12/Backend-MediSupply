@@ -1465,6 +1465,87 @@
 					]
 				},
 				{
+					"name": "Sugerencias",
+					"item": [
+						{
+							"name": "Generar Sugerencias para Cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"evidencia_id\": \"{{evidencia_id}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url_ventas}}/api/clientes/{{cliente_id}}/sugerencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"clientes",
+										"{{cliente_id}}",
+										"sugerencias"
+									]
+								},
+								"description": "Genera sugerencias de ventas para un cliente usando Vertex AI. El cuerpo es opcional y puede incluir `evidencia_id` o `evidencia_url` (no ambos) para analizar una evidencia específica."
+							},
+							"response": []
+						},
+						{
+							"name": "Listar Sugerencias de Cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/clientes/{{cliente_id}}/sugerencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"clientes",
+										"{{cliente_id}}",
+										"sugerencias"
+									]
+								},
+								"description": "Obtiene todas las sugerencias generadas para un cliente específico."
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Pedidos",
 					"item": [
 						{
@@ -2889,6 +2970,14 @@
 		{
 			"key": "categoria_id",
 			"value": "83ebf893-eea5-40bd-bb36-b78fc43c5770"
+		},
+		{
+			"key": "evidencia_id",
+			"value": "evidencia-uuid-ejemplo",
+			"description": {
+				"content": "ID de una evidencia subida para visitas (opcional)",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "pedido_id",
