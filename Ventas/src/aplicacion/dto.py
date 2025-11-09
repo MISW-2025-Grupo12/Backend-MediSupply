@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Optional
 import uuid
 from datetime import datetime, date, time
 from seedwork.aplicacion.dto import DTO
@@ -55,3 +56,12 @@ class PlanDTO(DTO):
     id_usuario: str = ""
     fecha_inicio: datetime = None
     fecha_fin: datetime = None
+
+@dataclass(frozen=True)
+class SugerenciaClienteDTO(DTO):
+    cliente_id: str
+    evidencia_id: Optional[str] = None
+    sugerencias_texto: str = ""
+    modelo_usado: str = ""
+    created_at: datetime = field(default_factory=datetime.now)
+    id: uuid.UUID = field(default_factory=uuid.uuid4)

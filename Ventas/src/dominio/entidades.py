@@ -227,3 +227,13 @@ class EvidenciaVisita(AgregacionRaiz):
             archivo_url=self.archivo_url
         )
         return evento
+
+@dataclass
+class SugerenciaCliente(AgregacionRaiz):
+    cliente_id: str = field(default="")
+    evidencia_id: str = field(default=None)
+    sugerencias_texto: str = field(default="")
+    modelo_usado: str = field(default="")
+    
+    def __post_init__(self):
+        super().__post_init__()

@@ -1465,6 +1465,73 @@
 					]
 				},
 				{
+					"name": "Sugerencias",
+					"item": [
+						{
+							"name": "Generar Sugerencias para Visita",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/{{visita_id}}/sugerencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										"{{visita_id}}",
+										"sugerencias"
+									]
+								},
+								"description": "Genera sugerencias de ventas usando Vertex AI basado en una visita. El endpoint obtiene automáticamente: el cliente_id desde la visita, las evidencias asociadas a la visita (si existen), y el historial de compras del cliente. No requiere body - todo se obtiene desde la visita."
+							},
+							"response": []
+						},
+						{
+							"name": "Listar Sugerencias de Cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/clientes/{{cliente_id}}/sugerencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"clientes",
+										"{{cliente_id}}",
+										"sugerencias"
+									]
+								},
+								"description": "Obtiene todas las sugerencias generadas para un cliente específico."
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Pedidos",
 					"item": [
 						{
@@ -2889,6 +2956,14 @@
 		{
 			"key": "categoria_id",
 			"value": "83ebf893-eea5-40bd-bb36-b78fc43c5770"
+		},
+		{
+			"key": "evidencia_id",
+			"value": "evidencia-uuid-ejemplo",
+			"description": {
+				"content": "ID de una evidencia subida para visitas (opcional)",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "pedido_id",

@@ -223,6 +223,10 @@ services:
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
       - GCP_CREDENTIALS_PATH=/run/secrets/gcp_credentials
+      - GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/gcp_credentials
+      - GOOGLE_VERTEX_AI_PROJECT=desarrolloswcloud
+      - GOOGLE_VERTEX_AI_LOCATION=us-central1
+      - GOOGLE_CLOUD_API_KEY=${GOOGLE_CLOUD_API_KEY}
     secrets:
       - gcp_credentials
     networks:

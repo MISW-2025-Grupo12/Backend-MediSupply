@@ -43,10 +43,13 @@ def create_app(configuracion=None):
         from . import visita
         from . import informes
         from . import planes
+        from . import sugerencias
         app.register_blueprint(pedidos.bp)
         app.register_blueprint(visita.bp)
         app.register_blueprint(informes.bp)
         app.register_blueprint(planes.bp)
+        app.register_blueprint(sugerencias.bp_visitas)
+        app.register_blueprint(sugerencias.bp_clientes)
 
         @app.route("/")
         def root():
@@ -71,6 +74,8 @@ def create_app(configuracion=None):
                     "POST /ventas/api/planes/",
                     "GET /ventas/api/planes/",
                     "GET /ventas/api/planes?vendedor_id=<id>",
+                    "POST /ventas/api/visitas/<visita_id>/sugerencias",
+                    "GET /ventas/api/clientes/<cliente_id>/sugerencias",
                 ],
                 "pagination": {
                     "default_page": 1,
@@ -111,6 +116,8 @@ def create_app(configuracion=None):
                     "GET /ventas/api/informes/ventas?vendedor_id=<id>&fecha_inicio=2025-10-13&fecha_fin=2025-10-17",
                     "POST /ventas/api/planes/",
                     "GET /ventas/api/planes/",
+                    "POST /ventas/api/visitas/<visita_id>/sugerencias",
+                    "GET /ventas/api/clientes/<cliente_id>/sugerencias",
 
                 ]
             }
