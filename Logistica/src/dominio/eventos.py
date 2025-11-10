@@ -75,3 +75,17 @@ class PedidoConfirmado(EventoDominio):
             'items': self.items or [],
             'total': self.total
         }
+
+
+@dataclass
+class PedidoEstadoActualizado(EventoDominio):
+    pedido_id: str = ""
+    estado: str = ""
+    fecha_actualizacion: datetime | None = None
+
+    def _get_datos_evento(self) -> dict:
+        return {
+            'pedido_id': self.pedido_id,
+            'estado': self.estado,
+            'fecha_actualizacion': self.fecha_actualizacion.isoformat() if self.fecha_actualizacion else None
+        }

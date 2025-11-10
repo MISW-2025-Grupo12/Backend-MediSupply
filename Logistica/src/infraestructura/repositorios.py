@@ -2,12 +2,16 @@ from config.db import db
 from infraestructura.modelos import EntregaModel, InventarioModel, BodegaModel, RutaModel, RutaEntregaModel
 from aplicacion.dto import EntregaDTO, InventarioDTO, BodegaDTO, RutaDTO, RutaEntregaDTO
 from aplicacion.mapeadores import MapeadorEntregaDTOJson
+from infraestructura.servicio_pedidos import ServicioPedidos
 from datetime import datetime, date
 import uuid
 import json
 
 class RepositorioEntregaSQLite:
     """Repositorio para acceder a las entregas programadas (SQLite)."""
+
+    def __init__(self):
+        self._servicio_pedidos = ServicioPedidos()
 
     def crear(self, entrega_dto: EntregaDTO) -> EntregaDTO:
         """Crear una nueva entrega en SQLite con el pedido almacenado como JSON."""
@@ -34,6 +38,8 @@ class RepositorioEntregaSQLite:
                 except Exception:
                     pedido_data = None
 
+            pedido_data = self._sincronizar_estado_pedido(pedido_data)
+
             entregas_dto.append(EntregaDTO(
                 id=uuid.UUID(entrega_model.id),
                 direccion=entrega_model.direccion,
@@ -42,6 +48,41 @@ class RepositorioEntregaSQLite:
             ))
 
         return entregas_dto
+
+    def actualizar_estado_pedido(self, pedido_id: str, nuevo_estado: str, fecha_actualizacion: datetime | None = None) -> int:
+        """Actualiza el estado del pedido almacenado en las entregas relacionadas."""
+        try:
+            entregas = EntregaModel.query.filter(EntregaModel.pedido.isnot(None)).all()
+            actualizadas = 0
+
+            for entrega in entregas:
+                try:
+                    pedido_data = json.loads(entrega.pedido) if entrega.pedido else None
+                except Exception:
+                    pedido_data = None
+
+                if not pedido_data:
+                    continue
+
+                if str(pedido_data.get('id')) != str(pedido_id):
+                    continue
+
+                pedido_data['estado'] = nuevo_estado
+                if fecha_actualizacion:
+                    pedido_data['fecha_actualizacion_estado'] = fecha_actualizacion.isoformat()
+
+                entrega.pedido = json.dumps(pedido_data)
+                actualizadas += 1
+
+            if actualizadas:
+                db.session.commit()
+            else:
+                db.session.rollback()
+
+            return actualizadas
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
     def obtener_por_rango(self, fecha_inicio: datetime, fecha_fin: datetime) -> list[EntregaDTO]:
         """Obtener entregas filtradas por rango de fechas (incluye pedido JSON)."""
@@ -70,10 +111,25 @@ class RepositorioEntregaSQLite:
                 id=uuid.UUID(entrega_model.id),
                 direccion=entrega_model.direccion,
                 fecha_entrega=entrega_model.fecha_entrega,
-                pedido=pedido_data
+                pedido=self._sincronizar_estado_pedido(pedido_data)
             ))
 
         return entregas_dto
+
+    def _sincronizar_estado_pedido(self, pedido_data: dict | None) -> dict | None:
+        if not pedido_data or not isinstance(pedido_data, dict):
+            return pedido_data
+
+        pedido_id = pedido_data.get('id')
+        if not pedido_id:
+            return pedido_data
+
+        pedido_actual = self._servicio_pedidos.obtener_pedido_por_id(pedido_id)
+        if pedido_actual and isinstance(pedido_actual, dict):
+            estado_actual = pedido_actual.get('estado')
+            if estado_actual:
+                pedido_data['estado'] = estado_actual
+        return pedido_data
 
 class RepositorioBodegaSQLite:
     """Repositorio para acceder a las bodegas (SQLite)."""
@@ -251,10 +307,18 @@ class RepositorioRutaSQLite:
     """Repositorio para acceder a las rutas (SQLite)."""
     def __init__(self):
         self._mapeador_entrega = MapeadorEntregaDTOJson()
+        self._servicio_pedidos = ServicioPedidos()
 
     def crear(self, ruta_dto: RutaDTO) -> RutaDTO:
+        ruta_id = getattr(ruta_dto, 'id', None)
+
+        if isinstance(ruta_id, property) or not ruta_id or str(ruta_id).startswith('<property object'):
+            ruta_id = str(uuid.uuid4())
+        else:
+            ruta_id = str(ruta_id)
+
         ruta_model = RutaModel(
-            id=ruta_dto.id,
+            id=ruta_id,
             fecha_ruta=ruta_dto.fecha_ruta,
             repartidor_id=ruta_dto.repartidor_id,
             estado=ruta_dto.estado
@@ -318,6 +382,21 @@ class RepositorioRutaSQLite:
 
         return entregas_dto
 
+    def _sincronizar_estado_pedido(self, pedido_data: dict | None) -> dict | None:
+        if not pedido_data or not isinstance(pedido_data, dict):
+            return pedido_data
+
+        pedido_id = pedido_data.get('id')
+        if not pedido_id:
+            return pedido_data
+
+        pedido_actual = self._servicio_pedidos.obtener_pedido_por_id(pedido_id)
+        if pedido_actual and isinstance(pedido_actual, dict):
+            estado_actual = pedido_actual.get('estado')
+            if estado_actual:
+                pedido_data['estado'] = estado_actual
+        return pedido_data
+
     def _mapear_modelo_a_dto(self, ruta_model: RutaModel) -> RutaDTO:
         entregas = self.obtener_entregas_asignadas(ruta_model.id)
         return RutaDTO(
@@ -350,4 +429,14 @@ class RepositorioRutaSQLite:
             pedido=pedido_data
         )
         externo = self._mapeador_entrega.dto_a_externo(entrega_dto)
-        return externo.get('pedido')
+        pedido_normalizado = externo.get('pedido')
+
+        pedido_id = pedido_normalizado.get('id') if isinstance(pedido_normalizado, dict) else None
+        if pedido_id:
+            pedido_actual = self._servicio_pedidos.obtener_pedido_por_id(pedido_id)
+            if pedido_actual:
+                estado_actual = pedido_actual.get('estado')
+                if estado_actual:
+                    pedido_normalizado['estado'] = estado_actual
+
+        return pedido_normalizado

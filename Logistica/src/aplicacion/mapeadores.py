@@ -244,7 +244,7 @@ class MapeadorRuta:
 class MapeadorRutaDTOJson:
     def dto_a_externo(self, dto: RutaDTO) -> dict:
         return {
-            'id': dto.id,
+            'id': str(dto.id),
             'fecha_ruta': dto.fecha_ruta.isoformat(),
             'repartidor_id': dto.repartidor_id,
             'estado': dto.estado,

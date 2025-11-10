@@ -66,6 +66,8 @@ def create_app(configuracion=None):
         print("✅ ManejadorPedidoConfirmado importado")
         from aplicacion.eventos.consumidor_pedido_entregado import manejador as manejador_entregado
         print("✅ ManejadorPedidoEntregado importado")
+        from aplicacion.eventos.consumidor_pedido_estado_actualizado import manejador as manejador_estado_actualizado
+        print("✅ ManejadorPedidoEstadoActualizado importado")
 
         # Endpoint de verificación de estado
         @app.route("/")

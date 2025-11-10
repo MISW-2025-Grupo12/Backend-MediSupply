@@ -79,6 +79,7 @@ def crear_ruta():
         ruta_creada = ejecutar_comando(comando)
         mapeador = MapeadorRutaDTOJson()
         ruta_json = enriquecer_ubicaciones(mapeador.dto_a_externo(ruta_creada))
+        ruta_json['id'] = str(getattr(ruta_creada, 'id', ruta_json.get('id')))
 
         return Response(json.dumps(ruta_json), status=201, mimetype='application/json')
     except ValueError as error:
@@ -98,7 +99,11 @@ def obtener_rutas():
         rutas = ejecutar_consulta(consulta)
         mapeador = MapeadorRutaDTOJson()
 
-        rutas_json = [enriquecer_ubicaciones(mapeador.dto_a_externo(ruta)) for ruta in rutas]
+        rutas_json = []
+        for ruta in rutas:
+            ruta_json = enriquecer_ubicaciones(mapeador.dto_a_externo(ruta))
+            ruta_json['id'] = str(getattr(ruta, 'id', ruta_json.get('id')))
+            rutas_json.append(ruta_json)
 
         return Response(json.dumps(rutas_json), status=200, mimetype='application/json')
     except ValueError as error:
@@ -115,7 +120,11 @@ def obtener_rutas_por_repartidor(repartidor_id):
         consulta = ObtenerRutas(fecha=fecha, repartidor_id=repartidor_id)
         rutas = ejecutar_consulta(consulta)
         mapeador = MapeadorRutaDTOJson()
-        rutas_json = [enriquecer_ubicaciones(mapeador.dto_a_externo(ruta)) for ruta in rutas]
+        rutas_json = []
+        for ruta in rutas:
+            ruta_json = enriquecer_ubicaciones(mapeador.dto_a_externo(ruta))
+            ruta_json['id'] = str(getattr(ruta, 'id', ruta_json.get('id')))
+            rutas_json.append(ruta_json)
         return Response(json.dumps(rutas_json), status=200, mimetype='application/json')
     except ValueError as error:
         return Response(json.dumps({'error': str(error)}), status=400, mimetype='application/json')
