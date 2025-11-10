@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta
+from datetime import datetime
+from typing import Optional
 import logging
+from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta
 from aplicacion.dto import EntregaDTO
 from infraestructura.repositorios import RepositorioEntregaSQLite
-from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +14,7 @@ class ObtenerEntregas(Consulta):
     """Consulta para obtener entregas programadas"""
     fecha_inicio: datetime = None
     fecha_fin: datetime = None
-    estado_pedido: str | None = None
+    estado_pedido: Optional[str] = None
 
 
 # --- Handler ---

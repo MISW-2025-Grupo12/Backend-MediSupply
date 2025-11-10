@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 from seedwork.dominio.eventos import EventoDominio
 import uuid
 
@@ -81,7 +82,7 @@ class PedidoConfirmado(EventoDominio):
 class PedidoEstadoActualizado(EventoDominio):
     pedido_id: str = ""
     estado: str = ""
-    fecha_actualizacion: datetime | None = None
+    fecha_actualizacion: Optional[datetime] = None
 
     def _get_datos_evento(self) -> dict:
         return {

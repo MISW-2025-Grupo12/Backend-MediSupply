@@ -6,6 +6,7 @@ from infraestructura.servicio_pedidos import ServicioPedidos
 from datetime import datetime, date
 import uuid
 import json
+from typing import Optional
 
 class RepositorioEntregaSQLite:
     """Repositorio para acceder a las entregas programadas (SQLite)."""
@@ -49,7 +50,7 @@ class RepositorioEntregaSQLite:
 
         return entregas_dto
 
-    def actualizar_estado_pedido(self, pedido_id: str, nuevo_estado: str, fecha_actualizacion: datetime | None = None) -> int:
+    def actualizar_estado_pedido(self, pedido_id: str, nuevo_estado: str, fecha_actualizacion: Optional[datetime] = None) -> int:
         """Actualiza el estado del pedido almacenado en las entregas relacionadas."""
         try:
             entregas = EntregaModel.query.filter(EntregaModel.pedido.isnot(None)).all()
@@ -116,7 +117,7 @@ class RepositorioEntregaSQLite:
 
         return entregas_dto
 
-    def _sincronizar_estado_pedido(self, pedido_data: dict | None) -> dict | None:
+    def _sincronizar_estado_pedido(self, pedido_data: Optional[dict]) -> Optional[dict]:
         if not pedido_data or not isinstance(pedido_data, dict):
             return pedido_data
 
@@ -338,7 +339,7 @@ class RepositorioRutaSQLite:
         db.session.commit()
         return self.obtener_por_id(ruta_model.id)
 
-    def obtener_por_id(self, ruta_id: str) -> RutaDTO | None:
+    def obtener_por_id(self, ruta_id: str) -> Optional[RutaDTO]:
         ruta_model = RutaModel.query.get(ruta_id)
         if not ruta_model:
             return None
@@ -347,8 +348,8 @@ class RepositorioRutaSQLite:
 
     def obtener_por_fecha_y_repartidor(
         self,
-        fecha: date | None = None,
-        repartidor_id: str | None = None
+        fecha: Optional[date] = None,
+        repartidor_id: Optional[str] = None
     ) -> list[RutaDTO]:
         query = RutaModel.query
 
@@ -382,7 +383,7 @@ class RepositorioRutaSQLite:
 
         return entregas_dto
 
-    def _sincronizar_estado_pedido(self, pedido_data: dict | None) -> dict | None:
+    def _sincronizar_estado_pedido(self, pedido_data: Optional[dict]) -> Optional[dict]:
         if not pedido_data or not isinstance(pedido_data, dict):
             return pedido_data
 
@@ -410,7 +411,7 @@ class RepositorioRutaSQLite:
     def entrega_ya_asignada(self, entrega_id: str) -> bool:
         return RutaEntregaModel.query.filter_by(entrega_id=entrega_id).first() is not None
 
-    def _normalizar_pedido(self, entrega: EntregaModel) -> dict | None:
+    def _normalizar_pedido(self, entrega: EntregaModel) -> Optional[dict]:
         if not entrega.pedido:
             return None
 

@@ -2,6 +2,7 @@ import logging
 import os
 import random
 import uuid
+from typing import Optional, Dict, Any
 import requests
 
 logger = logging.getLogger(__name__)
@@ -11,7 +12,7 @@ class ServicioPedidos:
     def __init__(self):
         self.base_url = os.getenv('VENTAS_SERVICE_URL', 'http://ventas:5002/ventas/api')
 
-    def obtener_pedido_por_id(self, pedido_id: str) -> dict | None:
+    def obtener_pedido_por_id(self, pedido_id: str) -> Optional[Dict[str, Any]]:
         try:
             url = f"{self.base_url}/pedidos/{pedido_id}"
             response = requests.get(url, timeout=5)

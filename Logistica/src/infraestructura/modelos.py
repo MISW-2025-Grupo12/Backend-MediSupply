@@ -51,7 +51,7 @@ class RutaEntregaModel(db.Model):
     entrega_id = db.Column(db.String(36), db.ForeignKey('entregas.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    entrega = db.relationship('EntregaModel', lazy='joined')
+    entrega = db.relationship('EntregaModel', lazy='joined', overlaps="rutas,entregas,asignaciones")
 
     def to_dict(self):
         return {
@@ -76,13 +76,15 @@ class RutaModel(db.Model):
         'EntregaModel',
         secondary='ruta_entregas',
         lazy='select',
-        backref=db.backref('rutas', lazy='dynamic')
+        backref=db.backref('rutas', lazy='dynamic', overlaps="entregas,asignaciones"),
+        overlaps="rutas,asignaciones"
     )
     asignaciones = db.relationship(
         'RutaEntregaModel',
-        backref='ruta',
+        backref=db.backref('ruta', overlaps="entregas,rutas"),
         lazy='select',
-        cascade='all, delete-orphan'
+        cascade='all, delete-orphan',
+        overlaps="entregas,rutas"
     )
 
     def to_dict(self):

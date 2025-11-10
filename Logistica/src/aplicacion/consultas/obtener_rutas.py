@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import date
+from typing import Optional
 from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta as consulta
 from infraestructura.repositorios import RepositorioRutaSQLite
 from aplicacion.dto import RutaDTO
@@ -7,8 +8,8 @@ from aplicacion.dto import RutaDTO
 
 @dataclass
 class ObtenerRutas(Consulta):
-    fecha: date | None = None
-    repartidor_id: str | None = None
+    fecha: Optional[date] = None
+    repartidor_id: Optional[str] = None
 
 
 class ObtenerRutasHandler:
