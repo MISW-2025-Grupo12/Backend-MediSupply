@@ -1,7 +1,8 @@
 from config.db import db
-from infraestructura.modelos import EntregaModel, InventarioModel, BodegaModel
-from aplicacion.dto import EntregaDTO, InventarioDTO, BodegaDTO
-from datetime import datetime
+from infraestructura.modelos import EntregaModel, InventarioModel, BodegaModel, RutaModel, RutaEntregaModel
+from aplicacion.dto import EntregaDTO, InventarioDTO, BodegaDTO, RutaDTO, RutaEntregaDTO
+from aplicacion.mapeadores import MapeadorEntregaDTOJson
+from datetime import datetime, date
 import uuid
 import json
 
@@ -245,3 +246,108 @@ class RepositorioInventarioSQLite:
         except Exception as e:
             db.session.rollback()
             return False
+
+class RepositorioRutaSQLite:
+    """Repositorio para acceder a las rutas (SQLite)."""
+    def __init__(self):
+        self._mapeador_entrega = MapeadorEntregaDTOJson()
+
+    def crear(self, ruta_dto: RutaDTO) -> RutaDTO:
+        ruta_model = RutaModel(
+            id=ruta_dto.id,
+            fecha_ruta=ruta_dto.fecha_ruta,
+            repartidor_id=ruta_dto.repartidor_id,
+            estado=ruta_dto.estado
+        )
+
+        db.session.add(ruta_model)
+        db.session.flush()
+
+        for entrega in ruta_dto.entregas:
+            asignacion = RutaEntregaModel(
+                id=str(uuid.uuid4()),
+                ruta_id=ruta_model.id,
+                entrega_id=entrega.entrega_id
+            )
+            db.session.add(asignacion)
+
+        db.session.commit()
+        return self.obtener_por_id(ruta_model.id)
+
+    def obtener_por_id(self, ruta_id: str) -> RutaDTO | None:
+        ruta_model = RutaModel.query.get(ruta_id)
+        if not ruta_model:
+            return None
+
+        return self._mapear_modelo_a_dto(ruta_model)
+
+    def obtener_por_fecha_y_repartidor(
+        self,
+        fecha: date | None = None,
+        repartidor_id: str | None = None
+    ) -> list[RutaDTO]:
+        query = RutaModel.query
+
+        if fecha:
+            query = query.filter(RutaModel.fecha_ruta == fecha)
+
+        if repartidor_id:
+            query = query.filter(RutaModel.repartidor_id == repartidor_id)
+
+        rutas = query.order_by(RutaModel.fecha_ruta.desc()).all()
+        return [self._mapear_modelo_a_dto(ruta) for ruta in rutas]
+
+    def obtener_entregas_asignadas(self, ruta_id: str) -> list[RutaEntregaDTO]:
+        asignaciones = RutaEntregaModel.query.filter_by(ruta_id=ruta_id).all()
+        entregas_dto = []
+
+        for asignacion in asignaciones:
+            entrega = asignacion.entrega
+            pedido = None
+
+            pedido = self._normalizar_pedido(entrega)
+
+            entregas_dto.append(
+                RutaEntregaDTO(
+                    entrega_id=entrega.id,
+                    direccion=entrega.direccion,
+                    fecha_entrega=entrega.fecha_entrega,
+                    pedido=pedido
+                )
+            )
+
+        return entregas_dto
+
+    def _mapear_modelo_a_dto(self, ruta_model: RutaModel) -> RutaDTO:
+        entregas = self.obtener_entregas_asignadas(ruta_model.id)
+        return RutaDTO(
+            id=ruta_model.id,
+            fecha_ruta=ruta_model.fecha_ruta,
+            repartidor_id=ruta_model.repartidor_id,
+            estado=ruta_model.estado,
+            entregas=entregas
+        )
+
+    def entrega_ya_asignada(self, entrega_id: str) -> bool:
+        return RutaEntregaModel.query.filter_by(entrega_id=entrega_id).first() is not None
+
+    def _normalizar_pedido(self, entrega: EntregaModel) -> dict | None:
+        if not entrega.pedido:
+            return None
+
+        try:
+            pedido_data = json.loads(entrega.pedido)
+        except Exception:
+            pedido_data = None
+
+        if pedido_data is None:
+            return None
+
+        entrega_dto = EntregaDTO(
+            id=uuid.UUID(entrega.id),
+            direccion=entrega.direccion,
+            fecha_entrega=entrega.fecha_entrega,
+            pedido=pedido_data
+        )
+        externo = self._mapeador_entrega.dto_a_externo(entrega_dto)
+        return externo.get('pedido')

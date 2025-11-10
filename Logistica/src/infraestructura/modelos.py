@@ -42,6 +42,61 @@ class BodegaModel(db.Model):
             'updated_at': self.updated_at.isoformat()
         }
 
+
+class RutaEntregaModel(db.Model):
+    __tablename__ = 'ruta_entregas'
+
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ruta_id = db.Column(db.String(36), db.ForeignKey('rutas.id'), nullable=False)
+    entrega_id = db.Column(db.String(36), db.ForeignKey('entregas.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    entrega = db.relationship('EntregaModel', lazy='joined')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'ruta_id': self.ruta_id,
+            'entrega_id': self.entrega_id,
+            'created_at': self.created_at.isoformat()
+        }
+
+
+class RutaModel(db.Model):
+    __tablename__ = 'rutas'
+
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    fecha_ruta = db.Column(db.Date, nullable=False)
+    repartidor_id = db.Column(db.String(36), nullable=False)
+    estado = db.Column(db.String(20), nullable=False, default='Pendiente')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    entregas = db.relationship(
+        'EntregaModel',
+        secondary='ruta_entregas',
+        lazy='select',
+        backref=db.backref('rutas', lazy='dynamic')
+    )
+    asignaciones = db.relationship(
+        'RutaEntregaModel',
+        backref='ruta',
+        lazy='select',
+        cascade='all, delete-orphan'
+    )
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'fecha_ruta': self.fecha_ruta.isoformat(),
+            'repartidor_id': self.repartidor_id,
+            'estado': self.estado,
+            'entregas': [entrega.id for entrega in self.entregas],
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+
+
 class InventarioModel(db.Model):
     __tablename__ = 'inventario'
     

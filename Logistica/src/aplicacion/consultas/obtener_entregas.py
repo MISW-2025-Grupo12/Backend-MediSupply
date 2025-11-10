@@ -13,6 +13,7 @@ class ObtenerEntregas(Consulta):
     """Consulta para obtener entregas programadas"""
     fecha_inicio: datetime = None
     fecha_fin: datetime = None
+    estado_pedido: str | None = None
 
 
 # --- Handler ---
@@ -29,6 +30,14 @@ class ObtenerEntregasHandler:
             else:
                 logger.info("📦 Consultando todas las entregas")
                 entregas = self.repositorio.obtener_todos()
+
+            if consulta.estado_pedido:
+                estado_objetivo = consulta.estado_pedido.lower()
+                entregas = [
+                    e for e in entregas
+                    if isinstance(e.pedido, dict)
+                    and (e.pedido.get('estado') or '').lower() == estado_objetivo
+                ]
 
             return entregas
 

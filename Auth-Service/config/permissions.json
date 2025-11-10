@@ -68,5 +68,8 @@
   "PUT:/logistica/api/entregas/[^/]+/?$": ["REPARTIDOR", "ADMINISTRADOR"],
   "GET:/logistica/api/bodegas/?$": ["REPARTIDOR", "ADMINISTRADOR", "VENDEDOR"],
   "POST:/logistica/api/inventario/?$": ["ADMINISTRADOR"],
-  "GET:/logistica/api/inventario/?$": ["ADMINISTRADOR", "VENDEDOR"]
+  "GET:/logistica/api/inventario/?$": ["ADMINISTRADOR", "VENDEDOR"],
+  "POST:/logistica/api/rutas/?$": ["ADMINISTRADOR"],
+  "GET:/logistica/api/rutas/?$": ["ADMINISTRADOR", "REPARTIDOR"],
+  "GET:/logistica/api/rutas/repartidor/[^/]+/?$": ["ADMINISTRADOR", "REPARTIDOR"]
 }

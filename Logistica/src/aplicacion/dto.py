@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from seedwork.aplicacion.dto import DTO
-from typing import Optional, Any
+from typing import Optional, Any, List
+
 
 @dataclass(frozen=True)
 class EntregaDTO(DTO):
@@ -28,3 +29,20 @@ class BodegaDTO(DTO):
     nombre: str
     direccion: str
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
+
+
+@dataclass(frozen=True)
+class RutaEntregaDTO(DTO):
+    entrega_id: str
+    direccion: str
+    fecha_entrega: datetime
+    pedido: Optional[Any]
+
+
+@dataclass(frozen=True)
+class RutaDTO(DTO):
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    fecha_ruta: date = field(default_factory=date.today)
+    repartidor_id: str = ""
+    estado: str = "Pendiente"
+    entregas: List[RutaEntregaDTO] = field(default_factory=list)

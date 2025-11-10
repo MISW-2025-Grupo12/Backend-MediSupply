@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import List
 from seedwork.dominio.entidades import Entidad, AgregacionRaiz
-from .objetos_valor import Direccion, FechaEntrega, ProductoID, ClienteID, Cantidad, FechaVencimiento, BodegaID
+from .objetos_valor import Direccion, FechaEntrega, ProductoID, ClienteID, Cantidad, FechaVencimiento, BodegaID, FechaRuta, RepartidorID, EstadoRuta, EntregaAsignada
 from .eventos import EntregaCreada, InventarioReservado, InventarioDescontado
 
 @dataclass
@@ -90,3 +91,37 @@ class Bodega(AgregacionRaiz):
     
     def __post_init__(self):
         super().__post_init__()
+
+
+@dataclass
+class Ruta(AgregacionRaiz):
+    fecha_ruta: FechaRuta = field(default_factory=lambda: FechaRuta(datetime.now().date()))
+    repartidor_id: RepartidorID
+    estado: EstadoRuta = field(default_factory=lambda: EstadoRuta("Pendiente"))
+    entregas: List[EntregaAsignada] = field(default_factory=list)
+
+    def __post_init__(self):
+        super().__post_init__()
+        if not isinstance(self.repartidor_id, RepartidorID):
+            raise ValueError("La ruta debe tener un repartidor asignado")
+
+    def agregar_entrega(self, entrega: EntregaAsignada):
+        if any(e.entrega_id == entrega.entrega_id for e in self.entregas):
+            raise ValueError("La entrega ya está asociada a esta ruta")
+
+        if entrega.fecha_entrega.date() != self.fecha_ruta.valor:
+            raise ValueError("La fecha de la entrega no coincide con la fecha de la ruta")
+
+        self.entregas.append(entrega)
+
+    def establecer_en_proceso(self):
+        self.estado = EstadoRuta("EnProceso")
+
+    def establecer_completada(self):
+        self.estado = EstadoRuta("Completada")
+
+    def puede_iniciar(self) -> bool:
+        return self.estado.valor == "Pendiente" and len(self.entregas) > 0
+
+    def puede_completar(self) -> bool:
+        return self.estado.valor == "EnProceso" and len(self.entregas) > 0

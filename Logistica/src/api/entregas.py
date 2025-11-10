@@ -101,8 +101,14 @@ def obtener_entregas():
         fecha_inicio = parsear_fecha(fecha_inicio_str) if fecha_inicio_str else None
         fecha_fin = parsear_fecha(fecha_fin_str) if fecha_fin_str else None
 
+        estado_pedido = request.args.get("estado_pedido")
+
         # Crear la consulta CQRS
-        consulta = ObtenerEntregas(fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
+        consulta = ObtenerEntregas(
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin,
+            estado_pedido=estado_pedido
+        )
         entregas_dto = ejecutar_consulta(consulta)
 
         # Aplicar filtro manual (por seguridad)
