@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 from seedwork.dominio.entidades import Entidad, AgregacionRaiz
 from .objetos_valor import Direccion, FechaEntrega, ProductoID, ClienteID, Cantidad, FechaVencimiento, BodegaID, FechaRuta, RepartidorID, EstadoRuta, EntregaAsignada
 from .eventos import EntregaCreada, InventarioReservado, InventarioDescontado
@@ -95,8 +95,8 @@ class Bodega(AgregacionRaiz):
 
 @dataclass
 class Ruta(AgregacionRaiz):
+    repartidor_id: Optional[RepartidorID] = None
     fecha_ruta: FechaRuta = field(default_factory=lambda: FechaRuta(datetime.now().date()))
-    repartidor_id: RepartidorID
     estado: EstadoRuta = field(default_factory=lambda: EstadoRuta("Pendiente"))
     entregas: List[EntregaAsignada] = field(default_factory=list)
 

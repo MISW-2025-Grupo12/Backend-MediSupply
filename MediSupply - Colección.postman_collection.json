@@ -2453,6 +2453,42 @@
 							"response": []
 						},
 						{
+							"name": "Obtener Entregas por Estado de Pedido",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/entregas?estado_pedido=confirmado",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"entregas"
+									],
+									"query": [
+										{
+											"key": "estado_pedido",
+											"value": "confirmado",
+											"description": "Filtra por estado del pedido (confirmado, entregado, etc.)"
+										}
+									]
+								},
+								"description": "Lista entregas filtradas por el estado del pedido asociado"
+							},
+							"response": []
+						},
+						{
 							"name": "Crear 20 Entregas (Desarrollo)",
 							"request": {
 								"auth": {
@@ -2479,6 +2515,129 @@
 									]
 								},
 								"description": "Endpoint temporal para crear 20 entregas de prueba (solo para desarrollo)"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Rutas",
+					"item": [
+						{
+							"name": "Crear Ruta",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fecha_ruta\": \"2025-11-10\",\n    \"repartidor_id\": \"{{repartidor_id}}\",\n    \"entregas\": [\n        \"{{entrega_id_1}}\",\n        \"{{entrega_id_2}}\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{base_url_logistica}}/api/rutas/",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"rutas",
+										""
+									]
+								},
+								"description": "Crea una nueva ruta en estado pendiente asignando entregas confirmadas a un repartidor"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Rutas",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/rutas?fecha=2025-11-10&repartidor_id={{repartidor_id}}",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"rutas"
+									],
+									"query": [
+										{
+											"key": "fecha",
+											"value": "2025-11-10",
+											"description": "Fecha de la ruta (YYYY-MM-DD)"
+										},
+										{
+											"key": "repartidor_id",
+											"value": "{{repartidor_id}}",
+											"description": "Filtro opcional por repartidor asignado"
+										}
+									]
+								},
+								"description": "Obtiene rutas según fecha y/o repartidor asignado"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Rutas por Repartidor",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/rutas/repartidor/{{repartidor_id}}?fecha=2025-11-10",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"rutas",
+										"repartidor",
+										"{{repartidor_id}}"
+									],
+									"query": [
+										{
+											"key": "fecha",
+											"value": "2025-11-10",
+											"description": "Filtro opcional por fecha (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Lista rutas asignadas a un repartidor específico"
 							},
 							"response": []
 						}
