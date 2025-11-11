@@ -52,11 +52,13 @@ def create_app(configuracion=None):
         from . import entregas
         from . import inventario
         from . import bodegas
+        from . import rutas
 
         # Registrar Blueprints
         app.register_blueprint(entregas.bp)
         app.register_blueprint(inventario.bp)
         app.register_blueprint(bodegas.bp)
+        app.register_blueprint(rutas.bp)
         
         # Importar consumidores de eventos
         print("🔔 Importando consumidores de eventos...")
@@ -64,6 +66,8 @@ def create_app(configuracion=None):
         print("✅ ManejadorPedidoConfirmado importado")
         from aplicacion.eventos.consumidor_pedido_entregado import manejador as manejador_entregado
         print("✅ ManejadorPedidoEntregado importado")
+        from aplicacion.eventos.consumidor_pedido_estado_actualizado import manejador as manejador_estado_actualizado
+        print("✅ ManejadorPedidoEstadoActualizado importado")
 
         # Endpoint de verificación de estado
         @app.route("/")
@@ -83,7 +87,10 @@ def create_app(configuracion=None):
                     "GET /logistica/api/bodegas/",
                     "POST /logistica/api/bodegas/inicializar",
                     "GET /logistica/api/bodegas/<id>/productos",
-                    "GET /logistica/api/bodegas/producto/<id>/ubicaciones"
+                    "GET /logistica/api/bodegas/producto/<id>/ubicaciones",
+                    "POST /logistica/api/rutas/",
+                    "GET /logistica/api/rutas/",
+                    "GET /logistica/api/rutas/repartidor/<id>"
                 ]
             }
 
@@ -113,6 +120,9 @@ def create_app(configuracion=None):
                     "POST /logistica/api/bodegas/inicializar",
                     "GET /logistica/api/bodegas/<id>/productos",
                     "GET /logistica/api/bodegas/producto/<id>/ubicaciones",
+                    "POST /logistica/api/rutas/",
+                    "GET /logistica/api/rutas/",
+                    "GET /logistica/api/rutas/repartidor/<id>",
                     "GET /logistica/health"
                 ]
             }

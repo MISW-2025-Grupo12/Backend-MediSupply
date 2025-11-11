@@ -1,6 +1,13 @@
-from aplicacion.dto import EntregaDTO
-from dominio.entidades import Entrega
-from dominio.objetos_valor import Direccion, FechaEntrega
+from aplicacion.dto import EntregaDTO, RutaDTO, RutaEntregaDTO
+from dominio.entidades import Entrega, Ruta
+from dominio.objetos_valor import (
+    Direccion,
+    FechaEntrega,
+    FechaRuta,
+    RepartidorID,
+    EstadoRuta,
+    EntregaAsignada,
+)
 from datetime import datetime
 from typing import Optional, List
 import logging
@@ -196,4 +203,75 @@ class MapeadorEntrega:
             id=dto.id,
             direccion=Direccion(dto.direccion),
             fecha_entrega=FechaEntrega(dto.fecha_entrega)
+        )
+
+
+class MapeadorRuta:
+    def dto_a_entidad(self, dto: RutaDTO) -> Ruta:
+        entregas = [
+            EntregaAsignada(entrega_id=e.entrega_id, fecha_entrega=e.fecha_entrega)
+            for e in dto.entregas
+        ]
+
+        return Ruta(
+            id=dto.id,
+            fecha_ruta=FechaRuta(dto.fecha_ruta),
+            repartidor_id=RepartidorID(dto.repartidor_id),
+            estado=EstadoRuta(dto.estado),
+            entregas=entregas
+        )
+
+    def entidad_a_dto(self, ruta: Ruta, entregas_detalle: Optional[List[RutaEntregaDTO]] = None) -> RutaDTO:
+        entregas = entregas_detalle or [
+            RutaEntregaDTO(
+                entrega_id=e.entrega_id,
+                direccion="",
+                fecha_entrega=e.fecha_entrega,
+                pedido=None
+            )
+            for e in ruta.entregas
+        ]
+
+        return RutaDTO(
+            id=str(ruta.id),
+            fecha_ruta=ruta.fecha_ruta.valor,
+            repartidor_id=ruta.repartidor_id.valor,
+            estado=ruta.estado.valor,
+            entregas=entregas
+        )
+
+
+class MapeadorRutaDTOJson:
+    def dto_a_externo(self, dto: RutaDTO) -> dict:
+        return {
+            'id': str(dto.id),
+            'fecha_ruta': dto.fecha_ruta.isoformat(),
+            'repartidor_id': dto.repartidor_id,
+            'estado': dto.estado,
+            'entregas': [
+                {
+                    'entrega_id': entrega.entrega_id,
+                    'direccion': entrega.direccion,
+                    'fecha_entrega': entrega.fecha_entrega.isoformat(),
+                    'pedido': entrega.pedido
+                }
+                for entrega in dto.entregas
+            ]
+        }
+
+    def externo_a_dto(self, data: dict) -> RutaDTO:
+        entregas = [
+            RutaEntregaDTO(
+                entrega_id=entrega.get('entrega_id'),
+                direccion=entrega.get('direccion', ''),
+                fecha_entrega=datetime.fromisoformat(entrega['fecha_entrega']),
+                pedido=entrega.get('pedido')
+            )
+            for entrega in data.get('entregas', [])
+        ]
+
+        return RutaDTO(
+            fecha_ruta=datetime.fromisoformat(data['fecha_ruta']).date(),
+            repartidor_id=data['repartidor_id'],
+            entregas=entregas
         )

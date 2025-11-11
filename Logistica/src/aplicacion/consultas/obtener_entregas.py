@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta
+from datetime import datetime
+from typing import Optional
 import logging
+from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta
 from aplicacion.dto import EntregaDTO
 from infraestructura.repositorios import RepositorioEntregaSQLite
-from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +14,8 @@ class ObtenerEntregas(Consulta):
     """Consulta para obtener entregas programadas"""
     fecha_inicio: datetime = None
     fecha_fin: datetime = None
+    estado_pedido: Optional[str] = None
+    con_ruta: Optional[bool] = None
 
 
 # --- Handler ---
@@ -25,10 +28,22 @@ class ObtenerEntregasHandler:
             # Si hay rango de fechas -> buscar filtrado
             if consulta.fecha_inicio and consulta.fecha_fin:
                 logger.info(f"📅 Filtrando entregas entre {consulta.fecha_inicio} y {consulta.fecha_fin}")
-                entregas = self.repositorio.obtener_por_rango(consulta.fecha_inicio, consulta.fecha_fin)
+                entregas = self.repositorio.obtener_por_rango(
+                    consulta.fecha_inicio,
+                    consulta.fecha_fin,
+                    con_ruta=consulta.con_ruta
+                )
             else:
                 logger.info("📦 Consultando todas las entregas")
-                entregas = self.repositorio.obtener_todos()
+                entregas = self.repositorio.obtener_todos(con_ruta=consulta.con_ruta)
+
+            if consulta.estado_pedido:
+                estado_objetivo = consulta.estado_pedido.lower()
+                entregas = [
+                    e for e in entregas
+                    if isinstance(e.pedido, dict)
+                    and (e.pedido.get('estado') or '').lower() == estado_objetivo
+                ]
 
             return entregas
 

@@ -66,6 +66,48 @@ class TestAPIEntregas:
         assert data['items'] == []
 
     @patch('api.entregas.ejecutar_consulta')
+    def test_obtener_entregas_con_ruta_true(self, mock_ejecutar_consulta):
+        mock_ejecutar_consulta.return_value = []
+
+        response = self.client.get(get_logistica_url('entregas') + '/?con_ruta=true')
+
+        assert response.status_code == 200
+        consulta = mock_ejecutar_consulta.call_args[0][0]
+        assert getattr(consulta, 'con_ruta', None) is True
+
+    @patch('api.entregas.ejecutar_consulta')
+    def test_obtener_entregas_con_ruta_false(self, mock_ejecutar_consulta):
+        mock_ejecutar_consulta.return_value = []
+
+        response = self.client.get(get_logistica_url('entregas') + '/?con_ruta=false')
+
+        assert response.status_code == 200
+        consulta = mock_ejecutar_consulta.call_args[0][0]
+        assert getattr(consulta, 'con_ruta', None) is False
+
+    @patch('api.entregas.ejecutar_consulta')
+    def test_obtener_entregas_con_ruta_invalido(self, mock_ejecutar_consulta):
+        response = self.client.get(get_logistica_url('entregas') + '/?con_ruta=maybe')
+
+        assert response.status_code == 400
+        assert not mock_ejecutar_consulta.called
+
+    @patch('api.entregas.ejecutar_consulta')
+    def test_obtener_entregas_fecha_invalida(self, mock_ejecutar_consulta):
+        response = self.client.get(get_logistica_url('entregas') + '/?fecha_inicio=31-12-2025')
+
+        assert response.status_code == 500
+        assert mock_ejecutar_consulta.called is False
+
+    @patch('api.entregas.ejecutar_consulta')
+    def test_obtener_entregas_error_general(self, mock_ejecutar_consulta):
+        mock_ejecutar_consulta.side_effect = Exception('fallo')
+
+        response = self.client.get(get_logistica_url('entregas') + '/')
+
+        assert response.status_code == 500
+
+    @patch('api.entregas.ejecutar_consulta')
     def test_obtener_entregas_error(self, mock_ejecutar_consulta):
         mock_ejecutar_consulta.side_effect = Exception("Error de base de datos")
         

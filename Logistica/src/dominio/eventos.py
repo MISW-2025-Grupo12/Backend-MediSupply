@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 from seedwork.dominio.eventos import EventoDominio
 import uuid
 
@@ -74,4 +75,18 @@ class PedidoConfirmado(EventoDominio):
             'vendedor_id': self.vendedor_id,
             'items': self.items or [],
             'total': self.total
+        }
+
+
+@dataclass
+class PedidoEstadoActualizado(EventoDominio):
+    pedido_id: str = ""
+    estado: str = ""
+    fecha_actualizacion: Optional[datetime] = None
+
+    def _get_datos_evento(self) -> dict:
+        return {
+            'pedido_id': self.pedido_id,
+            'estado': self.estado,
+            'fecha_actualizacion': self.fecha_actualizacion.isoformat() if self.fecha_actualizacion else None
         }

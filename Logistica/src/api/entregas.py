@@ -101,8 +101,30 @@ def obtener_entregas():
         fecha_inicio = parsear_fecha(fecha_inicio_str) if fecha_inicio_str else None
         fecha_fin = parsear_fecha(fecha_fin_str) if fecha_fin_str else None
 
+        estado_pedido = request.args.get("estado_pedido")
+
+        con_ruta_param = request.args.get("con_ruta")
+        con_ruta = None
+        if con_ruta_param is not None:
+            valor_normalizado = con_ruta_param.strip().lower()
+            if valor_normalizado == 'true':
+                con_ruta = True
+            elif valor_normalizado == 'false':
+                con_ruta = False
+            else:
+                return Response(
+                    json.dumps({'error': 'El parámetro con_ruta debe ser true o false'}),
+                    status=400,
+                    mimetype='application/json'
+                )
+
         # Crear la consulta CQRS
-        consulta = ObtenerEntregas(fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
+        consulta = ObtenerEntregas(
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin,
+            estado_pedido=estado_pedido,
+            con_ruta=con_ruta
+        )
         entregas_dto = ejecutar_consulta(consulta)
 
         # Aplicar filtro manual (por seguridad)
