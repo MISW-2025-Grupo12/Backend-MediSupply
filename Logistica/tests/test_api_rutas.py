@@ -14,6 +14,12 @@ class TestAPIRutas:
         self.init_db_patcher = patch('config.db.init_db')
         self.init_db_patcher.start()
 
+        self.comando_patcher = patch('api.rutas.ejecutar_comando')
+        self.mock_ejecutar_comando = self.comando_patcher.start()
+
+        self.consulta_patcher = patch('api.rutas.ejecutar_consulta')
+        self.mock_ejecutar_consulta = self.consulta_patcher.start()
+
         self.enriquecer_patcher = patch('api.rutas.enriquecer_ubicaciones', side_effect=lambda data: data)
         self.enriquecer_patcher.start()
 
@@ -27,10 +33,11 @@ class TestAPIRutas:
 
     def teardown_method(self):
         self.init_db_patcher.stop()
+        self.comando_patcher.stop()
+        self.consulta_patcher.stop()
         self.enriquecer_patcher.stop()
 
-    @patch('api.rutas.ejecutar_comando')
-    def test_crear_ruta_exitoso(self, mock_ejecutar_comando):
+    def test_crear_ruta_exitoso(self):
         ruta_id = str(uuid.uuid4())
         entrega_id = str(uuid.uuid4())
         fecha_ruta = date.today()
@@ -51,7 +58,7 @@ class TestAPIRutas:
             ]
         )
 
-        mock_ejecutar_comando.return_value = ruta_dto
+        self.mock_ejecutar_comando.return_value = ruta_dto
 
         payload = {
             'fecha_ruta': fecha_ruta.isoformat(),
@@ -79,9 +86,8 @@ class TestAPIRutas:
         data = json.loads(response.data)
         assert 'error' in data
 
-    @patch('api.rutas.ejecutar_comando')
-    def test_crear_ruta_error_comando(self, mock_ejecutar_comando):
-        mock_ejecutar_comando.side_effect = Exception('Fallo al crear ruta')
+    def test_crear_ruta_error_comando(self):
+        self.mock_ejecutar_comando.side_effect = Exception('Fallo al crear ruta')
 
         payload = {
             'fecha_ruta': date.today().isoformat(),
@@ -95,8 +101,7 @@ class TestAPIRutas:
         data = json.loads(response.data)
         assert 'error' in data
 
-    @patch('api.rutas.ejecutar_consulta')
-    def test_obtener_rutas_exitoso(self, mock_ejecutar_consulta):
+    def test_obtener_rutas_exitoso(self):
         ruta_dto = RutaDTO(
             id=str(uuid.uuid4()),
             fecha_ruta=date.today(),
@@ -105,7 +110,7 @@ class TestAPIRutas:
             entregas=[]
         )
 
-        mock_ejecutar_consulta.return_value = [ruta_dto]
+        self.mock_ejecutar_consulta.return_value = [ruta_dto]
 
         response = self.client.get(get_logistica_url('rutas') + '/')
 
@@ -125,8 +130,7 @@ class TestAPIRutas:
         data = json.loads(response.data)
         assert 'error' in data
 
-    @patch('api.rutas.ejecutar_consulta')
-    def test_obtener_rutas_por_repartidor(self, mock_ejecutar_consulta):
+    def test_obtener_rutas_por_repartidor(self):
         ruta_dto = RutaDTO(
             id=str(uuid.uuid4()),
             fecha_ruta=date.today(),
@@ -135,7 +139,7 @@ class TestAPIRutas:
             entregas=[]
         )
 
-        mock_ejecutar_consulta.return_value = [ruta_dto]
+        self.mock_ejecutar_consulta.return_value = [ruta_dto]
 
         response = self.client.get(get_logistica_url('rutas_repartidor') + '/repartidor-999')
 
@@ -143,4 +147,45 @@ class TestAPIRutas:
         data = json.loads(response.data)
         assert isinstance(data, list)
         assert data[0]['repartidor_id'] == 'repartidor-999'
+
+    def test_crear_ruta_fecha_invalida(self):
+        payload = {
+            'fecha_ruta': '31-12-2025',
+            'repartidor_id': 'repartidor-123',
+            'entregas': ['entrega-1']
+        }
+
+        response = self.client.post(get_logistica_url('rutas') + '/', json=payload)
+
+        assert response.status_code == 400
+
+    def test_crear_ruta_sin_entregas(self):
+        payload = {
+            'fecha_ruta': date.today().isoformat(),
+            'repartidor_id': 'repartidor-123',
+            'entregas': []
+        }
+
+        response = self.client.post(get_logistica_url('rutas') + '/', json=payload)
+
+        assert response.status_code == 400
+
+    def test_obtener_rutas_fecha_invalida(self):
+        response = self.client.get(get_logistica_url('rutas') + '/?fecha=31-12-2025')
+
+        assert response.status_code == 400
+
+    def test_obtener_rutas_error(self):
+        self.mock_ejecutar_consulta.side_effect = Exception('fallo consulta')
+
+        response = self.client.get(get_logistica_url('rutas') + '/')
+
+        assert response.status_code == 500
+
+    def test_obtener_rutas_por_repartidor_error(self):
+        self.mock_ejecutar_consulta.side_effect = ValueError('fecha mala')
+
+        response = self.client.get(get_logistica_url('rutas_repartidor') + '/repartidor-1?fecha=2025-10-33')
+
+        assert response.status_code == 400
 
