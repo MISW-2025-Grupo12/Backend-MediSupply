@@ -102,6 +102,7 @@ def obtener_entregas():
         fecha_fin = parsear_fecha(fecha_fin_str) if fecha_fin_str else None
 
         estado_pedido = request.args.get("estado_pedido")
+        cliente_id = request.args.get("cliente_id")
 
         con_ruta_param = request.args.get("con_ruta")
         con_ruta = None
@@ -123,7 +124,8 @@ def obtener_entregas():
             fecha_inicio=fecha_inicio,
             fecha_fin=fecha_fin,
             estado_pedido=estado_pedido,
-            con_ruta=con_ruta
+            con_ruta=con_ruta,
+            cliente_id=cliente_id
         )
         entregas_dto = ejecutar_consulta(consulta)
 

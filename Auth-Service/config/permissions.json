@@ -26,6 +26,7 @@
   "GET:/usuarios/api/proveedores/?$": ["ADMINISTRADOR","PROVEEDOR"],
   "GET:/usuarios/api/proveedores/[^/]+/?$": ["ADMINISTRADOR","PROVEEDOR"],
   "POST:/usuarios/api/proveedores/?$": ["ADMINISTRADOR","PROVEEDOR"],
+  "GET:/usuarios/api/repartidores/?$": ["ADMINISTRADOR", "REPARTIDOR", "VENDEDOR"],
   
   "POST:/ventas/api/visitas/?$": ["VENDEDOR", "ADMINISTRADOR"],
   "GET:/ventas/api/visitas/?$": ["VENDEDOR", "ADMINISTRADOR"],
@@ -68,7 +69,7 @@
   "PUT:/logistica/api/entregas/[^/]+/?$": ["REPARTIDOR", "ADMINISTRADOR"],
   "GET:/logistica/api/bodegas/?$": ["REPARTIDOR", "ADMINISTRADOR", "VENDEDOR"],
   "POST:/logistica/api/inventario/?$": ["ADMINISTRADOR"],
-  "GET:/logistica/api/inventario/?$": ["ADMINISTRADOR", "VENDEDOR"],
+  "GET:/logistica/api/inventario/?$": ["ADMINISTRADOR", "VENDEDOR", "CLIENTE"],
   "POST:/logistica/api/rutas/?$": ["ADMINISTRADOR"],
   "GET:/logistica/api/rutas/?$": ["ADMINISTRADOR", "REPARTIDOR"],
   "GET:/logistica/api/rutas/repartidor/[^/]+/?$": ["ADMINISTRADOR", "REPARTIDOR"]

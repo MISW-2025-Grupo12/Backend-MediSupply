@@ -16,6 +16,7 @@ class ObtenerEntregas(Consulta):
     fecha_fin: datetime = None
     estado_pedido: Optional[str] = None
     con_ruta: Optional[bool] = None
+    cliente_id: Optional[str] = None
 
 
 # --- Handler ---
@@ -43,6 +44,14 @@ class ObtenerEntregasHandler:
                     e for e in entregas
                     if isinstance(e.pedido, dict)
                     and (e.pedido.get('estado') or '').lower() == estado_objetivo
+                ]
+
+            if consulta.cliente_id:
+                cliente_id_objetivo = str(consulta.cliente_id).strip()
+                entregas = [
+                    e for e in entregas
+                    if isinstance(e.pedido, dict)
+                    and str(e.pedido.get('cliente_id', '')).strip() == cliente_id_objetivo
                 ]
 
             return entregas

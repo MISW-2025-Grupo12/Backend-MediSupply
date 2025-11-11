@@ -80,6 +80,7 @@ class MapeadorEntregaDTOJson:
     def _obtener_cliente(self, cliente_id: str) -> dict:
         """Obtiene información del cliente o retorna un fallback si no está disponible."""
         cliente_placeholder = {
+            'id': cliente_id or '',
             'nombre': 'Cliente desconocido',
             'telefono': '',
             'direccion': '',
@@ -97,6 +98,7 @@ class MapeadorEntregaDTOJson:
                 return cliente_placeholder
 
             return {
+                'id': cliente_id,
                 'nombre': cliente.get('nombre', cliente_placeholder['nombre']),
                 'telefono': cliente.get('telefono', cliente_placeholder['telefono']),
                 'direccion': cliente.get('direccion', cliente_placeholder['direccion']),
