@@ -105,9 +105,12 @@ class RepositorioPedidoSQLite:
         
         logger.info(f"Creando pedido con ID: {pedido_id}")
         
+        # Normalizar vendedor_id: convertir string vacío a None para la base de datos
+        vendedor_id_db = pedido.vendedor_id if pedido.vendedor_id else None
+        
         pedido_model = PedidoModel(
             id=pedido_id,
-            vendedor_id=pedido.vendedor_id,
+            vendedor_id=vendedor_id_db,
             cliente_id=pedido.cliente_id,
             estado=pedido.estado.estado,
             total=pedido.total.valor
@@ -167,9 +170,12 @@ class RepositorioPedidoSQLite:
             )
             items.append(item)
         
+        # Normalizar vendedor_id: convertir None a string vacío para la entidad de dominio
+        vendedor_id_entidad = pedido_model.vendedor_id if pedido_model.vendedor_id else ""
+        
         pedido = Pedido(
             id=uuid.UUID(pedido_model.id),
-            vendedor_id=pedido_model.vendedor_id,
+            vendedor_id=vendedor_id_entidad,
             cliente_id=pedido_model.cliente_id,
             items=items,
             estado=EstadoPedido(pedido_model.estado),
@@ -205,10 +211,13 @@ class RepositorioPedidoSQLite:
                 )
                 items.append(item)
             
+            # Normalizar vendedor_id: convertir None a string vacío para la entidad de dominio
+            vendedor_id_entidad = pedido_model.vendedor_id if pedido_model.vendedor_id else ""
+            
             # Crear entidad de dominio del pedido
             pedido = Pedido(
                 id=uuid.UUID(pedido_model.id),
-                vendedor_id=pedido_model.vendedor_id,
+                vendedor_id=vendedor_id_entidad,
                 cliente_id=pedido_model.cliente_id,
                 items=items,
                 estado=EstadoPedido(pedido_model.estado),
