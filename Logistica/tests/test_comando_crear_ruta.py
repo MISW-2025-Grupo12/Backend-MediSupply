@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -39,7 +39,7 @@ def handler_mocks():
 def test_crear_ruta_exitoso(handler_mocks):
     handler, repo_rutas, repo_entregas, mapeador = handler_mocks
 
-    fecha = datetime.now()
+    fecha = datetime.now().replace(microsecond=0) + timedelta(days=1)
     repo_entregas.obtener_todos.return_value = [
         build_entrega('e1', fecha, estado='confirmado'),
         build_entrega('e2', fecha, estado='confirmado')
