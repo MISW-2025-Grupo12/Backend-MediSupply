@@ -39,7 +39,7 @@ def handler_mocks():
 def test_crear_ruta_exitoso(handler_mocks):
     handler, repo_rutas, repo_entregas, mapeador = handler_mocks
 
-    fecha = datetime(2025, 11, 10, 10, 0, 0)
+    fecha = datetime.now()
     repo_entregas.obtener_todos.return_value = [
         build_entrega('e1', fecha, estado='confirmado'),
         build_entrega('e2', fecha, estado='confirmado')

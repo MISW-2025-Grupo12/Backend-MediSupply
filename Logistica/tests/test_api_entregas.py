@@ -93,6 +93,21 @@ class TestAPIEntregas:
         assert not mock_ejecutar_consulta.called
 
     @patch('api.entregas.ejecutar_consulta')
+    def test_obtener_entregas_fecha_invalida(self, mock_ejecutar_consulta):
+        response = self.client.get(get_logistica_url('entregas') + '/?fecha_inicio=31-12-2025')
+
+        assert response.status_code == 500
+        assert mock_ejecutar_consulta.called is False
+
+    @patch('api.entregas.ejecutar_consulta')
+    def test_obtener_entregas_error_general(self, mock_ejecutar_consulta):
+        mock_ejecutar_consulta.side_effect = Exception('fallo')
+
+        response = self.client.get(get_logistica_url('entregas') + '/')
+
+        assert response.status_code == 500
+
+    @patch('api.entregas.ejecutar_consulta')
     def test_obtener_entregas_error(self, mock_ejecutar_consulta):
         mock_ejecutar_consulta.side_effect = Exception("Error de base de datos")
         
