@@ -610,6 +610,53 @@
 					]
 				},
 				{
+					"name": "Repartidores",
+					"item": [
+						{
+							"name": "Obtener Todos los Repartidores",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/repartidores/?page=1&page_size=100",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"repartidores",
+										""
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"description": "Número de página"
+										},
+										{
+											"key": "page_size",
+											"value": "100",
+											"description": "Tamaño de página"
+										}
+									]
+								},
+								"description": "Obtiene la lista de todos los repartidores registrados. Soporta paginación con parámetros ?page=1&page_size=100"
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Health Check",
 					"item": [
 						{
@@ -2407,7 +2454,7 @@
 										""
 									]
 								},
-								"description": "Obtiene la lista de todas las entregas programadas"
+								"description": "Obtiene la lista de todas las entregas programadas. Soporta filtros opcionales: fecha_inicio, fecha_fin, estado_pedido, cliente_id, con_ruta. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -2485,6 +2532,42 @@
 									]
 								},
 								"description": "Lista entregas filtradas por el estado del pedido asociado"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Entregas por Cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/entregas?cliente_id={{cliente_id}}",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"entregas"
+									],
+									"query": [
+										{
+											"key": "cliente_id",
+											"value": "{{cliente_id}}",
+											"description": "ID del cliente para filtrar las entregas"
+										}
+									]
+								},
+								"description": "Lista entregas filtradas por el ID del cliente. Puede combinarse con otros filtros como fecha_inicio, fecha_fin, estado_pedido, etc."
 							},
 							"response": []
 						},

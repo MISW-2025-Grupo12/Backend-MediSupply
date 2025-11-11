@@ -41,10 +41,12 @@ def create_app(configuracion=None):
         from . import proveedor
         from . import vendedor
         from . import cliente
+        from . import repartidor
         from . import auth
         app.register_blueprint(proveedor.bp)
         app.register_blueprint(vendedor.bp)
         app.register_blueprint(cliente.bp)
+        app.register_blueprint(repartidor.bp)
         app.register_blueprint(auth.bp)
         
         @app.route("/")
@@ -63,9 +65,11 @@ def create_app(configuracion=None):
                     "GET /usuarios/api/clientes/",
                     "GET /usuarios/api/clientes/<id>",
                     "PUT /usuarios/api/clientes/<id>/estado",
+                    "GET /usuarios/api/repartidores/",
                     "POST /usuarios/api/auth/registro-proveedor",
                     "POST /usuarios/api/auth/registro-vendedor",
                     "POST /usuarios/api/auth/registro-cliente",
+                    "POST /usuarios/api/auth/registro-repartidor",
                     "POST /usuarios/api/auth/login"
                 ]
             }
@@ -95,9 +99,11 @@ def create_app(configuracion=None):
                     "GET /usuarios/api/clientes/",
                     "GET /usuarios/api/clientes/<id>",
                     "PUT /usuarios/api/clientes/<id>/estado",
+                    "GET /usuarios/api/repartidores/",
                     "POST /usuarios/api/auth/registro-proveedor",
                     "POST /usuarios/api/auth/registro-vendedor",
                     "POST /usuarios/api/auth/registro-cliente",
+                    "POST /usuarios/api/auth/registro-repartidor",
                     "POST /usuarios/api/auth/login"
                 ]
             }
