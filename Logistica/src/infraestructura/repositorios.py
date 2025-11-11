@@ -27,8 +27,10 @@ class RepositorioEntregaSQLite:
         db.session.commit()
         return entrega_dto
 
-    def obtener_todos(self) -> list[EntregaDTO]:
-        entregas_model = EntregaModel.query.order_by(EntregaModel.fecha_entrega.desc()).all()
+    def obtener_todos(self, con_ruta: Optional[bool] = None) -> list[EntregaDTO]:
+        query = EntregaModel.query.order_by(EntregaModel.fecha_entrega.desc())
+        query = self._aplicar_filtro_con_ruta(query, con_ruta)
+        entregas_model = query.all()
         entregas_dto = []
 
         for entrega_model in entregas_model:
@@ -85,21 +87,20 @@ class RepositorioEntregaSQLite:
             db.session.rollback()
             raise e
 
-    def obtener_por_rango(self, fecha_inicio: datetime, fecha_fin: datetime) -> list[EntregaDTO]:
+    def obtener_por_rango(self, fecha_inicio: datetime, fecha_fin: datetime, con_ruta: Optional[bool] = None) -> list[EntregaDTO]:
         """Obtener entregas filtradas por rango de fechas (incluye pedido JSON)."""
 
         # Si las fechas son iguales → ampliar el rango de 00:00 a 23:59:59
         if fecha_inicio.date() == fecha_fin.date():
             fecha_fin = datetime.combine(fecha_fin.date(), datetime.max.time())
 
-        entregas_model = (
-            EntregaModel.query.filter(
-                EntregaModel.fecha_entrega >= fecha_inicio,
-                EntregaModel.fecha_entrega <= fecha_fin
-            )
-            .order_by(EntregaModel.fecha_entrega.desc())
-            .all()
-        )
+        query = EntregaModel.query.filter(
+            EntregaModel.fecha_entrega >= fecha_inicio,
+            EntregaModel.fecha_entrega <= fecha_fin
+        ).order_by(EntregaModel.fecha_entrega.desc())
+
+        query = self._aplicar_filtro_con_ruta(query, con_ruta)
+        entregas_model = query.all()
 
         entregas_dto = []
         for entrega_model in entregas_model:
@@ -116,6 +117,13 @@ class RepositorioEntregaSQLite:
             ))
 
         return entregas_dto
+
+    def _aplicar_filtro_con_ruta(self, query, con_ruta: Optional[bool]):
+        if con_ruta is True:
+            return query.filter(EntregaModel.rutas.any())
+        if con_ruta is False:
+            return query.filter(~EntregaModel.rutas.any())
+        return query
 
     def _sincronizar_estado_pedido(self, pedido_data: Optional[dict]) -> Optional[dict]:
         if not pedido_data or not isinstance(pedido_data, dict):

@@ -2517,6 +2517,42 @@
 								"description": "Endpoint temporal para crear 20 entregas de prueba (solo para desarrollo)"
 							},
 							"response": []
+						},
+						{
+							"name": "Obtener Entregas por Asignación de Ruta",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/entregas?con_ruta=true",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"entregas"
+									],
+									"query": [
+										{
+											"key": "con_ruta",
+											"value": "true",
+											"description": "true devuelve entregas asignadas a una ruta; false, entregas sin ruta"
+										}
+									]
+								},
+								"description": "Ejemplo de uso del parámetro con_ruta para filtrar entregas por asignación a ruta"
+							},
+							"response": []
 						}
 					]
 				},

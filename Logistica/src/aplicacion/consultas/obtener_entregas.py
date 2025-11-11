@@ -15,6 +15,7 @@ class ObtenerEntregas(Consulta):
     fecha_inicio: datetime = None
     fecha_fin: datetime = None
     estado_pedido: Optional[str] = None
+    con_ruta: Optional[bool] = None
 
 
 # --- Handler ---
@@ -27,10 +28,14 @@ class ObtenerEntregasHandler:
             # Si hay rango de fechas -> buscar filtrado
             if consulta.fecha_inicio and consulta.fecha_fin:
                 logger.info(f"📅 Filtrando entregas entre {consulta.fecha_inicio} y {consulta.fecha_fin}")
-                entregas = self.repositorio.obtener_por_rango(consulta.fecha_inicio, consulta.fecha_fin)
+                entregas = self.repositorio.obtener_por_rango(
+                    consulta.fecha_inicio,
+                    consulta.fecha_fin,
+                    con_ruta=consulta.con_ruta
+                )
             else:
                 logger.info("📦 Consultando todas las entregas")
-                entregas = self.repositorio.obtener_todos()
+                entregas = self.repositorio.obtener_todos(con_ruta=consulta.con_ruta)
 
             if consulta.estado_pedido:
                 estado_objetivo = consulta.estado_pedido.lower()
