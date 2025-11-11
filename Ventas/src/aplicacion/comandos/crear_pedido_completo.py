@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import List, Dict
+from dataclasses import dataclass, field
+from typing import List, Dict, Optional
 from seedwork.aplicacion.comandos import Comando
 from seedwork.aplicacion.comandos import ejecutar_comando as comando
 from infraestructura.repositorios import RepositorioPedidoSQLite
@@ -21,9 +21,9 @@ class ItemPedidoCompleto:
 
 @dataclass
 class CrearPedidoCompleto(Comando):
-    vendedor_id: str
-    cliente_id: str
-    items: List[ItemPedidoCompleto]
+    vendedor_id: Optional[str] = None
+    cliente_id: str = ""
+    items: List[ItemPedidoCompleto] = field(default_factory=list)
 
 class CrearPedidoCompletoHandler:
     def __init__(self):
@@ -34,11 +34,11 @@ class CrearPedidoCompletoHandler:
     def handle(self, comando: CrearPedidoCompleto) -> dict:
         """Crear un pedido completo con items y confirmarlo en una sola operación"""
         try:
-            # Validar datos de entrada
-            if not comando.vendedor_id or not comando.cliente_id:
+            # Validar datos de entrada (vendedor_id es opcional)
+            if not comando.cliente_id:
                 return {
                     'success': False,
-                    'error': 'vendedor_id y cliente_id son obligatorios'
+                    'error': 'cliente_id es obligatorio'
                 }
             
             if not comando.items or len(comando.items) == 0:
@@ -55,9 +55,12 @@ class CrearPedidoCompletoHandler:
                         'error': 'Todos los items deben tener producto_id y cantidad > 0'
                     }
             
+            # Normalizar vendedor_id: convertir None a string vacío para la entidad de dominio
+            vendedor_id_final = comando.vendedor_id if comando.vendedor_id else ""
+            
             # Crear entidad de dominio del pedido
             pedido = Pedido(
-                vendedor_id=comando.vendedor_id,
+                vendedor_id=vendedor_id_final,
                 cliente_id=comando.cliente_id,
                 estado=EstadoPedido("borrador"),
                 total=Precio(0.0)
