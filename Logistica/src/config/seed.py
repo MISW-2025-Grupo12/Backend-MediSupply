@@ -71,15 +71,15 @@ def _create_seed_data():
     bodegas_data = [
         {
             "nombre": "Bodega Central - Zona Norte",
-            "direccion": "Calle 100 #15-20, Bogotá"
+            "direccion": "Calle 100 #15-30, Barrios Unidos, Bogotá D.C."
         },
         {
             "nombre": "Bodega Occidente - Fontibón",
-            "direccion": "Avenida El Dorado #68-90, Bogotá"
+            "direccion": "Avenida El Dorado #68-90, Fontibón, Bogotá D.C."
         },
         {
             "nombre": "Bodega Sur - Zona Industrial",
-            "direccion": "Autopista Sur #45-67, Bogotá"
+            "direccion": "Autopista Sur #45-67, Kennedy, Bogotá D.C."
         }
     ]
     
@@ -139,7 +139,7 @@ def _create_seed_data():
     
     entregas_data = [
         {
-            "direccion": "Carrera 7 #32-16, Bogotá",
+            "direccion": "Carrera 7 #32-16, Bogotá D.C.",
             "dias_atras": 75,
             "items": [
                 {"producto": "Tensiómetro Digital", "cantidad": 5},
@@ -148,7 +148,7 @@ def _create_seed_data():
             "total": 820000.0
         },
         {
-            "direccion": "Calle 100 #15-20, Bogotá",
+            "direccion": "Calle 72 #11-47, Chapinero, Bogotá D.C.",
             "dias_atras": 60,
             "items": [
                 {"producto": "Termómetro Infrarrojo", "cantidad": 10}
@@ -156,7 +156,7 @@ def _create_seed_data():
             "total": 750000.0
         },
         {
-            "direccion": "Avenida El Dorado #68-90, Bogotá",
+            "direccion": "Carrera 15 #88-52, Usaquén, Bogotá D.C.",
             "dias_atras": 45,
             "items": [
                 {"producto": "Bisturí", "cantidad": 8},
@@ -165,7 +165,7 @@ def _create_seed_data():
             "total": 588000.0
         },
         {
-            "direccion": "Carrera 15 #93-40, Bogotá",
+            "direccion": "Calle 63 #45-10, Teusaquillo, Bogotá D.C.",
             "dias_atras": 30,
             "items": [
                 {"producto": "Guantes de Látex", "cantidad": 20}
@@ -173,7 +173,7 @@ def _create_seed_data():
             "total": 560000.0
         },
         {
-            "direccion": "Autopista Sur #45-67, Bogotá",
+            "direccion": "Avenida Ciudad de Cali #26-85, Kennedy, Bogotá D.C.",
             "dias_atras": 15,
             "items": [
                 {"producto": "Jeringas Desechables", "cantidad": 15},
