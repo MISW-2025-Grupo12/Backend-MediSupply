@@ -170,7 +170,7 @@ def _create_seed_data():
             vendedor_id=VENDEDOR_ID,
             cliente_id=CLIENTE_ID,
             fecha_programada=fecha_programada,
-            direccion="Carrera 7 #32-16, Bogotá",
+            direccion="Carrera 7 #32-16, Bogotá D.C.",
             telefono="3109876543",
             estado=visita_data["estado"],
             descripcion=visita_data["descripcion"],

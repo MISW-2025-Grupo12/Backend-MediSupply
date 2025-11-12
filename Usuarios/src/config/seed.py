@@ -97,7 +97,7 @@ def _create_seed_data():
         email="vendedor@medisupply.com",
         identificacion="1234567890",
         telefono="3001234567",
-        direccion="Calle 100 #15-20, Bogotá",
+        direccion="Calle 100 #19-20, Usaquén, Bogotá D.C.",
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow()
     )
@@ -125,7 +125,7 @@ def _create_seed_data():
         email="cliente@medisupply.com",
         identificacion="0987654321",
         telefono="3109876543",
-        direccion="Carrera 7 #32-16, Bogotá",
+        direccion="Carrera 7 #32-16, Bogotá D.C.",
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow()
     )
@@ -153,7 +153,7 @@ def _create_seed_data():
         email="proveedor@medisupply.com",
         identificacion="9001234567",
         telefono="6013456789",
-        direccion="Calle 26 #68-30, Bogotá",
+        direccion="Calle 26 #59-17, Teusaquillo, Bogotá D.C.",
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow()
     )
