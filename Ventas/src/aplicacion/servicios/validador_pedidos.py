@@ -81,10 +81,19 @@ class ValidadorPedidos:
         return True, None
     
     @staticmethod
-    def validar_pedido_completo(vendedor_id: str, cliente_id: str, items_data: any) -> Tuple[bool, Optional[str], List[Dict]]:
-        """Validación completa de un pedido"""
-        # Validar datos básicos
-        es_valido, error = ValidadorPedidos.validar_datos_basicos_pedido(vendedor_id, cliente_id)
+    def validar_datos_basicos_pedido_opcional_vendedor(vendedor_id: Optional[str], cliente_id: str) -> Tuple[bool, Optional[str]]:
+        """Valida los datos básicos de un pedido con vendedor_id opcional"""
+        # Solo validar cliente_id, vendedor_id es opcional
+        if not PedidoDebeTenerCliente(cliente_id).es_valido():
+            return False, "Error de validación: PedidoDebeTenerCliente"
+        
+        return True, None
+    
+    @staticmethod
+    def validar_pedido_completo(vendedor_id: Optional[str], cliente_id: str, items_data: any) -> Tuple[bool, Optional[str], List[Dict]]:
+        """Validación completa de un pedido con vendedor_id opcional"""
+        # Validar datos básicos (vendedor_id opcional)
+        es_valido, error = ValidadorPedidos.validar_datos_basicos_pedido_opcional_vendedor(vendedor_id, cliente_id)
         if not es_valido:
             return False, error, []
         

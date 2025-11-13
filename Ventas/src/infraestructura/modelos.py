@@ -59,7 +59,7 @@ class PedidoModel(db.Model):
     __tablename__ = 'pedidos'
     
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    vendedor_id = db.Column(db.String(36), nullable=False)
+    vendedor_id = db.Column(db.String(36), nullable=True)  # Opcional: puede ser None para pedidos creados por clientes
     cliente_id = db.Column(db.String(36), nullable=False)
     estado = db.Column(db.String(20), nullable=False, default='borrador')
     total = db.Column(db.Float, nullable=False, default=0.0)

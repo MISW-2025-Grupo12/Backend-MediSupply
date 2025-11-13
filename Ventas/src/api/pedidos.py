@@ -369,11 +369,17 @@ def crear_pedido_completo():
                 mimetype='application/json'
             )
         
-        vendedor_id = data.get('vendedor_id', '').strip()
+        # vendedor_id es opcional (puede ser None, null, o string vacío)
+        vendedor_id_raw = data.get('vendedor_id')
+        if vendedor_id_raw is None:
+            vendedor_id = None
+        else:
+            vendedor_id = str(vendedor_id_raw).strip() if vendedor_id_raw else None
+        
         cliente_id = data.get('cliente_id', '').strip()
         items_data = data.get('items', [])
         
-        # Usar validador de reglas de negocio
+        # Usar validador de reglas de negocio (vendedor_id opcional)
         es_valido, error, items_validados = ValidadorPedidos.validar_pedido_completo(
             vendedor_id, cliente_id, items_data
         )

@@ -247,29 +247,45 @@ class RepositorioInventarioSQLite:
             return False
 
     def crear_o_actualizar(self, inventario_dto: InventarioDTO) -> InventarioDTO:
-        """Crear o actualizar un lote de inventario basado en producto_id y fecha_vencimiento."""
+        """Crear o actualizar un lote de inventario basado en producto_id y fecha_vencimiento, o por ID si está disponible."""
         try:
-            # Buscar si ya existe un lote con el mismo producto_id y fecha_vencimiento
-            inventario_model = InventarioModel.query.filter_by(
-                producto_id=inventario_dto.producto_id,
-                fecha_vencimiento=inventario_dto.fecha_vencimiento
-            ).first()
+            inventario_model = None
+            
+            # Si el DTO tiene un ID, intentar buscar por ID primero
+            if inventario_dto.id:
+                inventario_model = InventarioModel.query.get(inventario_dto.id)
+            
+            # Si no se encontró por ID, buscar por producto_id y fecha_vencimiento
+            if not inventario_model:
+                inventario_model = InventarioModel.query.filter_by(
+                    producto_id=inventario_dto.producto_id,
+                    fecha_vencimiento=inventario_dto.fecha_vencimiento
+                ).first()
 
             if inventario_model:
-                # Actualizar el lote existente
+                # Actualizar el lote existente con todos los campos
                 inventario_model.cantidad_disponible = inventario_dto.cantidad_disponible
                 inventario_model.cantidad_reservada = inventario_dto.cantidad_reservada
                 inventario_model.requiere_cadena_frio = inventario_dto.requiere_cadena_frio
+                # Actualizar ubicación si está disponible
+                if inventario_dto.bodega_id is not None:
+                    inventario_model.bodega_id = inventario_dto.bodega_id
+                if inventario_dto.pasillo is not None:
+                    inventario_model.pasillo = inventario_dto.pasillo
+                if inventario_dto.estante is not None:
+                    inventario_model.estante = inventario_dto.estante
             else:
                 # Crear un nuevo lote
                 inventario_model = InventarioModel(
+                    id=inventario_dto.id if inventario_dto.id else None,
                     producto_id=inventario_dto.producto_id,
                     cantidad_disponible=inventario_dto.cantidad_disponible,
                     cantidad_reservada=inventario_dto.cantidad_reservada,
                     fecha_vencimiento=inventario_dto.fecha_vencimiento,
-                    bodega_id=inventario_dto.bodega_id if hasattr(inventario_dto, 'bodega_id') else None,
-                    pasillo=inventario_dto.pasillo if hasattr(inventario_dto, 'pasillo') else None,
-                    estante=inventario_dto.estante if hasattr(inventario_dto, 'estante') else None
+                    bodega_id=inventario_dto.bodega_id if inventario_dto.bodega_id else None,
+                    pasillo=inventario_dto.pasillo if inventario_dto.pasillo else None,
+                    estante=inventario_dto.estante if inventario_dto.estante else None,
+                    requiere_cadena_frio=inventario_dto.requiere_cadena_frio
                 )
                 db.session.add(inventario_model)
             

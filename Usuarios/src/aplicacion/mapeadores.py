@@ -1,5 +1,5 @@
-from aplicacion.dto import ProveedorDTO, VendedorDTO, ClienteDTO
-from dominio.entidades import Proveedor, Vendedor, Cliente
+from aplicacion.dto import ProveedorDTO, VendedorDTO, ClienteDTO, RepartidorDTO
+from dominio.entidades import Proveedor, Vendedor, Cliente, Repartidor
 from dominio.objetos_valor import Nombre, Email, Direccion, Telefono, Identificacion
 
 class MapeadorProveedorDTOJson:
@@ -105,4 +105,36 @@ class MapeadorCliente:
             telefono=entidad.telefono.telefono,
             direccion=entidad.direccion.direccion,
             estado=entidad.estado.estado
+        )
+
+class MapeadorRepartidorDTOJson:
+    def dto_a_externo(self, dto: RepartidorDTO) -> dict:
+        return {
+            'id': str(dto.id),
+            'nombre': dto.nombre,
+            'email': dto.email,
+            'identificacion': dto.identificacion,
+            'telefono': dto.telefono
+        }
+    
+    def externo_a_dto(self, externo: dict) -> RepartidorDTO:
+        return RepartidorDTO(
+            id=externo.get('id'),
+            nombre=externo.get('nombre', ''),
+            email=externo.get('email', ''),
+            identificacion=externo.get('identificacion', ''),
+            telefono=externo.get('telefono', '')
+        )
+    
+    def dtos_a_externo(self, dtos: list[RepartidorDTO]) -> list[dict]:
+        return [self.dto_a_externo(dto) for dto in dtos]
+
+class MapeadorRepartidor:
+    def entidad_a_dto(self, entidad: Repartidor) -> RepartidorDTO:
+        return RepartidorDTO(
+            id=entidad._id,
+            nombre=entidad.nombre.nombre,
+            email=entidad.email.email,
+            identificacion=entidad.identificacion.identificacion,
+            telefono=entidad.telefono.telefono
         )
