@@ -249,10 +249,11 @@ class MapeadorRutaDTOJson:
             'id': str(dto.id),
             'fecha_ruta': dto.fecha_ruta.isoformat(),
             'repartidor_id': dto.repartidor_id,
+            'bodega_id': dto.bodega_id,
             'estado': dto.estado,
             'entregas': [
                 {
-                    'entrega_id': entrega.entrega_id,
+                    'id': entrega.entrega_id,
                     'direccion': entrega.direccion,
                     'fecha_entrega': entrega.fecha_entrega.isoformat(),
                     'pedido': entrega.pedido

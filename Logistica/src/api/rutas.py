@@ -21,33 +21,30 @@ def parsear_fecha(valor):
         return datetime.strptime(valor, "%Y-%m-%d").date()
 
 
-def enriquecer_ubicaciones(ruta_json):
-    repo_inventario = RepositorioInventarioSQLite()
+def enriquecer_ruta_con_bodega(ruta_json):
     repo_bodega = RepositorioBodegaSQLite()
+
+    bodega_id = ruta_json.get('bodega_id')
+    if bodega_id:
+        bodega_model = repo_bodega.obtener_por_id(bodega_id)
+        if bodega_model:
+            ruta_json['bodega'] = {
+                'id': bodega_model.id,
+                'nombre': bodega_model.nombre,
+                'direccion': bodega_model.direccion,
+                'created_at': bodega_model.created_at.isoformat(),
+                'updated_at': bodega_model.updated_at.isoformat()
+            }
+        else:
+            ruta_json['bodega'] = None
 
     for entrega in ruta_json.get('entregas', []):
         pedido = entrega.get('pedido') or {}
         productos = pedido.get('productos') or []
 
         for producto in productos:
-            producto_id = producto.get('producto_id')
-            ubicaciones = []
-
-            if producto_id:
-                inventarios = repo_inventario.obtener_por_producto_id(producto_id)
-                inventario = next((inv for inv in inventarios if inv.bodega_id), None)
-
-                if inventario:
-                    bodega = repo_bodega.obtener_por_id(inventario.bodega_id) if inventario.bodega_id else None
-                    ubicaciones.append({
-                        'bodega_id': inventario.bodega_id,
-                        'nombre_bodega': bodega.nombre if bodega else 'Sin asignar',
-                        'direccion_bodega': bodega.direccion if bodega else '',
-                        'pasillo': getattr(inventario, 'pasillo', None),
-                        'estante': getattr(inventario, 'estante', None)
-                    })
-
-            producto['ubicaciones'] = ubicaciones
+            if 'ubicaciones' in producto:
+                del producto['ubicaciones']
 
     return ruta_json
 
@@ -58,6 +55,7 @@ def crear_ruta():
         payload = request.get_json() or {}
         fecha_ruta = parsear_fecha(payload.get('fecha_ruta'))
         repartidor_id = payload.get('repartidor_id')
+        bodega_id = payload.get('bodega_id')
         entregas = payload.get('entregas', [])
 
         if not fecha_ruta:
@@ -66,6 +64,9 @@ def crear_ruta():
         if not repartidor_id:
             return Response(json.dumps({'error': 'El campo repartidor_id es obligatorio'}),
                             status=400, mimetype='application/json')
+        if not bodega_id:
+            return Response(json.dumps({'error': 'El campo bodega_id es obligatorio'}),
+                            status=400, mimetype='application/json')
         if not entregas or not isinstance(entregas, list):
             return Response(json.dumps({'error': 'Debe proporcionar una lista de entregas'}),
                             status=400, mimetype='application/json')
@@ -73,12 +74,13 @@ def crear_ruta():
         comando = CrearRuta(
             fecha_ruta=fecha_ruta,
             repartidor_id=repartidor_id,
+            bodega_id=bodega_id,
             entregas=entregas
         )
 
         ruta_creada = ejecutar_comando(comando)
         mapeador = MapeadorRutaDTOJson()
-        ruta_json = enriquecer_ubicaciones(mapeador.dto_a_externo(ruta_creada))
+        ruta_json = enriquecer_ruta_con_bodega(mapeador.dto_a_externo(ruta_creada))
         ruta_json['id'] = str(getattr(ruta_creada, 'id', ruta_json.get('id')))
 
         return Response(json.dumps(ruta_json), status=201, mimetype='application/json')
@@ -101,7 +103,7 @@ def obtener_rutas():
 
         rutas_json = []
         for ruta in rutas:
-            ruta_json = enriquecer_ubicaciones(mapeador.dto_a_externo(ruta))
+            ruta_json = enriquecer_ruta_con_bodega(mapeador.dto_a_externo(ruta))
             ruta_json['id'] = str(getattr(ruta, 'id', ruta_json.get('id')))
             rutas_json.append(ruta_json)
 
@@ -122,7 +124,7 @@ def obtener_rutas_por_repartidor(repartidor_id):
         mapeador = MapeadorRutaDTOJson()
         rutas_json = []
         for ruta in rutas:
-            ruta_json = enriquecer_ubicaciones(mapeador.dto_a_externo(ruta))
+            ruta_json = enriquecer_ruta_con_bodega(mapeador.dto_a_externo(ruta))
             ruta_json['id'] = str(getattr(ruta, 'id', ruta_json.get('id')))
             rutas_json.append(ruta_json)
         return Response(json.dumps(rutas_json), status=200, mimetype='application/json')

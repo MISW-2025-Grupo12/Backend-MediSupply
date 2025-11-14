@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 from seedwork.aplicacion.comandos import Comando, ejecutar_comando as comando
-from infraestructura.repositorios import RepositorioRutaSQLite, RepositorioEntregaSQLite
+from infraestructura.repositorios import RepositorioRutaSQLite, RepositorioEntregaSQLite, RepositorioBodegaSQLite
 from aplicacion.dto import RutaDTO, RutaEntregaDTO
 from dominio.entidades import Ruta
 from dominio.objetos_valor import FechaRuta, RepartidorID, EstadoRuta, EntregaAsignada
@@ -12,6 +12,7 @@ from aplicacion.mapeadores import MapeadorRuta
 class CrearRuta(Comando):
     fecha_ruta: date
     repartidor_id: str
+    bodega_id: str
     entregas: list[str]
 
 
@@ -19,11 +20,16 @@ class CrearRutaHandler:
     def __init__(self):
         self._repo_rutas = RepositorioRutaSQLite()
         self._repo_entregas = RepositorioEntregaSQLite()
+        self._repo_bodegas = RepositorioBodegaSQLite()
         self._mapeador_ruta = MapeadorRuta()
 
     def handle(self, comando: CrearRuta) -> RutaDTO:
         if not comando.entregas or not isinstance(comando.entregas, list):
             raise ValueError("Debe suministrar al menos una entrega para la ruta")
+
+        bodega = self._repo_bodegas.obtener_por_id(comando.bodega_id)
+        if not bodega:
+            raise ValueError(f"La bodega {comando.bodega_id} no existe")
 
         fecha_ruta = FechaRuta(comando.fecha_ruta)
         repartidor_id = RepartidorID(comando.repartidor_id)
@@ -73,7 +79,15 @@ class CrearRutaHandler:
         )
 
         ruta_dto = self._mapeador_ruta.entidad_a_dto(ruta_entidad, entregas_detalle)
-        return self._repo_rutas.crear(ruta_dto)
+        ruta_dto_con_bodega = RutaDTO(
+            id=ruta_dto.id,
+            fecha_ruta=ruta_dto.fecha_ruta,
+            repartidor_id=ruta_dto.repartidor_id,
+            bodega_id=comando.bodega_id,
+            estado=ruta_dto.estado,
+            entregas=ruta_dto.entregas
+        )
+        return self._repo_rutas.crear(ruta_dto_con_bodega)
 
 
 @comando.register(CrearRuta)
