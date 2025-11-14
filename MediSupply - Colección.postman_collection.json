@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "bf408684-f5fb-4553-9b83-2f5504b6bcf6",
+		"_postman_id": "1e87adc3-71d8-4a66-897b-e00c46a2e3bd",
 		"name": "MediSupply - Colección",
-		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas, pedidos y planes de venta\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}, PUT/{id}/estado\n    \n- **Autenticación**: POST /registro-vendedor, POST /registro-cliente, POST /registro-proveedor, POST /registro-administrador, POST /registro-repartidor, POST /login\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n- Planes: POST, GET, GET/?user_id={id}\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
+		"description": "**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez\n    \n\n---\n\n﻿Colección completa de endpoints para el backend de MediSupply.\n\n## 🏗️ Arquitectura\n\nEl sistema está compuesto por 5 microservicios:\n\n- **Auth-Service** (Puerto 5004) - Autenticación centralizada con JWT y autorización basada en roles\n    \n- **Usuarios** (Puerto 5001) - Gestión de proveedores, vendedores, clientes, administradores y repartidores\n    \n- **Productos** (Puerto 5000) - Catálogo de productos y categorías\n    \n- **Ventas** (Puerto 5002) - Gestión de visitas, pedidos y planes de venta\n    \n- **Logística** (Puerto 5003) - Control de inventario y entregas\n    \n- **Nginx Gateway** (Puerto 8080) - API Gateway con autenticación y enrutamiento\n    \n\n## 🚀 Requisitos\n\n- Docker y Docker Compose\n    \n- Python 3.9+\n    \n- PostgreSQL 15\n    \n\n## 🐳 Ejecución\n\n``` bash\ndocker-compose up -d\n\n ```\n\n## 🔒 Acceso a los Servicios\n\n**IMPORTANTE:** Todos los requests deben ir a través del Nginx Gateway en el puerto 8080.\n\n- Gateway (USAR ESTE): `http://localhost:8080`\n    \n- Login: `http://localhost:8080/auth/login`\n    \n- Usuarios: `http://localhost:8080/usuarios/...`\n    \n- Productos: `http://localhost:8080/productos/...`\n    \n- Ventas: `http://localhost:8080/ventas/...`\n    \n- Logística: `http://localhost:8080/logistica/...`\n\n## 📡 Endpoints Disponibles\n\n### 🔐 Usuarios (Puerto 5001)\n\n- Proveedores: POST, GET, GET/{id}\n    \n- Vendedores: POST, GET, GET/{id}\n    \n- Clientes: POST, GET, GET/{id}, PUT/{id}/estado\n    \n- **Autenticación**: POST /registro-vendedor, POST /registro-cliente, POST /registro-proveedor, POST /registro-administrador, POST /registro-repartidor, POST /login\n    \n\n### 📦 Productos (Puerto 5000)\n\n- Productos: POST, POST/con-inventario, GET, GET/{id}\n    \n- Categorías: POST, GET, GET/{id}\n    \n- Carga Masiva: POST /carga-masiva (subir CSV), GET /carga-masiva (listar todos), GET /carga-masiva/{job_id} (consultar progreso)\n    \n\n### 🛒 Ventas (Puerto 5002)\n\n- Visitas: POST, GET, GET/vendedor/{id}, PUT/{id}\n    \n- Pedidos: POST, POST/completo, GET, GET/{id}, POST/{id}/items, PUT/{id}/items/{item_id}, DELETE/{id}/items/{item_id}, POST/{id}/confirmar\n    \n- Planes: POST, GET, GET/?user_id={id}\n    \n\n### 🚚 Logística (Puerto 5003)\n\n- Entregas: GET, POST/creartemp\n    \n- Inventario: GET, GET/buscar, POST/reservar, POST/descontar, GET/producto/{id}\n    \n- Bodegas: GET, POST/inicializar, GET/{id}/productos\n    \n\n---\n\n**MISO GRUPO 12:**\n\n- Manuel Sanchez\n    \n- Jairo Reyes\n    \n- Nicolas Malagon\n    \n- Sergio Perez",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30409960",
-		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-bf408684-f5fb-4553-9b83-2f5504b6bcf6?action=share&source=collection_link&creator=30409960"
+		"_collection_link": "https://drones-8622.postman.co/workspace/CloudOps-MISO~6e478cc9-85ca-4be0-88ce-7294df068b85/collection/30409960-1e87adc3-71d8-4a66-897b-e00c46a2e3bd?action=share&source=collection_link&creator=30409960"
 	},
 	"item": [
 		{
@@ -26,7 +26,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"María García\",\n    \"email\": \"maria.garcia@empresa.com\",\n    \"identificacion\": \"9876543210\",\n    \"telefono\": \"3009876543\",\n    \"direccion\": \"Calle 45 #67-89\",\n    \"password\": \"MiPassword123\"\n}",
+									"raw": "{\n    \"nombre\": \"María García\",\n    \"email\": \"maria.garcia@empresa.com\",\n    \"identificacion\": \"9876543210\",\n    \"telefono\": \"3009876543\",\n    \"direccion\": \"Calle 100 #19-20, Usaquén, Bogotá D.C.\",\n    \"password\": \"MiPassword123\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -60,7 +60,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Clínica Los Olivos\",\n    \"email\": \"contacto@losolivos.com\",\n    \"identificacion\": \"8609876543\",\n    \"telefono\": \"6014567890\",\n    \"direccion\": \"Avenida 15 #23-45\",\n    \"password\": \"ClinicaPass456\"\n}",
+									"raw": "{\n    \"nombre\": \"Clínica Los Olivos\",\n    \"email\": \"contacto@losolivos.com\",\n    \"identificacion\": \"8609876543\",\n    \"telefono\": \"6014567890\",\n    \"direccion\": \"Carrera 15 #88-52, Usaquén, Bogotá D.C.\",\n    \"password\": \"ClinicaPass456\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -94,7 +94,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Pfizer Colombia\",\n    \"email\": \"contacto@pfizer.com.co\",\n    \"identificacion\": \"9005678901\",\n    \"telefono\": \"6017654321\",\n    \"direccion\": \"Carrera 9 #50-30, Bogotá\",\n    \"password\": \"PfizerSecure789\"\n}",
+									"raw": "{\n    \"nombre\": \"Pfizer Colombia\",\n    \"email\": \"contacto@pfizer.com.co\",\n    \"identificacion\": \"9005678901\",\n    \"telefono\": \"6017654321\",\n    \"direccion\": \"Calle 26 #59-17, Teusaquillo, Bogotá D.C.\",\n    \"password\": \"PfizerSecure789\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -262,7 +262,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"identificacion\": \"9001234567\",\n    \"telefono\": \"6013456789\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá, Colombia\"\n}",
+									"raw": "{\n    \"nombre\": \"Bayer Colombia\",\n    \"email\": \"contacto@bayer.com.co\",\n    \"identificacion\": \"9001234567\",\n    \"telefono\": \"6013456789\",\n    \"direccion\": \"Calle 26 #59-17, Teusaquillo, Bogotá D.C.\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -371,7 +371,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"identificacion\": \"1234567890\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 123 #45-67\"\n}",
+									"raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"email\": \"juan.perez@empresa.com\",\n    \"identificacion\": \"1234567890\",\n    \"telefono\": \"3001234567\",\n    \"direccion\": \"Calle 100 #19-20, Usaquén, Bogotá D.C.\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -480,7 +480,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"identificacion\": \"8601234567\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Cra 11 # 89 - 76\"\n}",
+									"raw": "{\n    \"nombre\": \"Hospital San Ignacio\",\n    \"email\": \"contacto@sanignacio.com\",\n    \"identificacion\": \"8601234567\",\n    \"telefono\": \"3115566778\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá D.C.\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -604,6 +604,53 @@
 									]
 								},
 								"description": "Modifica el estado de un cliente específico. Estados válidos: ACTIVO, INACTIVO"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Repartidores",
+					"item": [
+						{
+							"name": "Obtener Todos los Repartidores",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_usuarios}}/api/repartidores/?page=1&page_size=100",
+									"host": [
+										"{{base_url_usuarios}}"
+									],
+									"path": [
+										"api",
+										"repartidores",
+										""
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"description": "Número de página"
+										},
+										{
+											"key": "page_size",
+											"value": "100",
+											"description": "Tamaño de página"
+										}
+									]
+								},
+								"description": "Obtiene la lista de todos los repartidores registrados. Soporta paginación con parámetros ?page=1&page_size=100"
 							},
 							"response": []
 						}
@@ -867,6 +914,145 @@
 								"description": "Obtiene los detalles de un producto específico por su ID"
 							},
 							"response": []
+						},
+						{
+							"name": "Carga Masiva de Productos (CSV)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Carga masiva iniciada exitosamente', function () {",
+											"    pm.response.to.have.status(202);",
+											"    const response = pm.response.json();",
+											"    pm.expect(response).to.have.property('job_id');",
+											"    pm.expect(response).to.have.property('status', 'pending');",
+											"    pm.collectionVariables.set('job_id', response.job_id);",
+											"    console.log('Job ID guardado:', response.job_id);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"description": "Archivo CSV con columnas: nombre,descripcion,precio,stock,fecha_vencimiento,categoria,proveedor",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/carga-masiva",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										"carga-masiva"
+									]
+								},
+								"description": "Sube un archivo CSV para carga masiva de productos. Solo acepta archivos .csv. El CSV debe contener las columnas: nombre,descripcion,precio,stock,fecha_vencimiento,categoria,proveedor. Si el producto existe por nombre, se actualiza el inventario; si no existe, se crea. Las categorías se crean automáticamente si no existen. Los proveedores deben existir o la fila será rechazada. Retorna un job_id para consultar el progreso. El CSV resultante incluye columnas adicionales 'status' (creado/actualizado/error/rechazado) y 'mensaje' (razón del rechazo o error)."
+							},
+							"response": []
+						},
+						{
+							"name": "Listar Todas las Cargas Masivas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/carga-masiva?page=1&page_size=20&status=&ordenar_por=created_at&orden=desc",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										"carga-masiva"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"description": "Número de página"
+										},
+										{
+											"key": "page_size",
+											"value": "20",
+											"description": "Tamaño de página"
+										},
+										{
+											"key": "status",
+											"value": "",
+											"description": "Filtrar por status (pending, processing, completed, failed). Opcional."
+										},
+										{
+											"key": "ordenar_por",
+											"value": "created_at",
+											"description": "Campo por el cual ordenar (created_at, updated_at, status)"
+										},
+										{
+											"key": "orden",
+											"value": "desc",
+											"description": "Orden de clasificación (asc, desc)"
+										}
+									]
+								},
+								"description": "Lista todos los trabajos de carga masiva. Soporta paginación y filtrado por status. Puede ordenar por created_at, updated_at o status en orden ascendente o descendente."
+							},
+							"response": []
+						},
+						{
+							"name": "Consultar Estado de Carga Masiva",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_productos}}/api/productos/carga-masiva/{{job_id}}",
+									"host": [
+										"{{base_url_productos}}"
+									],
+									"path": [
+										"api",
+										"productos",
+										"carga-masiva",
+										"{{job_id}}"
+									]
+								},
+								"description": "Consulta el estado y progreso de un trabajo de carga masiva específico. Retorna el porcentaje de completado, filas procesadas, exitosas, con error y rechazadas. Si el job está completado, incluye la URL del CSV resultante con columnas adicionales 'status' (creado/actualizado/error/rechazado) y 'mensaje' (razón detallada del rechazo, error o confirmación de éxito)."
+							},
+							"response": []
 						}
 					]
 				},
@@ -924,7 +1110,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2026-10-15T10:00:00\",\n    \"direccion\": \"Cra 11 # 89 - 76\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada\"\n}",
+									"raw": "{\n    \"vendedor_id\": \"{{vendedor_id}}\",\n    \"cliente_id\": \"{{cliente_id}}\",\n    \"fecha_programada\": \"2026-10-15T10:00:00\",\n    \"direccion\": \"Carrera 7 #32-16, Bogotá D.C.\",\n    \"telefono\": \"3115566778\",\n    \"estado\": \"pendiente\",\n    \"descripcion\": \"Visita programada\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1320,6 +1506,73 @@
 									]
 								},
 								"description": "Obtiene todas las evidencias visuales (fotos/videos) asociadas a una visita específica"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Sugerencias",
+					"item": [
+						{
+							"name": "Generar Sugerencias para Visita",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/visitas/{{visita_id}}/sugerencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"visitas",
+										"{{visita_id}}",
+										"sugerencias"
+									]
+								},
+								"description": "Genera sugerencias de ventas usando Vertex AI basado en una visita. El endpoint obtiene automáticamente: el cliente_id desde la visita, las evidencias asociadas a la visita (si existen), y el historial de compras del cliente. No requiere body - todo se obtiene desde la visita."
+							},
+							"response": []
+						},
+						{
+							"name": "Listar Sugerencias de Cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/clientes/{{cliente_id}}/sugerencias",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"clientes",
+										"{{cliente_id}}",
+										"sugerencias"
+									]
+								},
+								"description": "Obtiene todas las sugerencias generadas para un cliente específico."
 							},
 							"response": []
 						}
@@ -1829,8 +2082,8 @@
 				{
 					"name": "Planes",
 					"item": [
-                        {
-                            "name": "Crear Plan de Visitas",
+						{
+							"name": "Crear Plan de Visitas",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -1870,28 +2123,30 @@
 									]
 								},
 								"description": "Crea un nuevo plan de ventas con sus visitas asociadas. El plan incluye un nombre, usuario asignado, rango de fechas y una lista de clientes con sus respectivas fechas de visita programadas."
-                            },
-                            "response": [
-                                {
-                                    "name": "201 Created",
-                                    "originalRequest": {
-                                        "method": "POST",
-                                        "url": {
-                                            "raw": "{{base_url_ventas}}/api/planes/"
-                                        }
-                                    },
-                                    "status": "Created",
-                                    "code": 201,
-                                    "_postman_previewlanguage": "json",
-                                    "header": [
-                                        {
-                                            "key": "Content-Type",
-                                            "value": "application/json"
-                                        }
-                                    ],
-                                    "body": "{\n  \"success\": true,\n  \"message\": \"Plan creado exitosamente\",\n  \"plan_id\": \"1daa796e-0481-4052-abe2-692dfe063c10\"\n}"
-                                }
-                            ]
+							},
+							"response": [
+								{
+									"name": "201 Created",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"success\": true,\n  \"message\": \"Plan creado exitosamente\",\n  \"plan_id\": \"1daa796e-0481-4052-abe2-692dfe063c10\"\n}"
+								}
+							]
 						},
 						{
 							"name": "Obtener Todos los Planes",
@@ -1914,41 +2169,52 @@
 										"description": "Rol del usuario (ADMINISTRADOR para ver todos los planes)"
 									}
 								],
-                                "url": {
-                                    "raw": "{{base_url_ventas}}/api/planes/?page=1&page_size=10",
-                                    "host": [
-                                        "{{base_url_ventas}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "planes",
-                                        ""
-                                    ],
-                                    "query": [
-                                        {"key": "page", "value": "1"},
-                                        {"key": "page_size", "value": "10"}
-                                    ]
-                                },
+								"url": {
+									"raw": "{{base_url_ventas}}/api/planes/?page=1&page_size=10",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"planes",
+										""
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "10"
+										}
+									]
+								},
 								"description": "Obtiene todos los planes de visita. Requiere rol de ADMINISTRADOR. Si no se proporciona el header X-User-Role o es diferente de ADMINISTRADOR, se filtrará automáticamente por el usuario autenticado."
-                            },
-                            "response": [
-                                {
-                                    "name": "200 OK",
-                                    "originalRequest": {
-                                        "method": "GET",
-                                        "url": {
-                                            "raw": "{{base_url_ventas}}/api/planes/"
-                                        }
-                                    },
-                                    "status": "OK",
-                                    "code": 200,
-                                    "_postman_previewlanguage": "json",
-                                    "header": [
-                                        {"key": "Content-Type", "value": "application/json"}
-                                    ],
-                                    "body": "{\n  \"success\": true,\n  \"planes\": [\n    {\n      \"id\": \"1daa796e-0481-4052-abe2-692dfe063c10\",\n      \"nombre\": \"Plan de Visitas Octubre 2025\",\n      \"id_usuario\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"fecha_inicio\": \"2025-10-01\",\n      \"fecha_fin\": \"2025-10-31\",\n      \"visitas_clientes\": [\n        {\n          \"id_cliente\": \"550e8400-e29b-41d4-a716-446655440002\",\n          \"visitas\": [\n            {\n              \"id\": \"37862994-d197-4844-b372-2fa3a7d00fd7\",\n              \"fecha_programada\": \"2025-10-05T10:00:00\",\n              \"direccion\": \"Carrera 7 #32-16, Bogotá\",\n              \"telefono\": \"3109876543\",\n              \"estado\": \"pendiente\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}"
-                                }
-                            ]
+							},
+							"response": [
+								{
+									"name": "200 OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"success\": true,\n  \"planes\": [\n    {\n      \"id\": \"1daa796e-0481-4052-abe2-692dfe063c10\",\n      \"nombre\": \"Plan de Visitas Octubre 2025\",\n      \"id_usuario\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"fecha_inicio\": \"2025-10-01\",\n      \"fecha_fin\": \"2025-10-31\",\n      \"visitas_clientes\": [\n        {\n          \"id_cliente\": \"550e8400-e29b-41d4-a716-446655440002\",\n          \"visitas\": [\n            {\n              \"id\": \"37862994-d197-4844-b372-2fa3a7d00fd7\",\n              \"fecha_programada\": \"2025-10-05T10:00:00\",\n              \"direccion\": \"Carrera 7 #32-16, Bogotá D.C.\",\n              \"telefono\": \"3109876543\",\n              \"estado\": \"pendiente\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}"
+								}
+							]
 						},
 						{
 							"name": "Obtener Planes por Usuario",
@@ -1965,46 +2231,57 @@
 								},
 								"method": "GET",
 								"header": [],
-                                "url": {
-                                    "raw": "{{base_url_ventas}}/api/planes/?user_id={{vendedor_id}}&page=1&page_size=10",
-                                    "host": [
-                                        "{{base_url_ventas}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "planes",
-                                        ""
-                                    ],
-                                    "query": [
-                                        {
-                                            "key": "user_id",
-                                            "value": "{{vendedor_id}}",
-                                            "description": "ID del usuario/vendedor para filtrar los planes"
-                                        },
-                                        {"key": "page", "value": "1"},
-                                        {"key": "page_size", "value": "10"}
-                                    ]
-                                },
+								"url": {
+									"raw": "{{base_url_ventas}}/api/planes/?user_id={{vendedor_id}}&page=1&page_size=10",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"planes",
+										""
+									],
+									"query": [
+										{
+											"key": "user_id",
+											"value": "{{vendedor_id}}",
+											"description": "ID del usuario/vendedor para filtrar los planes"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "10"
+										}
+									]
+								},
 								"description": "Obtiene los planes de visita de un usuario específico. Si no se proporciona user_id, se utilizará el usuario del token de autenticación."
-                            },
-                            "response": [
-                                {
-                                    "name": "200 OK",
-                                    "originalRequest": {
-                                        "method": "GET",
-                                        "url": {
-                                            "raw": "{{base_url_ventas}}/api/planes/?user_id={{vendedor_id}}"
-                                        }
-                                    },
-                                    "status": "OK",
-                                    "code": 200,
-                                    "_postman_previewlanguage": "json",
-                                    "header": [
-                                        {"key": "Content-Type", "value": "application/json"}
-                                    ],
-                                    "body": "{\n  \"success\": true,\n  \"planes\": [\n    {\n      \"id\": \"1daa796e-0481-4052-abe2-692dfe063c10\",\n      \"nombre\": \"Plan de Visitas Octubre 2025\",\n      \"id_usuario\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"fecha_inicio\": \"2025-10-01\",\n      \"fecha_fin\": \"2025-10-31\",\n      \"visitas_clientes\": [\n        {\n          \"id_cliente\": \"550e8400-e29b-41d4-a716-446655440002\",\n          \"visitas\": [\n            {\n              \"id\": \"37862994-d197-4844-b372-2fa3a7d00fd7\",\n              \"fecha_programada\": \"2025-10-05T10:00:00\",\n              \"direccion\": \"Carrera 7 #32-16, Bogotá\",\n              \"telefono\": \"3109876543\",\n              \"estado\": \"pendiente\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}"
-                                }
-                            ]
+							},
+							"response": [
+								{
+									"name": "200 OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"success\": true,\n  \"planes\": [\n    {\n      \"id\": \"1daa796e-0481-4052-abe2-692dfe063c10\",\n      \"nombre\": \"Plan de Visitas Octubre 2025\",\n      \"id_usuario\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"fecha_inicio\": \"2025-10-01\",\n      \"fecha_fin\": \"2025-10-31\",\n      \"visitas_clientes\": [\n        {\n          \"id_cliente\": \"550e8400-e29b-41d4-a716-446655440002\",\n          \"visitas\": [\n            {\n              \"id\": \"37862994-d197-4844-b372-2fa3a7d00fd7\",\n              \"fecha_programada\": \"2025-10-05T10:00:00\",\n              \"direccion\": \"Carrera 7 #32-16, Bogotá D.C.\",\n              \"telefono\": \"3109876543\",\n              \"estado\": \"pendiente\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}"
+								}
+							]
 						}
 					]
 				},
@@ -2177,7 +2454,7 @@
 										""
 									]
 								},
-								"description": "Obtiene la lista de todas las entregas programadas"
+								"description": "Obtiene la lista de todas las entregas programadas. Soporta filtros opcionales: fecha_inicio, fecha_fin, estado_pedido, cliente_id, con_ruta. Soporta paginación con parámetros ?page=1&page_size=20"
 							},
 							"response": []
 						},
@@ -2223,6 +2500,78 @@
 							"response": []
 						},
 						{
+							"name": "Obtener Entregas por Estado de Pedido",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/entregas?estado_pedido=confirmado",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"entregas"
+									],
+									"query": [
+										{
+											"key": "estado_pedido",
+											"value": "confirmado",
+											"description": "Filtra por estado del pedido (confirmado, entregado, etc.)"
+										}
+									]
+								},
+								"description": "Lista entregas filtradas por el estado del pedido asociado"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Entregas por Cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/entregas?cliente_id={{cliente_id}}",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"entregas"
+									],
+									"query": [
+										{
+											"key": "cliente_id",
+											"value": "{{cliente_id}}",
+											"description": "ID del cliente para filtrar las entregas"
+										}
+									]
+								},
+								"description": "Lista entregas filtradas por el ID del cliente. Puede combinarse con otros filtros como fecha_inicio, fecha_fin, estado_pedido, etc."
+							},
+							"response": []
+						},
+						{
 							"name": "Crear 20 Entregas (Desarrollo)",
 							"request": {
 								"auth": {
@@ -2249,6 +2598,165 @@
 									]
 								},
 								"description": "Endpoint temporal para crear 20 entregas de prueba (solo para desarrollo)"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Entregas por Asignación de Ruta",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/entregas?con_ruta=true",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"entregas"
+									],
+									"query": [
+										{
+											"key": "con_ruta",
+											"value": "true",
+											"description": "true devuelve entregas asignadas a una ruta; false, entregas sin ruta"
+										}
+									]
+								},
+								"description": "Ejemplo de uso del parámetro con_ruta para filtrar entregas por asignación a ruta"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Rutas",
+					"item": [
+						{
+							"name": "Crear Ruta",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fecha_ruta\": \"2025-11-10\",\n    \"repartidor_id\": \"{{repartidor_id}}\",\n    \"bodega_id\": \"{{bodega_id}}\",\n    \"entregas\": [\n        \"{{entrega_id_1}}\",\n        \"{{entrega_id_2}}\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{base_url_logistica}}/api/rutas/",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"rutas",
+										""
+									]
+								},
+								"description": "Crea una nueva ruta en estado pendiente asignando entregas confirmadas a un repartidor"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Rutas",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/rutas?fecha=2025-11-10&repartidor_id={{repartidor_id}}",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"rutas"
+									],
+									"query": [
+										{
+											"key": "fecha",
+											"value": "2025-11-10",
+											"description": "Fecha de la ruta (YYYY-MM-DD)"
+										},
+										{
+											"key": "repartidor_id",
+											"value": "{{repartidor_id}}",
+											"description": "Filtro opcional por repartidor asignado"
+										}
+									]
+								},
+								"description": "Obtiene rutas según fecha y/o repartidor asignado"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Rutas por Repartidor",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/rutas/repartidor/{{repartidor_id}}?fecha=2025-11-10",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"rutas",
+										"repartidor",
+										"{{repartidor_id}}"
+									],
+									"query": [
+										{
+											"key": "fecha",
+											"value": "2025-11-10",
+											"description": "Filtro opcional por fecha (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Lista rutas asignadas a un repartidor específico"
 							},
 							"response": []
 						}
@@ -2445,6 +2953,47 @@
 									]
 								},
 								"description": "Obtiene el inventario detallado de un producto específico con ubicaciones en bodegas"
+							},
+							"response": []
+						},
+						{
+							"name": "Stream de Inventario en Tiempo Real (SSE)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/inventario/stream",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"inventario",
+										"stream"
+									]
+								},
+								"description": "Endpoint SSE (Server-Sent Events) para recibir actualizaciones de inventario en tiempo real. Envía el estado inicial completo del inventario y luego notifica cambios cuando se actualiza, reserva o descuenta inventario. Formato de eventos: 'inventory' (estado inicial), 'update' (actualizaciones), 'heartbeat' (mantenimiento de conexión cada 30s). Los datos incluyen producto_id y cantidad_disponible. Para probar en el navegador, use /stream/test"
+							},
+							"response": []
+						},
+						{
+							"name": "Página de Prueba SSE (HTML)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/inventario/stream/test",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"inventario",
+										"stream",
+										"test"
+									]
+								},
+								"description": "Página HTML interactiva para probar el endpoint SSE de inventario en tiempo real. Muestra una tabla con todos los productos y sus cantidades disponibles, actualizándose automáticamente cuando hay cambios en el inventario. Ideal para pruebas locales. Abre en el navegador para ver actualizaciones en tiempo real."
 							},
 							"response": []
 						}
@@ -2662,32 +3211,50 @@
 		{
 			"key": "base_url",
 			"value": "http://localhost:8080",
-			"description": "Nginx Gateway - Punto de entrada principal"
+			"description": {
+				"content": "Nginx Gateway - Punto de entrada principal",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_auth",
 			"value": "http://localhost:8080/auth",
-			"description": "Auth-Service via Gateway"
+			"description": {
+				"content": "Auth-Service via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_usuarios",
 			"value": "http://localhost:8080/usuarios",
-			"description": "Usuarios via Gateway"
+			"description": {
+				"content": "Usuarios via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_productos",
 			"value": "http://localhost:8080/productos",
-			"description": "Productos via Gateway"
+			"description": {
+				"content": "Productos via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_ventas",
 			"value": "http://localhost:8080/ventas",
-			"description": "Ventas via Gateway"
+			"description": {
+				"content": "Ventas via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "base_url_logistica",
 			"value": "http://localhost:8080/logistica",
-			"description": "Logística via Gateway"
+			"description": {
+				"content": "Logística via Gateway",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "proveedor_id",
@@ -2708,6 +3275,14 @@
 		{
 			"key": "categoria_id",
 			"value": "83ebf893-eea5-40bd-bb36-b78fc43c5770"
+		},
+		{
+			"key": "evidencia_id",
+			"value": "evidencia-uuid-ejemplo",
+			"description": {
+				"content": "ID de una evidencia subida para visitas (opcional)",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "pedido_id",
@@ -2736,7 +3311,18 @@
 		{
 			"key": "access_token",
 			"value": "",
-			"description": "Token JWT obtenido del login"
+			"description": {
+				"content": "Token JWT obtenido del login",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "job_id",
+			"value": "",
+			"description": {
+				"content": "ID del job de carga masiva (se establece automáticamente al subir un CSV)",
+				"type": "text/plain"
+			}
 		}
 	]
 }

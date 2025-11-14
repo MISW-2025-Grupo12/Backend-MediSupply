@@ -2,7 +2,7 @@ from config.db import db
 from sqlalchemy.orm import joinedload
 from sqlalchemy import func, desc
 from sqlalchemy.sql import expression as sql_expr
-from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel, EvidenciaVisitaModel, PlanVisitaModel
+from infraestructura.modelos import VisitaModel, PedidoModel, ItemPedidoModel, EvidenciaVisitaModel, PlanVisitaModel, SugerenciaClienteModel
 from aplicacion.dto import VisitaDTO, PedidoDTO, ItemPedidoDTO, EvidenciaVisitaDTO
 from dominio.entidades import Pedido, ItemPedido
 from dominio.objetos_valor import EstadoPedido, Cantidad, Precio
@@ -105,9 +105,12 @@ class RepositorioPedidoSQLite:
         
         logger.info(f"Creando pedido con ID: {pedido_id}")
         
+        # Normalizar vendedor_id: convertir string vacío a None para la base de datos
+        vendedor_id_db = pedido.vendedor_id if pedido.vendedor_id else None
+        
         pedido_model = PedidoModel(
             id=pedido_id,
-            vendedor_id=pedido.vendedor_id,
+            vendedor_id=vendedor_id_db,
             cliente_id=pedido.cliente_id,
             estado=pedido.estado.estado,
             total=pedido.total.valor
@@ -167,9 +170,12 @@ class RepositorioPedidoSQLite:
             )
             items.append(item)
         
+        # Normalizar vendedor_id: convertir None a string vacío para la entidad de dominio
+        vendedor_id_entidad = pedido_model.vendedor_id if pedido_model.vendedor_id else ""
+        
         pedido = Pedido(
             id=uuid.UUID(pedido_model.id),
-            vendedor_id=pedido_model.vendedor_id,
+            vendedor_id=vendedor_id_entidad,
             cliente_id=pedido_model.cliente_id,
             items=items,
             estado=EstadoPedido(pedido_model.estado),
@@ -205,10 +211,13 @@ class RepositorioPedidoSQLite:
                 )
                 items.append(item)
             
+            # Normalizar vendedor_id: convertir None a string vacío para la entidad de dominio
+            vendedor_id_entidad = pedido_model.vendedor_id if pedido_model.vendedor_id else ""
+            
             # Crear entidad de dominio del pedido
             pedido = Pedido(
                 id=uuid.UUID(pedido_model.id),
-                vendedor_id=pedido_model.vendedor_id,
+                vendedor_id=vendedor_id_entidad,
                 cliente_id=pedido_model.cliente_id,
                 items=items,
                 estado=EstadoPedido(pedido_model.estado),
@@ -356,6 +365,46 @@ class RepositorioPedidoSQLite:
         logger.info(f"✅ Pedidos CONFIRMADOS encontrados: {len(pedidos)}")
         return pedidos
 
+class RepositorioSugerenciaCliente:
+    def crear(self, sugerencia_dto) -> 'SugerenciaClienteDTO':
+        """Crear una nueva sugerencia en SQLite"""
+        from aplicacion.dto import SugerenciaClienteDTO
+        from infraestructura.modelos import SugerenciaClienteModel
+        
+        sugerencia_model = SugerenciaClienteModel(
+            id=str(sugerencia_dto.id),
+            cliente_id=sugerencia_dto.cliente_id,
+            evidencia_id=sugerencia_dto.evidencia_id,
+            sugerencias_texto=sugerencia_dto.sugerencias_texto,
+            modelo_usado=sugerencia_dto.modelo_usado
+        )
+        
+        db.session.add(sugerencia_model)
+        db.session.commit()
+        
+        return sugerencia_dto
+    
+    def obtener_por_cliente_id(self, cliente_id: str) -> list['SugerenciaClienteDTO']:
+        """Obtener sugerencias por ID de cliente"""
+        from aplicacion.dto import SugerenciaClienteDTO
+        from infraestructura.modelos import SugerenciaClienteModel
+        
+        sugerencias_model = SugerenciaClienteModel.query.filter_by(cliente_id=cliente_id).order_by(SugerenciaClienteModel.created_at.desc()).all()
+        
+        sugerencias = []
+        for sugerencia_model in sugerencias_model:
+            sugerencia_dto = SugerenciaClienteDTO(
+                id=uuid.UUID(sugerencia_model.id),
+                cliente_id=sugerencia_model.cliente_id,
+                evidencia_id=sugerencia_model.evidencia_id,
+                sugerencias_texto=sugerencia_model.sugerencias_texto,
+                modelo_usado=sugerencia_model.modelo_usado,
+                created_at=sugerencia_model.created_at
+            )
+            sugerencias.append(sugerencia_dto)
+        
+        return sugerencias
+
 class RepositorioEvidenciaVisita:
     def crear(self, evidencia_dto: EvidenciaVisitaDTO) -> EvidenciaVisitaDTO:
         """Crear una nueva evidencia de visita"""
@@ -372,6 +421,24 @@ class RepositorioEvidenciaVisita:
         db.session.add(evidencia_model)
         db.session.commit()
         return evidencia_dto
+    
+    def obtener_por_id(self, evidencia_id: str) -> EvidenciaVisitaDTO:
+        """Obtener una evidencia por ID"""
+        evidencia_model = EvidenciaVisitaModel.query.get(evidencia_id)
+        if not evidencia_model:
+            return None
+        
+        return EvidenciaVisitaDTO(
+            id=uuid.UUID(evidencia_model.id),
+            visita_id=evidencia_model.visita_id,
+            archivo_url=evidencia_model.archivo_url,
+            nombre_archivo=evidencia_model.nombre_archivo,
+            formato=evidencia_model.formato,
+            tamaño_bytes=evidencia_model.tamaño_bytes,
+            comentarios=evidencia_model.comentarios,
+            vendedor_id=evidencia_model.vendedor_id,
+            created_at=evidencia_model.created_at
+        )
     
     def obtener_por_visita(self, visita_id: str) -> list[EvidenciaVisitaDTO]:
         """Obtener todas las evidencias de una visita"""

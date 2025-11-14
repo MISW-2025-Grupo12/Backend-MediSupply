@@ -121,7 +121,8 @@ class PublicadorPubSub(PublicadorEventos):
         
         topic_mapping = {
             'ProductoStockActualizado': 'productos-stock-actualizado',
-            'PedidoCreado': 'pedidos-creados'
+            'PedidoCreado': 'pedidos-creados',
+            'InventarioAsignado': 'productos-stock-actualizado'  # Evento para actualizar inventario en Logística
         }
         
         return topic_mapping.get(tipo_evento, 'productos-stock-actualizado')

@@ -104,9 +104,14 @@ services:
       - DB_PASSWORD=productos_pass
       - SQLALCHEMY_DATABASE_URI=postgresql://productos_user:productos_pass@productos-db:5432/productos_db
       - USUARIOS_SERVICE_URL=http://usuarios:5001/usuarios/api
+      # Configuración de PubSub (emulador local)
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
+      # Configuración de GCP Storage (real)
+      - GCP_BUCKET_NAME_PRODUCTOS=evidencias-g12
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
+      - GCP_CREDENTIALS_PATH=/app/gcp-credentials.json
     networks:
       - medi-supply-network
     depends_on:
@@ -141,6 +146,7 @@ services:
       - DB_PASSWORD=logistica_pass
       - SQLALCHEMY_DATABASE_URI=postgresql://logistica_user:logistica_pass@logistica-db:5432/logistica_db
       - PRODUCTOS_SERVICE_URL=http://productos:5000/productos/api
+      - USUARIOS_SERVICE_URL=http://usuarios:5001/usuarios/api
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
@@ -217,6 +223,10 @@ services:
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
       - GCP_CREDENTIALS_PATH=/run/secrets/gcp_credentials
+      - GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/gcp_credentials
+      - GOOGLE_VERTEX_AI_PROJECT=desarrolloswcloud
+      - GOOGLE_VERTEX_AI_LOCATION=us-central1
+      - GOOGLE_CLOUD_API_KEY=${GOOGLE_CLOUD_API_KEY}
     secrets:
       - gcp_credentials
     networks:

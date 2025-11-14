@@ -25,6 +25,7 @@ EXPOSE 5002
 ENV FLASK_APP=src/main.py
 ENV FLASK_ENV=production
 ENV PYTHONPATH=/app
+ENV VERTEX_AI_LOCATION=us-central1
 
 # Comando para ejecutar la aplicación
 CMD ["python", "src/main.py"]

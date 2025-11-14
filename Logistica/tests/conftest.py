@@ -28,7 +28,9 @@ API_ROUTES = {
         'bodegas': '/logistica/api/bodegas',
         'bodegas_inicializar': '/logistica/api/bodegas/inicializar',
         'bodegas_productos': '/logistica/api/bodegas',
-        'bodegas_ubicaciones': '/logistica/api/bodegas/producto'
+        'bodegas_ubicaciones': '/logistica/api/bodegas/producto',
+        'rutas': '/logistica/api/rutas',
+        'rutas_repartidor': '/logistica/api/rutas/repartidor'
     },
     'productos': {
         'productos': '/productos/api/productos',
@@ -98,7 +100,9 @@ def logistica_urls():
         'bodegas': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas']}",
         'bodegas_inicializar': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_inicializar']}",
         'bodegas_productos': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_productos']}",
-        'bodegas_ubicaciones': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_ubicaciones']}"
+        'bodegas_ubicaciones': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['bodegas_ubicaciones']}",
+        'rutas': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['rutas']}",
+        'rutas_repartidor': f"{BASE_URLS['logistica']}{API_ROUTES['logistica']['rutas_repartidor']}"
     }
 
 @pytest.fixture

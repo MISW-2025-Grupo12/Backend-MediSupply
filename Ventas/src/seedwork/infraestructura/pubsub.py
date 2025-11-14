@@ -121,7 +121,8 @@ class PublicadorPubSub(PublicadorEventos):
         
         topic_mapping = {
             'ProductoStockActualizado': 'productos-stock-actualizado',
-            'PedidoCreado': 'pedidos-creados'
+            'PedidoCreado': 'pedidos-creados',
+            'PedidoConfirmado': 'pedidos-confirmados'
         }
         
         return topic_mapping.get(tipo_evento, 'productos-stock-actualizado')
@@ -135,7 +136,8 @@ class PublicadorPubSub(PublicadorEventos):
         
         topics = [
             'productos-stock-actualizado',
-            'pedidos-creados'
+            'pedidos-creados',
+            'pedidos-confirmados'
         ]
         
         print(f"📁 PubSub: Creando {len(topics)} topics...")

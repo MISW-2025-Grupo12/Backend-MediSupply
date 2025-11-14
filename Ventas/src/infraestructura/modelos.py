@@ -59,7 +59,7 @@ class PedidoModel(db.Model):
     __tablename__ = 'pedidos'
     
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    vendedor_id = db.Column(db.String(36), nullable=False)
+    vendedor_id = db.Column(db.String(36), nullable=True)  # Opcional: puede ser None para pedidos creados por clientes
     cliente_id = db.Column(db.String(36), nullable=False)
     estado = db.Column(db.String(20), nullable=False, default='borrador')
     total = db.Column(db.Float, nullable=False, default=0.0)
@@ -127,5 +127,25 @@ class EvidenciaVisitaModel(db.Model):
             'tamaño_mb': round(self.tamaño_bytes / 1024 / 1024, 2),
             'comentarios': self.comentarios,
             'vendedor_id': self.vendedor_id,
+            'created_at': self.created_at.isoformat()
+        }
+
+class SugerenciaClienteModel(db.Model):
+    __tablename__ = 'sugerencias_cliente'
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    cliente_id = db.Column(db.String(36), nullable=False)
+    evidencia_id = db.Column(db.String(36), db.ForeignKey('evidencias_visitas.id'), nullable=True)
+    sugerencias_texto = db.Column(db.Text, nullable=False)
+    modelo_usado = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'cliente_id': self.cliente_id,
+            'evidencia_id': self.evidencia_id,
+            'sugerencias_texto': self.sugerencias_texto,
+            'modelo_usado': self.modelo_usado,
             'created_at': self.created_at.isoformat()
         }
