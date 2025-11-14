@@ -2955,6 +2955,47 @@
 								"description": "Obtiene el inventario detallado de un producto específico con ubicaciones en bodegas"
 							},
 							"response": []
+						},
+						{
+							"name": "Stream de Inventario en Tiempo Real (SSE)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/inventario/stream",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"inventario",
+										"stream"
+									]
+								},
+								"description": "Endpoint SSE (Server-Sent Events) para recibir actualizaciones de inventario en tiempo real. Envía el estado inicial completo del inventario y luego notifica cambios cuando se actualiza, reserva o descuenta inventario. Formato de eventos: 'inventory' (estado inicial), 'update' (actualizaciones), 'heartbeat' (mantenimiento de conexión cada 30s). Los datos incluyen producto_id y cantidad_disponible. Para probar en el navegador, use /stream/test"
+							},
+							"response": []
+						},
+						{
+							"name": "Página de Prueba SSE (HTML)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_logistica}}/api/inventario/stream/test",
+									"host": [
+										"{{base_url_logistica}}"
+									],
+									"path": [
+										"api",
+										"inventario",
+										"stream",
+										"test"
+									]
+								},
+								"description": "Página HTML interactiva para probar el endpoint SSE de inventario en tiempo real. Muestra una tabla con todos los productos y sus cantidades disponibles, actualizándose automáticamente cuando hay cambios en el inventario. Ideal para pruebas locales. Abre en el navegador para ver actualizaciones en tiempo real."
+							},
+							"response": []
 						}
 					]
 				},

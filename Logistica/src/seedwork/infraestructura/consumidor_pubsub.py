@@ -199,10 +199,18 @@ class ConsumidorPubSub:
                                 from seedwork.dominio.eventos import despachador_eventos
                                 
                                 despachador_eventos.publicar_evento(evento, publicar_externamente=False)
+                                
+                                # Notificar clientes SSE si es un evento de inventario
+                                if evento.__class__.__name__ in ['InventarioAsignado', 'InventarioReservado', 'InventarioDescontado']:
+                                    self._notificar_sse_inventario(evento)
                         else:
                             from seedwork.dominio.eventos import despachador_eventos
                             
                             despachador_eventos.publicar_evento(evento, publicar_externamente=False)
+                            
+                            # Notificar clientes SSE si es un evento de inventario
+                            if evento.__class__.__name__ in ['InventarioAsignado', 'InventarioReservado', 'InventarioDescontado']:
+                                self._notificar_sse_inventario(evento)
                         
                         logger.info(f"✅ Evento {evento.__class__.__name__} procesado exitosamente")
                     
@@ -293,3 +301,30 @@ class ConsumidorPubSub:
         except Exception as e:
             logger.error(f"❌ Error creando evento desde datos: {e}")
             return None
+    
+    def _notificar_sse_inventario(self, evento: EventoDominio):
+        """Notifica a clientes SSE sobre cambios de inventario"""
+        try:
+            from infraestructura.sse_manager import sse_client_manager
+            from infraestructura.repositorios import RepositorioInventarioSQLite
+            
+            producto_id = None
+            if hasattr(evento, 'producto_id'):
+                producto_id = str(evento.producto_id)
+            
+            if producto_id:
+                # Obtener cantidad disponible actualizada del repositorio
+                repo_inventario = RepositorioInventarioSQLite()
+                lotes_inventario = repo_inventario.obtener_por_producto_id(producto_id)
+                
+                if lotes_inventario:
+                    cantidad_disponible_total = sum(lote.cantidad_disponible for lote in lotes_inventario)
+                    
+                    # Notificar clientes SSE
+                    sse_client_manager.notificar_todos('update', {
+                        'producto_id': producto_id,
+                        'cantidad_disponible': cantidad_disponible_total
+                    })
+                    logger.info(f"Clientes SSE notificados desde consumidor Pub/Sub para producto {producto_id} (cantidad disponible: {cantidad_disponible_total})")
+        except Exception as e:
+            logger.error(f"Error notificando clientes SSE desde consumidor Pub/Sub: {e}")
