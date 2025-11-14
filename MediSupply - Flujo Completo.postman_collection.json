@@ -2309,10 +2309,46 @@
 								"exec": [
 									"pm.test('Entregas obtenidas exitosamente', function () {",
 									"    pm.response.to.have.status(200);",
-									"    const response = pm.response.json().items;",
-									"    pm.expect(response).to.be.an('array');",
-									"    console.log('Total de entregas:', response.length);",
-									"});"
+									"    const responseJson = pm.response.json();",
+									"    const items = responseJson.items || (Array.isArray(responseJson) ? responseJson : []);",
+									"    pm.expect(items).to.be.an('array');",
+									"    console.log('Total de entregas:', items.length);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const responseJson = pm.response.json();",
+									"    const items = responseJson.items || (Array.isArray(responseJson) ? responseJson : []);",
+									"    ",
+									"    if (items.length > 0) {",
+									"        const entregaConfirmada = items.find(e => {",
+									"            const pedido = e.pedido || {};",
+									"            return pedido.estado === 'confirmado';",
+									"        });",
+									"        ",
+									"        const entregaSeleccionada = entregaConfirmada || items[0];",
+									"        const entregaId = entregaSeleccionada.id;",
+									"        const fechaEntrega = entregaSeleccionada.fecha_entrega;",
+									"        ",
+									"        if (entregaId) {",
+									"            pm.environment.set('entrega_id', String(entregaId));",
+									"            console.log('Entrega ID guardada:', entregaId);",
+									"            ",
+									"            if (fechaEntrega) {",
+									"                const fechaObj = new Date(fechaEntrega);",
+									"                const year = fechaObj.getFullYear();",
+									"                const month = String(fechaObj.getMonth() + 1).padStart(2, '0');",
+									"                const day = String(fechaObj.getDate()).padStart(2, '0');",
+									"                const fechaRuta = `${year}-${month}-${day}`;",
+									"                pm.environment.set('fecha_ruta', fechaRuta);",
+									"                console.log('Fecha de ruta guardada:', fechaRuta);",
+									"            }",
+									"        } else {",
+									"            console.log('Advertencia: No se pudo obtener el ID de la entrega');",
+									"        }",
+									"    } else {",
+									"        console.log('Advertencia: No hay entregas disponibles');",
+									"    }",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -2633,6 +2669,29 @@
 					"name": "Crear Ruta",
 					"event": [
 						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if (!pm.environment.get('fecha_ruta')) {",
+									"    const today = new Date();",
+									"    const futureDate = new Date(today);",
+									"    futureDate.setDate(today.getDate() + 1);",
+									"    const year = futureDate.getFullYear();",
+									"    const month = String(futureDate.getMonth() + 1).padStart(2, '0');",
+									"    const day = String(futureDate.getDate()).padStart(2, '0');",
+									"    const fechaRuta = `${year}-${month}-${day}`;",
+									"    pm.environment.set('fecha_ruta', fechaRuta);",
+									"    console.log('Fecha de ruta calculada (fallback):', fechaRuta);",
+									"}",
+									"",
+									"if (!pm.environment.get('entrega_id')) {",
+									"    console.log('Advertencia: La variable entrega_id no está definida. Ejecuta primero \"Obtener Todas las Entregas\" para obtener un ID de entrega.');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
 							"listen": "test",
 							"script": {
 								"exec": [
@@ -2667,7 +2726,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"fecha_ruta\": \"2025-11-10\",\n    \"repartidor_id\": \"{{repartidor_id}}\",\n    \"entregas\": [\n        \"{{entrega_id_1}}\",\n        \"{{entrega_id_2}}\"\n    ]\n}"
+							"raw": "{\n    \"fecha_ruta\": \"{{fecha_ruta}}\",\n    \"repartidor_id\": \"{{repartidor_id}}\",\n    \"bodega_id\": \"{{bodega_id}}\",\n    \"entregas\": [\n        \"{{entrega_id}}\"\n    ]\n}"
 						},
 						"url": {
 							"raw": "{{base_url_logistica}}/api/rutas/",

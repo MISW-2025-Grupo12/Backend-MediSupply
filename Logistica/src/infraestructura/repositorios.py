@@ -346,6 +346,7 @@ class RepositorioRutaSQLite:
             id=ruta_id,
             fecha_ruta=ruta_dto.fecha_ruta,
             repartidor_id=ruta_dto.repartidor_id,
+            bodega_id=ruta_dto.bodega_id,
             estado=ruta_dto.estado
         )
 
@@ -428,6 +429,7 @@ class RepositorioRutaSQLite:
             id=ruta_model.id,
             fecha_ruta=ruta_model.fecha_ruta,
             repartidor_id=ruta_model.repartidor_id,
+            bodega_id=ruta_model.bodega_id,
             estado=ruta_model.estado,
             entregas=entregas
         )

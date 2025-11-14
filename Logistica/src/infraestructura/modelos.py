@@ -68,6 +68,7 @@ class RutaModel(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     fecha_ruta = db.Column(db.Date, nullable=False)
     repartidor_id = db.Column(db.String(36), nullable=False)
+    bodega_id = db.Column(db.String(36), nullable=False)
     estado = db.Column(db.String(20), nullable=False, default='Pendiente')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -92,6 +93,7 @@ class RutaModel(db.Model):
             'id': self.id,
             'fecha_ruta': self.fecha_ruta.isoformat(),
             'repartidor_id': self.repartidor_id,
+            'bodega_id': self.bodega_id,
             'estado': self.estado,
             'entregas': [entrega.id for entrega in self.entregas],
             'created_at': self.created_at.isoformat(),

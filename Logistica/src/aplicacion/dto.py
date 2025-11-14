@@ -44,5 +44,6 @@ class RutaDTO(DTO):
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     fecha_ruta: date = field(default_factory=date.today)
     repartidor_id: str = ""
+    bodega_id: str = ""
     estado: str = "Pendiente"
     entregas: List[RutaEntregaDTO] = field(default_factory=list)

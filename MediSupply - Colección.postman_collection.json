@@ -2664,7 +2664,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"fecha_ruta\": \"2025-11-10\",\n    \"repartidor_id\": \"{{repartidor_id}}\",\n    \"entregas\": [\n        \"{{entrega_id_1}}\",\n        \"{{entrega_id_2}}\"\n    ]\n}"
+									"raw": "{\n    \"fecha_ruta\": \"2025-11-10\",\n    \"repartidor_id\": \"{{repartidor_id}}\",\n    \"bodega_id\": \"{{bodega_id}}\",\n    \"entregas\": [\n        \"{{entrega_id_1}}\",\n        \"{{entrega_id_2}}\"\n    ]\n}"
 								},
 								"url": {
 									"raw": "{{base_url_logistica}}/api/rutas/",
