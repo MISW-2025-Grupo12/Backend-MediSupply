@@ -18,8 +18,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar código fuente
 COPY src/ ./src/
 
-# Copiar credenciales de GCP (si existen)
-COPY gcp-credentials.json /app/gcp-credentials.json
+# NOTA: gcp-credentials.json NO se copia aquí porque:
+# 1. En CI/CD no está disponible (está en .gitignore)
+# 2. En producción (GKE) se usa Workload Identity automáticamente
+# 3. El código en servicio_gcp_storage.py maneja la ausencia del archivo
+# Si necesitas el archivo para desarrollo local, cópialo manualmente o usa secrets
 
 # Exponer puerto
 EXPOSE 5000
@@ -28,7 +31,9 @@ EXPOSE 5000
 ENV FLASK_APP=src/main.py
 ENV FLASK_ENV=production
 ENV PYTHONPATH=/app
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
+# GOOGLE_APPLICATION_CREDENTIALS es opcional
+# En producción (GKE) se usa Workload Identity automáticamente si no está definido
+# El código verifica si el archivo existe antes de usarlo
 
 # Comando para ejecutar la aplicación
 CMD ["python", "src/main.py"]

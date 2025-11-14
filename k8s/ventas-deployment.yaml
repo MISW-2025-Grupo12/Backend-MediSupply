@@ -82,6 +82,13 @@ spec:
             configMapKeyRef:
               name: app-config
               key: GCP_BUCKET_NAME
+        - name: GOOGLE_CLOUD_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: vertex-ai-api-key
+              key: GOOGLE_CLOUD_API_KEY
+        - name: VERTEX_MODEL_NAME
+          value: "gemini-2.5-flash-lite"
         resources:
           requests:
             memory: "64Mi"
