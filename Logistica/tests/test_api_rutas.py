@@ -20,7 +20,7 @@ class TestAPIRutas:
         self.consulta_patcher = patch('api.rutas.ejecutar_consulta')
         self.mock_ejecutar_consulta = self.consulta_patcher.start()
 
-        self.enriquecer_patcher = patch('api.rutas.enriquecer_ubicaciones', side_effect=lambda data: data)
+        self.enriquecer_patcher = patch('api.rutas.enriquecer_ruta_con_bodega', side_effect=lambda data: data)
         self.enriquecer_patcher.start()
 
         from flask import Flask
@@ -47,6 +47,7 @@ class TestAPIRutas:
             id=ruta_id,
             fecha_ruta=fecha_ruta,
             repartidor_id='repartidor-123',
+            bodega_id='bodega-123',
             estado='Pendiente',
             entregas=[
                 RutaEntregaDTO(
@@ -63,6 +64,7 @@ class TestAPIRutas:
         payload = {
             'fecha_ruta': fecha_ruta.isoformat(),
             'repartidor_id': 'repartidor-123',
+            'bodega_id': 'bodega-123',
             'entregas': [entrega_id]
         }
 
@@ -72,10 +74,24 @@ class TestAPIRutas:
         data = json.loads(response.data)
         assert data['id'] == ruta_id
         assert data['repartidor_id'] == 'repartidor-123'
-        assert data['entregas'][0]['entrega_id'] == entrega_id
+        assert data['entregas'][0]['id'] == entrega_id
 
     def test_crear_ruta_validacion_faltante(self):
         payload = {
+            'repartidor_id': 'repartidor-123',
+            'entregas': ['entrega-1']
+        }
+
+        response = self.client.post(get_logistica_url('rutas') + '/', json=payload)
+
+        assert response.status_code == 400
+        data = json.loads(response.data)
+        assert 'error' in data
+        assert 'bodega_id' in data['error'].lower() or 'obligatorio' in data['error'].lower()
+
+    def test_crear_ruta_sin_bodega_id(self):
+        payload = {
+            'fecha_ruta': date.today().isoformat(),
             'repartidor_id': 'repartidor-123',
             'entregas': ['entrega-1']
         }
@@ -92,6 +108,7 @@ class TestAPIRutas:
         payload = {
             'fecha_ruta': date.today().isoformat(),
             'repartidor_id': 'repartidor-123',
+            'bodega_id': 'bodega-123',
             'entregas': ['entrega-1']
         }
 
@@ -106,6 +123,7 @@ class TestAPIRutas:
             id=str(uuid.uuid4()),
             fecha_ruta=date.today(),
             repartidor_id='repartidor-123',
+            bodega_id='bodega-123',
             estado='Pendiente',
             entregas=[]
         )
@@ -135,6 +153,7 @@ class TestAPIRutas:
             id=str(uuid.uuid4()),
             fecha_ruta=date.today(),
             repartidor_id='repartidor-999',
+            bodega_id='bodega-999',
             estado='Pendiente',
             entregas=[]
         )
@@ -152,6 +171,7 @@ class TestAPIRutas:
         payload = {
             'fecha_ruta': '31-12-2025',
             'repartidor_id': 'repartidor-123',
+            'bodega_id': 'bodega-123',
             'entregas': ['entrega-1']
         }
 
@@ -163,6 +183,7 @@ class TestAPIRutas:
         payload = {
             'fecha_ruta': date.today().isoformat(),
             'repartidor_id': 'repartidor-123',
+            'bodega_id': 'bodega-123',
             'entregas': []
         }
 

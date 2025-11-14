@@ -26,18 +26,26 @@ def handler_mocks():
     repo_entregas = MagicMock()
     repo_entregas.obtener_todos.return_value = []
 
+    repo_bodegas = MagicMock()
+    bodega_model = MagicMock()
+    bodega_model.id = 'bodega-1'
+    bodega_model.nombre = 'Bodega Test'
+    bodega_model.direccion = 'Direccion Test'
+    repo_bodegas.obtener_por_id.return_value = bodega_model
+
     mapeador = MagicMock()
     mapeador.entidad_a_dto.return_value = RutaDTO()
 
     with patch('aplicacion.comandos.crear_ruta.RepositorioRutaSQLite', return_value=repo_rutas), \
             patch('aplicacion.comandos.crear_ruta.RepositorioEntregaSQLite', return_value=repo_entregas), \
+            patch('aplicacion.comandos.crear_ruta.RepositorioBodegaSQLite', return_value=repo_bodegas), \
             patch('aplicacion.comandos.crear_ruta.MapeadorRuta', return_value=mapeador):
         handler = CrearRutaHandler()
-        yield handler, repo_rutas, repo_entregas, mapeador
+        yield handler, repo_rutas, repo_entregas, repo_bodegas, mapeador
 
 
 def test_crear_ruta_exitoso(handler_mocks):
-    handler, repo_rutas, repo_entregas, mapeador = handler_mocks
+    handler, repo_rutas, repo_entregas, repo_bodegas, mapeador = handler_mocks
 
     fecha = datetime.now().replace(microsecond=0) + timedelta(days=1)
     repo_entregas.obtener_todos.return_value = [
@@ -48,6 +56,7 @@ def test_crear_ruta_exitoso(handler_mocks):
     comando = CrearRuta(
         fecha_ruta=fecha.date(),
         repartidor_id='repartidor-1',
+        bodega_id='bodega-1',
         entregas=['e1', 'e2']
     )
 
@@ -59,13 +68,14 @@ def test_crear_ruta_exitoso(handler_mocks):
 
 
 def test_crear_ruta_entrega_no_encontrada(handler_mocks):
-    handler, repo_rutas, repo_entregas, _ = handler_mocks
+    handler, repo_rutas, repo_entregas, repo_bodegas, _ = handler_mocks
 
     repo_entregas.obtener_todos.return_value = []
 
     comando = CrearRuta(
         fecha_ruta=datetime(2025, 11, 10).date(),
         repartidor_id='repartidor-1',
+        bodega_id='bodega-1',
         entregas=['desconocida']
     )
 
@@ -74,7 +84,7 @@ def test_crear_ruta_entrega_no_encontrada(handler_mocks):
 
 
 def test_crear_ruta_entrega_con_estado_invalido(handler_mocks):
-    handler, repo_rutas, repo_entregas, _ = handler_mocks
+    handler, repo_rutas, repo_entregas, repo_bodegas, _ = handler_mocks
 
     fecha = datetime(2025, 11, 10, 10, 0, 0)
     repo_entregas.obtener_todos.return_value = [
@@ -84,6 +94,7 @@ def test_crear_ruta_entrega_con_estado_invalido(handler_mocks):
     comando = CrearRuta(
         fecha_ruta=fecha.date(),
         repartidor_id='repartidor-1',
+        bodega_id='bodega-1',
         entregas=['e1']
     )
 
@@ -92,7 +103,7 @@ def test_crear_ruta_entrega_con_estado_invalido(handler_mocks):
 
 
 def test_crear_ruta_entrega_fecha_distinta(handler_mocks):
-    handler, repo_rutas, repo_entregas, _ = handler_mocks
+    handler, repo_rutas, repo_entregas, repo_bodegas, _ = handler_mocks
 
     repo_entregas.obtener_todos.return_value = [
         build_entrega('e1', datetime(2025, 11, 11, 9, 0, 0))
@@ -101,6 +112,7 @@ def test_crear_ruta_entrega_fecha_distinta(handler_mocks):
     comando = CrearRuta(
         fecha_ruta=datetime(2025, 11, 10).date(),
         repartidor_id='repartidor-1',
+        bodega_id='bodega-1',
         entregas=['e1']
     )
 
@@ -109,7 +121,7 @@ def test_crear_ruta_entrega_fecha_distinta(handler_mocks):
 
 
 def test_crear_ruta_entrega_ya_asignada(handler_mocks):
-    handler, repo_rutas, repo_entregas, _ = handler_mocks
+    handler, repo_rutas, repo_entregas, repo_bodegas, _ = handler_mocks
 
     fecha = datetime(2025, 11, 10, 9, 0, 0)
     repo_entregas.obtener_todos.return_value = [
@@ -120,9 +132,30 @@ def test_crear_ruta_entrega_ya_asignada(handler_mocks):
     comando = CrearRuta(
         fecha_ruta=fecha.date(),
         repartidor_id='repartidor-1',
+        bodega_id='bodega-1',
         entregas=['e1']
     )
 
     with pytest.raises(ValueError):
+        handler.handle(comando)
+
+
+def test_crear_ruta_bodega_no_encontrada(handler_mocks):
+    handler, repo_rutas, repo_entregas, repo_bodegas, _ = handler_mocks
+
+    fecha = datetime(2025, 11, 10, 9, 0, 0)
+    repo_entregas.obtener_todos.return_value = [
+        build_entrega('e1', fecha)
+    ]
+    repo_bodegas.obtener_por_id.return_value = None
+
+    comando = CrearRuta(
+        fecha_ruta=fecha.date(),
+        repartidor_id='repartidor-1',
+        bodega_id='bodega-inexistente',
+        entregas=['e1']
+    )
+
+    with pytest.raises(ValueError, match='bodega.*no existe'):
         handler.handle(comando)
 
