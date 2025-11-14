@@ -3,6 +3,7 @@ from infraestructura.repositorios import RepositorioInventarioSQLite, Repositori
 from aplicacion.dto import InventarioDTO
 from seedwork.aplicacion.comandos import ejecutar_comando
 from aplicacion.comandos.inicializar_bodegas import InicializarBodegas
+from infraestructura.sse_manager import sse_client_manager
 from datetime import datetime
 import logging
 import random
@@ -147,6 +148,18 @@ class ManejadorInventarioAsignado(ManejadorEvento):
                     # Usar crear_o_actualizar para evitar duplicados
                     repo_inventario.crear_o_actualizar(inventario_dto_actualizado)
                     logger.info(f"✅ Inventario actualizado exitosamente para producto {evento.producto_id}. Stock total: {cantidad_total} (anterior: {cantidad_anterior}, nuevo: {cantidad_nueva})")
+                    
+                    # Obtener cantidad disponible total actualizada (sumando todos los lotes del producto)
+                    lotes_actualizados = repo_inventario.obtener_por_producto_id(str(evento.producto_id))
+                    cantidad_disponible_total = sum(lote.cantidad_disponible for lote in lotes_actualizados) if lotes_actualizados else cantidad_total
+                    
+                    # Notificar clientes SSE
+                    sse_client_manager.notificar_todos('update', {
+                        'producto_id': str(evento.producto_id),
+                        'cantidad_disponible': cantidad_disponible_total
+                    })
+                    logger.info(f"Clientes SSE notificados de actualización para producto {evento.producto_id} (cantidad disponible: {cantidad_disponible_total})")
+                    
                 except Exception as db_error:
                     logger.error(f"❌ Error guardando en base de datos: {db_error}", exc_info=True)
                     raise
