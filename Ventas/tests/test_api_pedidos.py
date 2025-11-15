@@ -29,8 +29,20 @@ class TestAPIPedidos:
             db.session.remove()
             db.drop_all()
     
-    def test_crear_pedido_exitoso(self):
+    @patch('aplicacion.comandos.crear_pedido.ServicioUsuarios')
+    def test_crear_pedido_exitoso(self, mock_servicio_usuarios_class):
         """Test para crear un pedido correctamente"""
+        mock_servicio = MagicMock()
+        mock_servicio_usuarios_class.return_value = mock_servicio
+        mock_servicio.obtener_vendedor_por_id.return_value = {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "nombre": "Vendedor Test"
+        }
+        mock_servicio.obtener_cliente_por_id.return_value = {
+            "id": "550e8400-e29b-41d4-a716-446655440001",
+            "nombre": "Cliente Test"
+        }
+        
         pedido_data = {
             "vendedor_id": "550e8400-e29b-41d4-a716-446655440000",
             "cliente_id": "550e8400-e29b-41d4-a716-446655440001"
@@ -104,8 +116,20 @@ class TestAPIPedidos:
         assert 'pagination' in data
         assert isinstance(data['items'], list)
     
-    def test_obtener_pedido_por_id(self):
+    @patch('aplicacion.comandos.crear_pedido.ServicioUsuarios')
+    def test_obtener_pedido_por_id(self, mock_servicio_usuarios_class):
         """Test para obtener un pedido específico por ID"""
+        mock_servicio = MagicMock()
+        mock_servicio_usuarios_class.return_value = mock_servicio
+        mock_servicio.obtener_vendedor_por_id.return_value = {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "nombre": "Vendedor Test"
+        }
+        mock_servicio.obtener_cliente_por_id.return_value = {
+            "id": "550e8400-e29b-41d4-a716-446655440001",
+            "nombre": "Cliente Test"
+        }
+        
         # Primero crear un pedido
         pedido_data = {
             "vendedor_id": "550e8400-e29b-41d4-a716-446655440000",
@@ -127,8 +151,20 @@ class TestAPIPedidos:
         data = response.get_json()
         assert data['id'] == pedido_id
     
-    def test_agregar_item_pedido(self):
+    @patch('aplicacion.comandos.crear_pedido.ServicioUsuarios')
+    def test_agregar_item_pedido(self, mock_servicio_usuarios_class):
         """Test para agregar un item a un pedido"""
+        mock_servicio = MagicMock()
+        mock_servicio_usuarios_class.return_value = mock_servicio
+        mock_servicio.obtener_vendedor_por_id.return_value = {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "nombre": "Vendedor Test"
+        }
+        mock_servicio.obtener_cliente_por_id.return_value = {
+            "id": "550e8400-e29b-41d4-a716-446655440001",
+            "nombre": "Cliente Test"
+        }
+        
         # Primero crear un pedido
         pedido_data = {
             "vendedor_id": "550e8400-e29b-41d4-a716-446655440000",

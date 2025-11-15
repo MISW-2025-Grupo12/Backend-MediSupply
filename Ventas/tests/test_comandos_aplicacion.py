@@ -28,7 +28,8 @@ class TestCrearPedido:
         assert comando.vendedor_id == vendedor_id
         assert comando.cliente_id == cliente_id
     
-    def test_crear_pedido_handler_handle_exitoso(self, app_context):
+    @patch('aplicacion.comandos.crear_pedido.ServicioUsuarios')
+    def test_crear_pedido_handler_handle_exitoso(self, mock_servicio_usuarios_class, app_context):
         """Test manejar comando CrearPedido exitosamente"""
         vendedor_id = str(uuid.uuid4())
         cliente_id = str(uuid.uuid4())
@@ -38,9 +39,32 @@ class TestCrearPedido:
             cliente_id=cliente_id
         )
         
-        with patch('src.infraestructura.repositorios.RepositorioPedidoSQLite') as mock_repo:
+        mock_servicio = Mock()
+        mock_servicio_usuarios_class.return_value = mock_servicio
+        mock_servicio.obtener_vendedor_por_id.return_value = {
+            "id": vendedor_id,
+            "nombre": "Vendedor Test"
+        }
+        mock_servicio.obtener_cliente_por_id.return_value = {
+            "id": cliente_id,
+            "nombre": "Cliente Test"
+        }
+        
+        with patch('src.infraestructura.repositorios.RepositorioPedidoSQLite') as mock_repo, \
+             patch('seedwork.dominio.eventos.despachador_eventos') as mock_despachador:
+            pedido_id = str(uuid.uuid4())
             mock_pedido = Mock()
-            mock_pedido.id = str(uuid.uuid4())
+            mock_pedido.id = pedido_id
+            mock_pedido.obtener_id = Mock(return_value=pedido_id)
+            mock_pedido.vendedor_id = vendedor_id
+            mock_pedido.cliente_id = cliente_id
+            mock_estado = Mock()
+            mock_estado.estado = "borrador"
+            mock_pedido.estado = mock_estado
+            mock_total = Mock()
+            mock_total.valor = 0.0
+            mock_pedido.total = mock_total
+            mock_pedido.disparar_evento_creacion = Mock(return_value=Mock())
             mock_repo.return_value.crear.return_value = mock_pedido
             
             handler = CrearPedidoHandler()
