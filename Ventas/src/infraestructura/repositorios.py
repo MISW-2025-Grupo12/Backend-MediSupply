@@ -280,7 +280,6 @@ class RepositorioPedidoSQLite:
         """
         Obtener pedidos ENTREGADOS, opcionalmente filtrados por vendedor y rango de fechas.
 
-
         Comportamiento:
         - Si se envían ambas fechas -> filtra entre ellas (rango cerrado).
         - Si solo se envía fecha_inicio -> trae desde esa fecha hasta el futuro.
@@ -302,21 +301,20 @@ class RepositorioPedidoSQLite:
             query = query.filter(PedidoModel.vendedor_id == vendedor_id)
             logger.info(f"📦 Filtrando por vendedor_id={vendedor_id}")
 
-        # Filtros por fechas usando 'created_at'
         if fecha_inicio or fecha_fin:
             try:
                 if fecha_inicio:
                     inicio = datetime.fromisoformat(fecha_inicio)
                 else:
-                    inicio = datetime.min  # fecha más antigua posible
+                    inicio = datetime.min
 
                 if fecha_fin:
                     fin = datetime.fromisoformat(fecha_fin)
                 else:
-                    fin = datetime.max  # hasta el futuro
+                    fin = datetime.max
 
-                query = query.filter(PedidoModel.created_at >= inicio, PedidoModel.created_at <= fin)
-                logger.info(f"🗓️ Filtrando pedidos creados entre {inicio} y {fin}")
+                query = query.filter(PedidoModel.updated_at >= inicio, PedidoModel.updated_at <= fin)
+                logger.info(f"🗓️ Filtrando pedidos por fecha de entrega entre {inicio} y {fin}")
             except Exception as e:
                 logger.warning(f"⚠️ Formato inválido de fechas: {e}")
 
@@ -359,10 +357,11 @@ class RepositorioPedidoSQLite:
             )
 
             pedido._created_at_model = pedido_model.created_at
+            pedido._updated_at_model = pedido_model.updated_at
 
             pedidos.append(pedido)
 
-        logger.info(f"✅ Pedidos CONFIRMADOS encontrados: {len(pedidos)}")
+        logger.info(f"✅ Pedidos ENTREGADOS encontrados: {len(pedidos)}")
         return pedidos
 
 class RepositorioSugerenciaCliente:
