@@ -1,6 +1,9 @@
 import seedwork.presentacion.api as api
 import json
-from flask import request, Response, Blueprint
+import queue
+import threading
+import os
+from flask import request, Response, Blueprint, stream_with_context, send_from_directory
 from aplicacion.comandos.reservar_inventario import ReservarInventario
 from aplicacion.comandos.descontar_inventario import DescontarInventario
 from aplicacion.consultas.buscar_productos_con_inventario import BuscarProductosConInventario
@@ -8,6 +11,7 @@ from seedwork.aplicacion.comandos import ejecutar_comando
 from seedwork.aplicacion.consultas import ejecutar_consulta
 from infraestructura.repositorios import RepositorioInventarioSQLite
 from aplicacion.dto import InventarioDTO
+from infraestructura.sse_manager import sse_client_manager
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -264,3 +268,88 @@ def obtener_todo_inventario():
             status=500, 
             mimetype='application/json'
         )
+
+@bp.route('/stream', methods=['GET'])
+def stream_inventario():
+    """Endpoint SSE para recibir actualizaciones de inventario en tiempo real"""
+    def generar_eventos():
+        """Generador de eventos SSE"""
+        # Crear cola para este cliente
+        client_queue = queue.Queue(maxsize=100)
+        
+        try:
+            # Registrar cliente en el manager
+            sse_client_manager.agregar_cliente(client_queue)
+            logger.info("Cliente SSE conectado")
+            
+            # Enviar estado inicial del inventario
+            repositorio = RepositorioInventarioSQLite()
+            lotes_inventario = repositorio.obtener_todos()
+            
+            # Agrupar por producto_id y calcular total disponible
+            inventario_por_producto = {}
+            for lote in lotes_inventario:
+                producto_id = lote.producto_id
+                if producto_id not in inventario_por_producto:
+                    inventario_por_producto[producto_id] = {
+                        'producto_id': producto_id,
+                        'cantidad_disponible': 0
+                    }
+                inventario_por_producto[producto_id]['cantidad_disponible'] += lote.cantidad_disponible
+            
+            # Enviar estado inicial
+            for producto_data in inventario_por_producto.values():
+                evento_initial = f"event: inventory\ndata: {json.dumps(producto_data)}\n\n"
+                yield evento_initial
+            
+            # Enviar heartbeat periódico y escuchar actualizaciones
+            import time
+            last_heartbeat = time.time()
+            heartbeat_interval = 30  # segundos
+            
+            while True:
+                try:
+                    # Verificar si hay mensajes en la cola (timeout corto)
+                    try:
+                        message = client_queue.get(timeout=1)
+                        yield message
+                    except queue.Empty:
+                        pass
+                    
+                    # Enviar heartbeat periódico
+                    current_time = time.time()
+                    if current_time - last_heartbeat >= heartbeat_interval:
+                        heartbeat = "event: heartbeat\ndata: {}\n\n"
+                        yield heartbeat
+                        last_heartbeat = current_time
+                        
+                except GeneratorExit:
+                    logger.info("Cliente SSE desconectado (GeneratorExit)")
+                    break
+                except Exception as e:
+                    logger.error(f"Error en generador SSE: {e}")
+                    break
+                    
+        except Exception as e:
+            logger.error(f"Error en stream SSE: {e}")
+        finally:
+            # Remover cliente del manager
+            sse_client_manager.remover_cliente(client_queue)
+            logger.info("Cliente SSE desconectado")
+    
+    return Response(
+        stream_with_context(generar_eventos()),
+        mimetype='text/event-stream',
+        headers={
+            'Cache-Control': 'no-cache',
+            'X-Accel-Buffering': 'no',
+            'Connection': 'keep-alive'
+        }
+    )
+
+@bp.route('/stream/test', methods=['GET'])
+def test_sse_page():
+    """Página HTML de prueba para el endpoint SSE - sirve archivo estático"""
+    # Obtener la ruta del directorio estático
+    static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static')
+    return send_from_directory(static_dir, 'test_sse.html')

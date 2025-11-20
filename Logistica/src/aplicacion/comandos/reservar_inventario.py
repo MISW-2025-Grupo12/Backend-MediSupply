@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 from seedwork.aplicacion.comandos import Comando
 from seedwork.aplicacion.comandos import ejecutar_comando as comando
-from seedwork.dominio.eventos import EventoDominio
+from seedwork.dominio.eventos import EventoDominio, despachador_eventos
 from infraestructura.repositorios import RepositorioInventarioSQLite
 from aplicacion.dto import InventarioDTO
 from dominio.objetos_valor import ProductoID, Cantidad
 from dominio.entidades import Inventario
+from dominio.eventos import InventarioReservado
+from infraestructura.sse_manager import sse_client_manager
 import logging
 
 logger = logging.getLogger(__name__)
@@ -98,6 +100,34 @@ class ReservarInventarioHandler:
                         self._repositorio.crear_o_actualizar(nuevo_inventario_dto)
                         
                         cantidad_restante -= cantidad_a_reservar_de_este_lote
+            
+            # Publicar eventos y notificar clientes SSE para cada producto afectado
+            productos_afectados = set()
+            for item in comando.items:
+                productos_afectados.add(item.get('producto_id'))
+            
+            for producto_id in productos_afectados:
+                # Obtener cantidad disponible actualizada
+                inventarios_actualizados = self._repositorio.obtener_por_producto_id(producto_id)
+                if inventarios_actualizados:
+                    cantidad_disponible_total = sum(inv.cantidad_disponible for inv in inventarios_actualizados)
+                    cantidad_reservada_total = sum(inv.cantidad_reservada for inv in inventarios_actualizados)
+                    
+                    # Crear y publicar evento localmente
+                    evento = InventarioReservado(
+                        producto_id=producto_id,
+                        cantidad_reservada=cantidad_reservada_total,
+                        cantidad_disponible_restante=cantidad_disponible_total
+                    )
+                    despachador_eventos.publicar_evento(evento, publicar_externamente=False)
+                    logger.info(f"Evento InventarioReservado publicado para producto {producto_id}")
+                    
+                    # Notificar clientes SSE
+                    sse_client_manager.notificar_todos('update', {
+                        'producto_id': producto_id,
+                        'cantidad_disponible': cantidad_disponible_total
+                    })
+                    logger.info(f"Clientes SSE notificados de actualización para producto {producto_id}")
             
             return {
                 'success': True,
