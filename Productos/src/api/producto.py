@@ -148,7 +148,8 @@ def obtener_productos():
         productos_json = mapeador.agregaciones_a_externo(productos_agregacion)
         
         # Aplicar paginación
-        resultado_paginado = paginar_resultados(productos_json, page=page, page_size=page_size)
+        max_page_size = 10000 if page_size > 100 else 100
+        resultado_paginado = paginar_resultados(productos_json, page=page, page_size=page_size, max_page_size=max_page_size)
         
         return Response(
             json.dumps(resultado_paginado), 

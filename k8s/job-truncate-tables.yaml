@@ -1,0 +1,77 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: truncate-all-tables
+  namespace: medisupply
+spec:
+  template:
+    spec:
+      serviceAccountName: medisupply-ksa
+      containers:
+      - name: psql-client
+        image: postgres:15
+        command:
+          - /bin/bash
+          - -c
+          - |
+            # Instalar postgresql-client si no está disponible
+            apt-get update && apt-get install -y postgresql-client-15
+            
+            # Configurar variables
+            DB_HOST="localhost"
+            DB_PORT="5432"
+            
+            # Función para truncar
+            truncate_db() {
+              local DB_NAME=$1
+              local DB_USER=$2
+              local DB_PASS=$3
+              shift 3
+              local TABLES=("$@")
+              
+              echo "🧹 Limpiando $DB_NAME..."
+              export PGPASSWORD=$DB_PASS
+              
+              # Construir comando TRUNCATE (sin session_replication_role)
+              local TABLES_LIST=$(IFS=','; echo "${TABLES[*]}")
+              local TRUNCATE_CMD="TRUNCATE TABLE $TABLES_LIST CASCADE;"
+              
+              psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "$TRUNCATE_CMD" && echo "✅ $DB_NAME limpiada" || echo "❌ Error en $DB_NAME"
+            }
+            
+            # Esperar a que Cloud SQL Proxy esté listo
+            echo "⏳ Esperando Cloud SQL Proxy..."
+            sleep 5
+            
+            # Truncar LOGISTICA_DB
+            truncate_db "logistica_db" "logistica_user" "logistica123!Prod" \
+              "ruta_entregas" "entregas" "inventario" "rutas" "bodegas"
+            
+            # Truncar VENTAS_DB
+            truncate_db "ventas_db" "ventas_user" "ventas123!Prod" \
+              "items_pedido" "evidencias_visitas" "sugerencias_cliente" "pedidos" "visitas" "planes"
+            
+            # Truncar PRODUCTOS_DB
+            truncate_db "productos_db" "productos_user" "productos123!Prod" \
+              "productos" "carga_masiva_jobs" "categorias"
+            
+            # Truncar USUARIOS_DB
+            truncate_db "usuarios_db" "usuarios_user" "usuarios123!Prod" \
+              "usuarios" "repartidores" "administradores" "clientes" "vendedores" "proveedores"
+            
+            echo "✅ Proceso completado!"
+        env:
+        - name: DB_HOST
+          value: "localhost"
+        - name: DB_PORT
+          value: "5432"
+      - name: cloud-sql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
+        command:
+          - "/cloud_sql_proxy"
+          - "-instances=desarrolloswcloud:us-central1:medisupply-db-prod=tcp:5432"
+        securityContext:
+          runAsNonRoot: true
+      restartPolicy: Never
+  backoffLimit: 1
+

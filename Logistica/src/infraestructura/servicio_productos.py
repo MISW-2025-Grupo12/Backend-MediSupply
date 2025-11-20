@@ -1,6 +1,7 @@
 import requests
 import os
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +13,7 @@ class ServicioProductos:
         """Obtener producto por ID desde el servicio de Productos"""
         try:
             url = f"{self.base_url}/productos/{producto_id}"
-            response = requests.get(url, timeout=5)
+            response = requests.get(url, timeout=30)
             
             if response.status_code == 200:
                 return response.json()
@@ -34,7 +35,7 @@ class ServicioProductos:
                 'q': termino,
                 'limite': limite
             }
-            response = requests.get(url, params=params, timeout=5)
+            response = requests.get(url, params=params, timeout=30)
             
             if response.status_code == 200:
                 return response.json()
@@ -48,15 +49,21 @@ class ServicioProductos:
     
     def obtener_todos_productos(self) -> list[dict]:
         """Obtener todos los productos"""
+        inicio_total = time.time()
         try:
             url = f"{self.base_url}/productos"
             all_products = []
             page = 1
-            page_size = 100
+            # OPTIMIZACIÓN: Aumentar page_size a 1000 para traer todos los productos en una sola consulta
+            # Esto evita múltiples llamadas HTTP y reduce el tiempo total significativamente
+            page_size = 1000
             
             while True:
+                inicio_pagina = time.time()
                 params = {'page': page, 'page_size': page_size}
-                response = requests.get(url, params=params, timeout=5)
+                response = requests.get(url, params=params, timeout=30)
+                tiempo_pagina = time.time() - inicio_pagina
+                logger.info(f"⏱️ Servicio Productos - Página {page}: {tiempo_pagina:.3f}s - Status: {response.status_code}")
                 
                 if response.status_code == 200:
                     data = response.json()
@@ -80,8 +87,11 @@ class ServicioProductos:
                     logger.error(f"Error obteniendo productos (página {page}): {response.status_code}")
                     break
             
+            tiempo_total = time.time() - inicio_total
+            logger.info(f"⏱️ Servicio Productos - TOTAL: {tiempo_total:.3f}s - Páginas: {page} - Productos: {len(all_products)}")
             return all_products
                 
         except Exception as e:
-            logger.error(f"Error consultando servicio de productos: {e}")
+            tiempo_total = time.time() - inicio_total if 'inicio_total' in locals() else 0
+            logger.error(f"❌ Error consultando servicio de productos ({tiempo_total:.3f}s): {e}")
             return []

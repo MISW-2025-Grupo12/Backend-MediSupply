@@ -34,8 +34,7 @@ logger = logging.getLogger(__name__)
 def main():
     """Función principal para ejecutar el microservicio"""
     try:
-        # Crear la aplicación Flask
-        app = create_app()
+        from api import app
 
         # Obtener puerto de variable de entorno o usar 5003 por defecto
         port = int(os.getenv('PORT', 5003))

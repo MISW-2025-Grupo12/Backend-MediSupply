@@ -30,9 +30,8 @@ class ManejadorInventarioAsignado(ManejadorEvento):
                     return
             
             # Obtener bodegas disponibles
-            from api import create_app
-            app = create_app()
-            with app.app_context():
+            from api import app as flask_app
+            with flask_app.app_context():
                 try:
                     repo_bodega = RepositorioBodegaSQLite()
                     bodegas = repo_bodega.obtener_todas()
@@ -70,7 +69,7 @@ class ManejadorInventarioAsignado(ManejadorEvento):
             )
             
             # Guardar en repositorio con contexto de aplicación
-            with app.app_context():
+            with flask_app.app_context():
                 try:
                     repo_inventario = RepositorioInventarioSQLite()
                     
