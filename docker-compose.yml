@@ -112,6 +112,9 @@ services:
       - GCP_BUCKET_NAME_PRODUCTOS=evidencias-g12
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
       - GCP_CREDENTIALS_PATH=/app/gcp-credentials.json
+    volumes:
+      # Montar credenciales GCP para desarrollo local
+      - ./Productos/gcp-credentials.json:/app/gcp-credentials.json:ro
     networks:
       - medi-supply-network
     depends_on:
@@ -150,6 +153,8 @@ services:
       - USE_PUBSUB_EMULATOR=true
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
       - GCP_PROJECT_ID=medisupply-local
+      - GCP_CREDENTIALS_PATH=/app/gcp-credentials.json
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
     networks:
       - medi-supply-network
     depends_on:
@@ -176,6 +181,7 @@ services:
       POSTGRES_PASSWORD: ventas_pass
     volumes:
       - ventas_db_data:/var/lib/postgresql/data
+      - ./Ventas/gcp-credentials.json:/app/gcp-credentials.json:ro
     networks:
       - medi-supply-network
     healthcheck:
