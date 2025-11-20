@@ -169,6 +169,16 @@ class RepositorioBodegaSQLite:
     def obtener_todos_los_inventarios(self) -> list[InventarioModel]:
         """Obtener todos los inventarios de todas las bodegas."""
         return InventarioModel.query.all()
+    
+    def obtener_inventarios_con_bodegas(self) -> list[tuple]:
+        """
+        Obtener todos los inventarios con información de bodegas en una sola consulta usando JOIN.
+        Retorna una lista de tuplas (InventarioModel, BodegaModel o None).
+        Esto reduce de 2 consultas a 1 consulta SQL.
+        """
+        return db.session.query(InventarioModel, BodegaModel)\
+            .outerjoin(BodegaModel, InventarioModel.bodega_id == BodegaModel.id)\
+            .all()
 
 class RepositorioInventarioSQLite:
     """Repositorio para acceder al inventario (SQLite)."""

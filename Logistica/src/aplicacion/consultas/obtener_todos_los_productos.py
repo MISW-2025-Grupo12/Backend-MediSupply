@@ -4,6 +4,10 @@ from seedwork.aplicacion.consultas import Consulta, ejecutar_consulta
 from infraestructura.repositorios import RepositorioBodegaSQLite
 from infraestructura.servicio_productos import ServicioProductos
 from datetime import date, datetime
+import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class ObtenerTodosLosProductos(Consulta):
@@ -15,16 +19,37 @@ class ObtenerTodosLosProductosHandler:
         self.servicio_productos = servicio_productos or ServicioProductos()
     
     def handle(self, consulta: ObtenerTodosLosProductos):
-        # Obtener todos los inventarios de todas las bodegas
-        inventarios = self.repositorio_bodega.obtener_todos_los_inventarios()
+        inicio_total = time.time()
+        
+        inicio_db = time.time()
+        inventarios_con_bodegas = self.repositorio_bodega.obtener_inventarios_con_bodegas()
+        tiempo_db = time.time() - inicio_db
+        logger.info(f"⏱️ Tiempo consulta DB (JOIN): {tiempo_db:.3f}s - Inventarios: {len(inventarios_con_bodegas)}")
+        
+        # Construir mapa de bodegas desde los resultados del JOIN (evita consulta adicional)
+        inicio_procesamiento = time.time()
+        bodegas_por_id = {}
+        inventarios = []
+        for inv, bodega in inventarios_con_bodegas:
+            inventarios.append(inv)
+            if bodega and str(bodega.id) not in bodegas_por_id:
+                bodegas_por_id[str(bodega.id)] = bodega
+        tiempo_procesamiento = time.time() - inicio_procesamiento
+        logger.info(f"⏱️ Tiempo procesamiento inicial: {tiempo_procesamiento:.3f}s - Bodegas únicas: {len(bodegas_por_id)}")
 
         # Mapa id->producto para sacar la categoría (defensivo)
+        inicio_productos = time.time()
         try:
             catalogo = self.servicio_productos.obtener_todos_productos() or []
             productos_por_id = {str(p.get('id')): p for p in catalogo}
-        except Exception:
+            tiempo_productos = time.time() - inicio_productos
+            logger.info(f"⏱️ Tiempo llamada servicio productos: {tiempo_productos:.3f}s - Productos: {len(catalogo)}")
+        except Exception as e:
             productos_por_id = {}
+            tiempo_productos = time.time() - inicio_productos
+            logger.error(f"❌ Error llamando servicio productos ({tiempo_productos:.3f}s): {e}")
         
+        inicio_agrupacion = time.time()
         productos_agrupados = {}
         for inv in inventarios:
             pid = inv.producto_id
@@ -75,10 +100,10 @@ class ObtenerTodosLosProductosHandler:
 
             productos_agrupados[pid]['stock'] += inv.cantidad_disponible
 
-            # Obtener información de la bodega
+            # OPTIMIZACIÓN: Usar el mapa en lugar de consulta individual
             bodega_nombre = "Sin asignar"
             if inv.bodega_id:
-                bodega = self.repositorio_bodega.obtener_por_id(inv.bodega_id)
+                bodega = bodegas_por_id.get(str(inv.bodega_id))  # Lookup O(1) en lugar de query
                 if bodega:
                     bodega_nombre = bodega.nombre
             
@@ -91,6 +116,11 @@ class ObtenerTodosLosProductosHandler:
                 'stock_disponible': inv.cantidad_disponible,
                 'stock_reservado': inv.cantidad_reservada
             })
+        
+        tiempo_agrupacion = time.time() - inicio_agrupacion
+        tiempo_total = time.time() - inicio_total
+        logger.info(f"⏱️ Tiempo agrupación productos: {tiempo_agrupacion:.3f}s - Productos únicos: {len(productos_agrupados)}")
+        logger.info(f"✅ Tiempo TOTAL obtener_todos_los_productos: {tiempo_total:.3f}s (DB: {tiempo_db:.3f}s, Productos: {tiempo_productos:.3f}s, Procesamiento: {tiempo_procesamiento + tiempo_agrupacion:.3f}s)")
 
         return list(productos_agrupados.values())
 
