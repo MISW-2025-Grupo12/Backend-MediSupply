@@ -2416,6 +2416,102 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Informe Ventas por Vendedor",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/informes/vendedores?page=1&page_size=20",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"informes",
+										"vendedores"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page_size",
+											"value": "20",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene reporte de ventas agrupado por vendedor con pedidos entregados. Solo paginación."
+							},
+							"response": []
+						},
+						{
+							"name": "Informe Ventas por Vendedor con Filtro de Fecha",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_ventas}}/api/informes/vendedores?fecha_inicio=2025-01-01T00:00:00&fecha_fin=2025-01-31T23:59:59&page=1&page_size=20",
+									"host": [
+										"{{base_url_ventas}}"
+									],
+									"path": [
+										"api",
+										"informes",
+										"vendedores"
+									],
+									"query": [
+										{
+											"key": "fecha_inicio",
+											"value": "2025-01-01T00:00:00",
+											"description": "Formato ISO",
+											"disabled": true
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2025-01-31T23:59:59",
+											"description": "Formato ISO",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page_size",
+											"value": "20",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene reporte de ventas agrupado por vendedor con pedidos entregados. Filtro por fecha de entrega y paginación."
+							},
+							"response": []
 						}
 					]
 				}
