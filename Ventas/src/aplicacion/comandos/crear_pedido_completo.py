@@ -5,6 +5,7 @@ from seedwork.aplicacion.comandos import ejecutar_comando as comando
 from infraestructura.repositorios import RepositorioPedidoSQLite
 from infraestructura.servicio_logistica import ServicioLogistica
 from infraestructura.servicio_productos import ServicioProductos
+from infraestructura.servicio_usuarios import ServicioUsuarios
 from dominio.entidades import Pedido, ItemPedido
 from dominio.objetos_valor import EstadoPedido, Precio, Cantidad
 from seedwork.dominio.eventos import despachador_eventos
@@ -30,6 +31,7 @@ class CrearPedidoCompletoHandler:
         self._repositorio: RepositorioPedidoSQLite = RepositorioPedidoSQLite()
         self._servicio_logistica: ServicioLogistica = ServicioLogistica()
         self._servicio_productos: ServicioProductos = ServicioProductos()
+        self._servicio_usuarios: ServicioUsuarios = ServicioUsuarios()
     
     def handle(self, comando: CrearPedidoCompleto) -> dict:
         """Crear un pedido completo con items y confirmarlo en una sola operación"""
@@ -53,6 +55,23 @@ class CrearPedidoCompletoHandler:
                     return {
                         'success': False,
                         'error': 'Todos los items deben tener producto_id y cantidad > 0'
+                    }
+            
+            # Validar existencia de cliente
+            cliente = self._servicio_usuarios.obtener_cliente_por_id(comando.cliente_id)
+            if not cliente:
+                return {
+                    'success': False,
+                    'error': f'Cliente {comando.cliente_id} no existe'
+                }
+            
+            # Validar existencia de vendedor si se proporciona
+            if comando.vendedor_id:
+                vendedor = self._servicio_usuarios.obtener_vendedor_por_id(comando.vendedor_id)
+                if not vendedor:
+                    return {
+                        'success': False,
+                        'error': f'Vendedor {comando.vendedor_id} no existe'
                     }
             
             # Normalizar vendedor_id: convertir None a string vacío para la entidad de dominio

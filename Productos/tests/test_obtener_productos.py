@@ -65,8 +65,9 @@ class TestObtenerProductos:
         mock_servicio_proveedores = Mock()
         
         mock_repo_producto.obtener_todos.return_value = productos
-        mock_repo_categoria.obtener_por_id.return_value = categoria
-        mock_servicio_proveedores.obtener_proveedor_por_id.return_value = proveedor
+        mock_repo_categoria.obtener_todos.return_value = [categoria]
+        mock_servicio_proveedores.base_url = "http://localhost:5001/usuarios/api"
+        mock_servicio_proveedores._obtener_todos_proveedores = Mock(return_value={self.proveedor_id: proveedor})
         
         # Crear handler con mocks
         handler = ObtenerProductosHandler(
@@ -74,6 +75,8 @@ class TestObtenerProductos:
             repositorio_categoria=mock_repo_categoria,
             servicio_proveedores=mock_servicio_proveedores
         )
+        
+        handler._obtener_todos_proveedores = Mock(return_value={self.proveedor_id: proveedor})
         
         # Act
         with self.app.app_context():
@@ -109,10 +112,7 @@ class TestObtenerProductos:
         assert isinstance(resultado, list)
         assert len(resultado) == 0
     
-    @patch('aplicacion.consultas.obtener_productos.ServicioProveedores')
-    @patch('aplicacion.consultas.obtener_productos.RepositorioCategoriaSQLite')
-    @patch('aplicacion.consultas.obtener_productos.RepositorioProductoSQLite')
-    def test_obtener_productos_con_categoria_no_encontrada(self, mock_repo_producto, mock_repo_categoria, mock_servicio_proveedores):
+    def test_obtener_productos_con_categoria_no_encontrada(self):
         """Test que skip productos con categoría inexistente"""
         # Arrange
         consulta = ObtenerProductos()
@@ -129,24 +129,35 @@ class TestObtenerProductos:
                 proveedor_id=self.proveedor_id
             )
         ]
-        mock_repo_producto.return_value.obtener_todos.return_value = productos
         
-        # Mock categoría no encontrada
-        mock_repo_categoria.return_value.obtener_por_id.return_value = None
+        # Crear mocks
+        mock_repo_producto = Mock()
+        mock_repo_categoria = Mock()
+        mock_servicio_proveedores = Mock()
+        
+        mock_repo_producto.obtener_todos.return_value = productos
+        mock_repo_categoria.obtener_todos.return_value = []  # No hay categorías
+        mock_servicio_proveedores.base_url = "http://localhost:5001/usuarios/api"
+        
+        # Crear handler con mocks
+        handler = ObtenerProductosHandler(
+            repositorio=mock_repo_producto,
+            repositorio_categoria=mock_repo_categoria,
+            servicio_proveedores=mock_servicio_proveedores
+        )
+
+        handler._obtener_todos_proveedores = Mock(return_value={})
         
         # Act
         with self.app.app_context():
             db.create_all()
-            resultado = self.handler.handle(consulta)
+            resultado = handler.handle(consulta)
         
         # Assert
         assert isinstance(resultado, list)
         assert len(resultado) == 0  # Debería estar vacío porque se skip el producto
     
-    @patch('aplicacion.consultas.obtener_productos.ServicioProveedores')
-    @patch('aplicacion.consultas.obtener_productos.RepositorioCategoriaSQLite')
-    @patch('aplicacion.consultas.obtener_productos.RepositorioProductoSQLite')
-    def test_obtener_productos_con_proveedor_no_encontrado(self, mock_repo_producto, mock_repo_categoria, mock_servicio_proveedores):
+    def test_obtener_productos_con_proveedor_no_encontrado(self):
         """Test que skip productos con proveedor inexistente"""
         # Arrange
         consulta = ObtenerProductos()
@@ -163,23 +174,35 @@ class TestObtenerProductos:
                 proveedor_id=self.proveedor_id
             )
         ]
-        mock_repo_producto.return_value.obtener_todos.return_value = productos
         
-        # Mock categoría existente
         categoria = CategoriaDTO(
             id=uuid.UUID(self.categoria_id),
             nombre="Medicamentos",
             descripcion="Medicamentos generales"
         )
-        mock_repo_categoria.return_value.obtener_por_id.return_value = categoria
         
-        # Mock proveedor no encontrado
-        mock_servicio_proveedores.return_value.obtener_proveedor_por_id.return_value = None
+        # Crear mocks
+        mock_repo_producto = Mock()
+        mock_repo_categoria = Mock()
+        mock_servicio_proveedores = Mock()
+        
+        mock_repo_producto.obtener_todos.return_value = productos
+        mock_repo_categoria.obtener_todos.return_value = [categoria]
+        mock_servicio_proveedores.base_url = "http://localhost:5001/usuarios/api"
+        
+        # Crear handler con mocks
+        handler = ObtenerProductosHandler(
+            repositorio=mock_repo_producto,
+            repositorio_categoria=mock_repo_categoria,
+            servicio_proveedores=mock_servicio_proveedores
+        )
+        # Mock proveedor no encontrado 
+        handler._obtener_todos_proveedores = Mock(return_value={})  # Dict vacío = proveedor no encontrado
         
         # Act
         with self.app.app_context():
             db.create_all()
-            resultado = self.handler.handle(consulta)
+            resultado = handler.handle(consulta)
         
         # Assert
         assert isinstance(resultado, list)

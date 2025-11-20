@@ -21,23 +21,41 @@ def test_create_test_app_health():
 
 
 def test_main_main_runs(monkeypatch):
+    """Test que verifica que main() puede ejecutarse correctamente"""
+    # Mockear app antes de importar main
+    mock_app = MagicMock()
+    mock_app.run = MagicMock()
+    
+    # Mockear los módulos que se importan en main.py
     fake_module = SimpleNamespace(ManejadorInventarioAsignado=MagicMock())
-
-    with patch.dict(sys.modules, {'aplicacion.eventos.consumidor_inventario_asignado': fake_module}):
-        with patch('seedwork.infraestructura.pubsub.PublicadorPubSub', return_value=MagicMock()) as mock_pubsub, \
-                patch('seedwork.dominio.eventos.despachador_eventos.registrar_publicador') as mock_registrar_publicador:
-
-            main_module = importlib.reload(importlib.import_module('src.main'))
-
-            main_module.create_app = MagicMock(return_value=MagicMock())
-            main_module.create_app.return_value.run = MagicMock()
-
+    
+    # Crear un módulo mock para api
+    mock_api_module = MagicMock()
+    mock_api_module.app = mock_app
+    
+    with patch.dict(sys.modules, {
+        'aplicacion.eventos.consumidor_inventario_asignado': fake_module,
+        'api': mock_api_module
+    }):
+        with patch('seedwork.infraestructura.pubsub.PublicadorPubSub', return_value=MagicMock()), \
+             patch('seedwork.dominio.eventos.despachador_eventos.registrar_publicador'):
+            
+            # Limpiar el módulo main si ya está importado
+            if 'src.main' in sys.modules:
+                del sys.modules['src.main']
+            
+            # Importar main después de los mocks
+            main_module = importlib.import_module('src.main')
+            
+            # Asegurar que app.run está mockeado
             monkeypatch.setenv('PORT', '6010')
             monkeypatch.setenv('HOST', '127.1.1.1')
-
+            
+            # Ejecutar main
             main_module.main()
-
-            main_module.create_app.return_value.run.assert_called_once_with(host='127.1.1.1', port=6010, debug=False)
+            
+            # Verificar que app.run fue llamado con los parámetros correctos
+            mock_app.run.assert_called_once_with(host='127.1.1.1', port=6010, debug=False)
 
 
 def test_seed_data_testing_mode():

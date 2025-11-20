@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from seedwork.aplicacion.comandos import Comando
 from seedwork.aplicacion.comandos import ejecutar_comando as comando
 from infraestructura.repositorios import RepositorioPedidoSQLite
+from infraestructura.servicio_usuarios import ServicioUsuarios
 from dominio.entidades import Pedido
 from dominio.objetos_valor import EstadoPedido, Precio
 from seedwork.dominio.eventos import despachador_eventos
@@ -18,6 +19,7 @@ class CrearPedido(Comando):
 class CrearPedidoHandler:
     def __init__(self):
         self._repositorio: RepositorioPedidoSQLite = RepositorioPedidoSQLite()
+        self._servicio_usuarios: ServicioUsuarios = ServicioUsuarios()
     
     def handle(self, comando: CrearPedido) -> dict:
         """Crear un nuevo pedido en estado borrador"""
@@ -27,6 +29,22 @@ class CrearPedidoHandler:
                 return {
                     'success': False,
                     'error': 'vendedor_id y cliente_id son obligatorios'
+                }
+            
+            # Validar existencia de vendedor
+            vendedor = self._servicio_usuarios.obtener_vendedor_por_id(comando.vendedor_id)
+            if not vendedor:
+                return {
+                    'success': False,
+                    'error': f'Vendedor {comando.vendedor_id} no existe'
+                }
+            
+            # Validar existencia de cliente
+            cliente = self._servicio_usuarios.obtener_cliente_por_id(comando.cliente_id)
+            if not cliente:
+                return {
+                    'success': False,
+                    'error': f'Cliente {comando.cliente_id} no existe'
                 }
             
             # Crear entidad de dominio

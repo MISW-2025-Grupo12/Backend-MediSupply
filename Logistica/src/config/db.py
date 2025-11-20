@@ -16,6 +16,13 @@ def init_db(app: Flask):
         app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_size': 5,           # Número de conexiones a mantener en el pool
+        'max_overflow': 10,        # Máximo de conexiones adicionales
+        'pool_pre_ping': True,     # Verificar conexiones antes de usarlas
+        'pool_recycle': 3600,      # Reciclar conexiones después de 1 hora
+        'pool_timeout': 20         # Timeout para obtener conexión del pool
+    }
     db.init_app(app)
     
     # Crear tablas si no existen
