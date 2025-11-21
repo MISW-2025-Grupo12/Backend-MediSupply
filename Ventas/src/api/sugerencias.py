@@ -16,7 +16,7 @@ bp_clientes = Blueprint('sugerencias_clientes', __name__, url_prefix='/ventas/ap
 @bp_visitas.route('/<visita_id>/sugerencias', methods=['POST'])
 def generar_sugerencias(visita_id):
     """
-    Generar sugerencias para un cliente usando Vertex AI basado en una visita
+    Generar sugerencias para un cliente usando servicios de IA basado en una visita
     
     El endpoint obtiene automáticamente:
     - El cliente_id desde la visita

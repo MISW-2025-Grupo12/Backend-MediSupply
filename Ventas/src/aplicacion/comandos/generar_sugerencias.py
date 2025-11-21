@@ -1,11 +1,12 @@
-"""Comando para generar sugerencias usando Vertex AI"""
+"""Comando para generar sugerencias usando servicios de IA"""
 from dataclasses import dataclass
 from seedwork.aplicacion.comandos import Comando, ejecutar_comando
 import logging
 from typing import Optional
 from aplicacion.dto import SugerenciaClienteDTO
 from infraestructura.repositorios import RepositorioSugerenciaCliente, RepositorioEvidenciaVisita, RepositorioVisita
-from infraestructura.servicio_vertex_ai import ServicioVertexAI
+from dominio.servicios.servicio_ia import ServicioIA
+from infraestructura.factory_servicio_ia import crear_servicio_ia
 from infraestructura.servicio_usuarios import ServicioUsuarios
 from aplicacion.servicios.servicio_historial_cliente import ServicioHistorialCliente
 
@@ -21,20 +22,20 @@ class GenerarSugerenciasHandler:
         repositorio_sugerencia=None,
         repositorio_evidencia=None,
         repositorio_visita=None,
-        servicio_vertex_ai=None,
+        servicio_ia=None,
         servicio_usuarios=None,
         servicio_historial=None
     ):
         self.repositorio_sugerencia = repositorio_sugerencia or RepositorioSugerenciaCliente()
         self.repositorio_evidencia = repositorio_evidencia or RepositorioEvidenciaVisita()
         self.repositorio_visita = repositorio_visita or RepositorioVisita()
-        self.servicio_vertex_ai = servicio_vertex_ai or ServicioVertexAI()
+        self.servicio_ia = servicio_ia or crear_servicio_ia()
         self.servicio_usuarios = servicio_usuarios or ServicioUsuarios()
         self.servicio_historial = servicio_historial or ServicioHistorialCliente()
     
     def handle(self, comando: GenerarSugerencias) -> SugerenciaClienteDTO:
         """
-        Genera sugerencias para un cliente usando Vertex AI basado en una visita
+        Genera sugerencias para un cliente usando servicios de IA basado en una visita
         
         Args:
             comando: Comando con visita_id
@@ -83,7 +84,7 @@ class GenerarSugerenciasHandler:
                 evidencia_id_final = str(evidencia_principal.id)
                 archivo_url = evidencia_principal.archivo_url
                 formato = evidencia_principal.formato
-                mime_type = self.servicio_vertex_ai.obtener_mime_type(formato)
+                mime_type = self.servicio_ia.obtener_mime_type(formato)
                 
                 # Combinar comentarios de todas las evidencias
                 comentarios_parts = []
@@ -100,9 +101,12 @@ class GenerarSugerenciasHandler:
             else:
                 logger.info("No se encontraron evidencias para esta visita")
             
-            # 6. Generar sugerencias con Vertex AI
-            logger.info(f"Generando sugerencias para cliente {cliente_id} basado en visita {comando.visita_id}")
-            sugerencias_texto = self.servicio_vertex_ai.generar_sugerencias(
+            # 6. Generar sugerencias con servicio de IA
+            logger.info(
+                f"Generando sugerencias para cliente {cliente_id} basado en visita {comando.visita_id} "
+                f"(proveedor: {self.servicio_ia.nombre_proveedor}, modelo: {self.servicio_ia.modelo_actual})"
+            )
+            sugerencias_texto = self.servicio_ia.generar_sugerencias(
                 datos_cliente=datos_cliente,
                 historial_pedidos=historial_pedidos,
                 archivo_url=archivo_url,
@@ -115,7 +119,7 @@ class GenerarSugerenciasHandler:
                 cliente_id=cliente_id,
                 evidencia_id=evidencia_id_final,
                 sugerencias_texto=sugerencias_texto,
-                modelo_usado=self.servicio_vertex_ai.base_model
+                modelo_usado=self.servicio_ia.modelo_actual
             )
             
             # 8. Guardar sugerencia en BD

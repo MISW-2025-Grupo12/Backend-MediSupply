@@ -36,16 +36,22 @@ class TestGenerarSugerenciasHandler:
         self.mock_repositorio_sugerencia = Mock()
         self.mock_repositorio_evidencia = Mock()
         self.mock_repositorio_visita = Mock()
-        self.mock_servicio_vertex_ai = Mock()
+        self.mock_servicio_ia = Mock()
         self.mock_servicio_usuarios = Mock()
         self.mock_servicio_historial = Mock()
+        
+        # Configurar propiedades del mock de servicio IA
+        self.mock_servicio_ia.nombre_proveedor = 'vertex-ai'
+        self.mock_servicio_ia.modelo_actual = 'gemini-2.5-flash-lite'
+        # Compatibilidad hacia atrás
+        self.mock_servicio_ia.base_model = 'gemini-2.5-flash-lite'
         
         # Crear handler con mocks
         self.handler = GenerarSugerenciasHandler(
             repositorio_sugerencia=self.mock_repositorio_sugerencia,
             repositorio_evidencia=self.mock_repositorio_evidencia,
             repositorio_visita=self.mock_repositorio_visita,
-            servicio_vertex_ai=self.mock_servicio_vertex_ai,
+            servicio_ia=self.mock_servicio_ia,
             servicio_usuarios=self.mock_servicio_usuarios,
             servicio_historial=self.mock_servicio_historial
         )
@@ -112,8 +118,8 @@ class TestGenerarSugerenciasHandler:
         
         # Mock de sugerencia generada
         sugerencia_texto = "Sugerencias de prueba"
-        self.mock_servicio_vertex_ai.base_model = 'gemini-2.5-flash-lite'
-        self.mock_servicio_vertex_ai.generar_sugerencias.return_value = sugerencia_texto
+        self.mock_servicio_ia.modelo_actual = 'gemini-2.5-flash-lite'
+        self.mock_servicio_ia.generar_sugerencias.return_value = sugerencia_texto
         
         # Mock de sugerencia guardada
         sugerencia_guardada = SugerenciaClienteDTO(
@@ -137,7 +143,7 @@ class TestGenerarSugerenciasHandler:
         assert resultado.cliente_id == self.cliente_id
         assert resultado.evidencia_id is None
         assert resultado.sugerencias_texto == sugerencia_texto
-        self.mock_servicio_vertex_ai.generar_sugerencias.assert_called_once()
+        self.mock_servicio_ia.generar_sugerencias.assert_called_once()
         self.mock_repositorio_sugerencia.crear.assert_called_once()
     
     def test_generar_sugerencias_con_evidencias(self):
@@ -187,9 +193,9 @@ class TestGenerarSugerenciasHandler:
         
         # Mock de sugerencia generada
         sugerencia_texto = "Sugerencias con evidencia"
-        self.mock_servicio_vertex_ai.base_model = 'gemini-2.5-flash-lite'
-        self.mock_servicio_vertex_ai.obtener_mime_type.return_value = 'image/jpeg'
-        self.mock_servicio_vertex_ai.generar_sugerencias.return_value = sugerencia_texto
+        self.mock_servicio_ia.modelo_actual = 'gemini-2.5-flash-lite'
+        self.mock_servicio_ia.obtener_mime_type.return_value = 'image/jpeg'
+        self.mock_servicio_ia.generar_sugerencias.return_value = sugerencia_texto
         
         # Mock de sugerencia guardada
         sugerencia_guardada = SugerenciaClienteDTO(
@@ -215,12 +221,12 @@ class TestGenerarSugerenciasHandler:
         assert resultado.sugerencias_texto == sugerencia_texto
         
         # Verificar que se llamó con la URL y mime type correctos
-        call_args = self.mock_servicio_vertex_ai.generar_sugerencias.call_args
+        call_args = self.mock_servicio_ia.generar_sugerencias.call_args
         assert call_args[1]['archivo_url'] == evidencia.archivo_url
         assert call_args[1]['mime_type'] == 'image/jpeg'
         assert call_args[1]['comentarios_evidencia'] == 'Comentario de prueba'
         
-        self.mock_servicio_vertex_ai.obtener_mime_type.assert_called_once_with('jpg')
+        self.mock_servicio_ia.obtener_mime_type.assert_called_once_with('jpg')
     
     def test_generar_sugerencias_con_multiples_evidencias(self):
         """Test generar sugerencias con múltiples evidencias"""
@@ -269,9 +275,9 @@ class TestGenerarSugerenciasHandler:
         
         # Mock de sugerencia generada
         sugerencia_texto = "Sugerencias con múltiples evidencias"
-        self.mock_servicio_vertex_ai.base_model = 'gemini-2.5-flash-lite'
-        self.mock_servicio_vertex_ai.obtener_mime_type.return_value = 'image/jpeg'
-        self.mock_servicio_vertex_ai.generar_sugerencias.return_value = sugerencia_texto
+        self.mock_servicio_ia.modelo_actual = 'gemini-2.5-flash-lite'
+        self.mock_servicio_ia.obtener_mime_type.return_value = 'image/jpeg'
+        self.mock_servicio_ia.generar_sugerencias.return_value = sugerencia_texto
         
         sugerencia_guardada = SugerenciaClienteDTO(
             cliente_id=self.cliente_id,
@@ -291,7 +297,7 @@ class TestGenerarSugerenciasHandler:
         resultado = self.handler.handle(comando)
         
         # Verificar que se usó la evidencia más reciente
-        call_args = self.mock_servicio_vertex_ai.generar_sugerencias.call_args
+        call_args = self.mock_servicio_ia.generar_sugerencias.call_args
         assert call_args[1]['archivo_url'] == evidencia2.archivo_url
         # Verificar que se combinaron los comentarios
         assert 'Comentario 1' in call_args[1]['comentarios_evidencia']
@@ -330,9 +336,9 @@ class TestGenerarSugerenciasHandler:
         historial_pedidos = {'total_pedidos': 0}
         
         sugerencia_texto = "Sugerencias"
-        self.mock_servicio_vertex_ai.base_model = 'gemini-2.5-flash-lite'
-        self.mock_servicio_vertex_ai.obtener_mime_type.return_value = 'image/jpeg'
-        self.mock_servicio_vertex_ai.generar_sugerencias.return_value = sugerencia_texto
+        self.mock_servicio_ia.modelo_actual = 'gemini-2.5-flash-lite'
+        self.mock_servicio_ia.obtener_mime_type.return_value = 'image/jpeg'
+        self.mock_servicio_ia.generar_sugerencias.return_value = sugerencia_texto
         
         sugerencia_guardada = SugerenciaClienteDTO(
             cliente_id=self.cliente_id,
@@ -350,7 +356,7 @@ class TestGenerarSugerenciasHandler:
         resultado = self.handler.handle(comando)
         
         # Verificar que no se pasaron comentarios
-        call_args = self.mock_servicio_vertex_ai.generar_sugerencias.call_args
+        call_args = self.mock_servicio_ia.generar_sugerencias.call_args
         assert call_args[1]['comentarios_evidencia'] is None or call_args[1]['comentarios_evidencia'] == ''
     
     def test_generar_sugerencias_error_exception(self):
