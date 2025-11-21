@@ -7,7 +7,7 @@ import requests
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from infraestructura.servicio_vertex_ai import ServicioVertexAI
+from infraestructura.proveedores_ia.servicio_vertex_ai import ServicioVertexAI
 
 
 class TestServicioVertexAI:

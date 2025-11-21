@@ -1,14 +1,18 @@
 """Servicio para generar sugerencias usando Vertex AI (modo API Key REST)"""
 import os
 import logging
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 import requests
+from dominio.servicios.servicio_ia import ServicioIA
 
 logger = logging.getLogger(__name__)
 
 
-class ServicioVertexAI:
-    """Servicio para interactuar con Vertex AI vía API REST usando API Key"""
+class ServicioVertexAI(ServicioIA):
+    """Servicio para interactuar con Vertex AI vía API REST usando API Key
+    
+    Implementa la interfaz ServicioIA del dominio de Ventas.
+    """
 
     def __init__(self):
         self.api_key = os.environ.get("GOOGLE_CLOUD_API_KEY")
@@ -19,14 +23,30 @@ class ServicioVertexAI:
             )
 
         # Modelo por defecto
-        self.base_model = os.environ.get(
+        self._base_model = os.environ.get(
             "VERTEX_MODEL_NAME", "gemini-2.5-flash-lite"
         )
         self.endpoint = (
             "https://aiplatform.googleapis.com/v1/publishers/google/models/"
-            f"{self.base_model}:generateContent"
+            f"{self._base_model}:generateContent"
         )
         logger.info("Servicio Vertex AI inicializado en modo API Key.")
+    
+    @property
+    def nombre_proveedor(self) -> str:
+        """Nombre del proveedor"""
+        return "vertex-ai"
+    
+    @property
+    def modelo_actual(self) -> str:
+        """Nombre del modelo actualmente configurado"""
+        return self._base_model
+    
+    # Mantener base_model como alias para compatibilidad hacia atrás
+    @property
+    def base_model(self) -> str:
+        """Alias para modelo_actual (compatibilidad hacia atrás)"""
+        return self._base_model
     
     def obtener_mime_type(self, formato: str) -> str:
         """
