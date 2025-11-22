@@ -278,23 +278,24 @@ class RepositorioPedidoSQLite:
 
     def obtener_pedidos_confirmados(self, vendedor_id: str = None, fecha_inicio=None, fecha_fin=None) -> list[Pedido]:
         """
-        Obtener pedidos ENTREGADOS, opcionalmente filtrados por vendedor y rango de fechas.
+        Obtener pedidos CONFIRMADOS, EN_TRANSITO y ENTREGADOS, opcionalmente filtrados por vendedor y rango de fechas.
 
         Comportamiento:
         - Si se envían ambas fechas -> filtra entre ellas (rango cerrado).
         - Si solo se envía fecha_inicio -> trae desde esa fecha hasta el futuro.
         - Si solo se envía fecha_fin -> trae desde el inicio hasta esa fecha.
-        - Si no se envían fechas -> trae todos los pedidos entregados.
+        - Si no se envían fechas -> trae todos los pedidos confirmados, en_transito y entregados.
         """
         import logging
         from datetime import datetime
         from sqlalchemy import func
 
         logger = logging.getLogger(__name__)
-        logger.info("🔎 Obteniendo pedidos ENTREGADOS filtrados")
+        logger.info("🔎 Obteniendo pedidos CONFIRMADOS, EN_TRANSITO y ENTREGADOS filtrados")
 
-        # Consulta base (insensible a mayúsculas) - CAMBIO: ahora filtra por 'entregado'
-        query = PedidoModel.query.filter(func.lower(PedidoModel.estado) == "entregado")
+        # Consulta base (insensible a mayúsculas) - Filtra por estados: confirmado, en_transito y entregado
+        estados_validos = ["confirmado", "en_transito", "entregado"]
+        query = PedidoModel.query.filter(func.lower(PedidoModel.estado).in_([e.lower() for e in estados_validos]))
 
         # Filtro opcional por vendedor
         if vendedor_id:
@@ -314,7 +315,7 @@ class RepositorioPedidoSQLite:
                     fin = datetime.max
 
                 query = query.filter(PedidoModel.updated_at >= inicio, PedidoModel.updated_at <= fin)
-                logger.info(f"🗓️ Filtrando pedidos por fecha de entrega entre {inicio} y {fin}")
+                logger.info(f"🗓️ Filtrando pedidos por fecha de actualización entre {inicio} y {fin}")
             except Exception as e:
                 logger.warning(f"⚠️ Formato inválido de fechas: {e}")
 
@@ -322,7 +323,7 @@ class RepositorioPedidoSQLite:
         pedidos_model = query.all()
 
         if not pedidos_model:
-            logger.info("⚠️ No se encontraron pedidos confirmados con los filtros aplicados")
+            logger.info("⚠️ No se encontraron pedidos (confirmados, en_transito o entregados) con los filtros aplicados")
             return []
 
         pedidos = []
