@@ -26,7 +26,7 @@ class ObtenerInformeVentasPorVendedorHandler:
             )
 
             if not pedidos:
-                logger.info("No se encontraron pedidos entregados en el rango dado.")
+                logger.info("No se encontraron pedidos (confirmados, en_transito o entregados) en el rango dado.")
                 return []
 
             ventas_por_vendedor = {}
