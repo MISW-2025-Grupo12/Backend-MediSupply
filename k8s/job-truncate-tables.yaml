@@ -21,7 +21,58 @@ spec:
             DB_HOST="localhost"
             DB_PORT="5432"
             
-            # Función para truncar
+            # Función para verificar cantidad de registros
+            check_table_count() {
+              local DB_NAME=$1
+              local DB_USER=$2
+              local DB_PASS=$3
+              local TABLE=$4
+              
+              export PGPASSWORD=$DB_PASS
+              psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -t -c "SELECT COUNT(*) FROM $TABLE;" 2>/dev/null | tr -d ' ' || echo "0"
+            }
+            
+            # Función para truncar tabla individual
+            truncate_table() {
+              local DB_NAME=$1
+              local DB_USER=$2
+              local DB_PASS=$3
+              local TABLE=$4
+              
+              export PGPASSWORD=$DB_PASS
+              
+              # Verificar conteo antes
+              COUNT_BEFORE=$(check_table_count "$DB_NAME" "$DB_USER" "$DB_PASS" "$TABLE")
+              echo "  📊 Tabla $TABLE: $COUNT_BEFORE registros antes"
+              
+              # Intentar TRUNCATE
+              echo "  🗑️  Truncando tabla $TABLE..."
+              ERROR_OUTPUT=$(psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "TRUNCATE TABLE $TABLE RESTART IDENTITY CASCADE;" 2>&1)
+              TRUNCATE_EXIT=$?
+              
+              if [ $TRUNCATE_EXIT -ne 0 ]; then
+                echo "  ⚠️  Error al truncar $TABLE: $ERROR_OUTPUT"
+                echo "  🔄 Intentando DELETE..."
+                DELETE_OUTPUT=$(psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "DELETE FROM $TABLE;" 2>&1)
+                if [ $? -eq 0 ]; then
+                  echo "  ✅ DELETE exitoso para $TABLE"
+                else
+                  echo "  ❌ Error en DELETE para $TABLE: $DELETE_OUTPUT"
+                fi
+              else
+                echo "  ✅ TRUNCATE exitoso para $TABLE"
+              fi
+              
+              # Verificar conteo después
+              COUNT_AFTER=$(check_table_count "$DB_NAME" "$DB_USER" "$DB_PASS" "$TABLE")
+              echo "  📊 Tabla $TABLE: $COUNT_AFTER registros después"
+              
+              if [ "$COUNT_AFTER" != "0" ] && [ "$COUNT_BEFORE" != "0" ]; then
+                echo "  ⚠️  ADVERTENCIA: La tabla $TABLE todavía tiene $COUNT_AFTER registros"
+              fi
+            }
+            
+            # Función para truncar todas las tablas de una BD en orden
             truncate_db() {
               local DB_NAME=$1
               local DB_USER=$2
@@ -32,11 +83,12 @@ spec:
               echo "🧹 Limpiando $DB_NAME..."
               export PGPASSWORD=$DB_PASS
               
-              # Construir comando TRUNCATE (sin session_replication_role)
-              local TABLES_LIST=$(IFS=','; echo "${TABLES[*]}")
-              local TRUNCATE_CMD="TRUNCATE TABLE $TABLES_LIST CASCADE;"
+              # Truncar cada tabla individualmente en el orden especificado
+              for TABLE in "${TABLES[@]}"; do
+                truncate_table "$DB_NAME" "$DB_USER" "$DB_PASS" "$TABLE"
+              done
               
-              psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "$TRUNCATE_CMD" && echo "✅ $DB_NAME limpiada" || echo "❌ Error en $DB_NAME"
+              echo "✅ $DB_NAME limpiada"
             }
             
             # Esperar a que Cloud SQL Proxy esté listo
@@ -47,9 +99,9 @@ spec:
             truncate_db "logistica_db" "logistica_user" "logistica123!Prod" \
               "ruta_entregas" "entregas" "inventario" "rutas" "bodegas"
             
-            # Truncar VENTAS_DB
+            # Truncar VENTAS_DB (orden: tablas hijas primero, luego tablas padre)
             truncate_db "ventas_db" "ventas_user" "ventas123!Prod" \
-              "items_pedido" "evidencias_visitas" "sugerencias_cliente" "pedidos" "visitas" "planes"
+              "sugerencias_cliente" "items_pedido" "evidencias_visitas" "pedidos" "visitas" "planes"
             
             # Truncar PRODUCTOS_DB
             truncate_db "productos_db" "productos_user" "productos123!Prod" \

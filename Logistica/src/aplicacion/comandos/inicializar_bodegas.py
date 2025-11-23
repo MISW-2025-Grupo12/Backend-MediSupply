@@ -19,9 +19,9 @@ class InicializarBodegasHandler:
         
         # Crear 3 bodegas por defecto
         bodegas = [
-            BodegaDTO(nombre="Bodega Central", direccion="Av. Principal #123"),
-            BodegaDTO(nombre="Bodega Norte", direccion="Calle 45 #67-89"),
-            BodegaDTO(nombre="Bodega Sur", direccion="Carrera 30 #12-34")
+            BodegaDTO(nombre="Bodega Central", direccion="Carrera 68 #25-45, Fontibón, Bogotá D.C."),
+            BodegaDTO(nombre="Bodega Norte", direccion="Autopista Norte #245-67, Suba, Bogotá D.C."),
+            BodegaDTO(nombre="Bodega Sur", direccion="Cl 97 Sur #6-2, Bogotá D.C.")
         ]
         
         for bodega_dto in bodegas:
